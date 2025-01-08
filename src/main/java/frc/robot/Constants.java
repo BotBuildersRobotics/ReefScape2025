@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,4 +19,25 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static final class IntakeConstants {
+		
+		
+        //common config for all intake motors
+        //its ok to have a specific motor config 
+        //but always define values here to make it easy to find.
+        public static TalonFXConfiguration IntakeFXConfig() {
+          TalonFXConfiguration config = new TalonFXConfiguration();
+
+
+          config.CurrentLimits.SupplyCurrentLimit = 20.0;
+          config.CurrentLimits.SupplyCurrentLimitEnable = true;
+         
+          config.CurrentLimits.StatorCurrentLimitEnable = true;
+          config.CurrentLimits.StatorCurrentLimit = 80;
+
+          config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+          return config;
+		  }
+	}
 }
