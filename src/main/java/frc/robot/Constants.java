@@ -40,4 +40,23 @@ public final class Constants {
           return config;
 		  }
 	}
+
+  public static final class ElevatorConstants {
+
+    public static TalonFXConfiguration ElevatorFXConfig(){
+      TalonFXConfiguration config = new TalonFXConfiguration();
+
+      //copy the configurations because it doesn't actually exist
+      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+     
+      config.CurrentLimits.StatorCurrentLimitEnable = true;
+      config.CurrentLimits.StatorCurrentLimit = 80;
+
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      return config;
+
+  }
+  }
+
 }
