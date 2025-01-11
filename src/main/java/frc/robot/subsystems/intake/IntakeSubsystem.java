@@ -10,6 +10,7 @@ import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 
 
+@SuppressWarnings("unused") // Shut it
 public class IntakeSubsystem extends SubsystemBase {
 
     //notice the static, this is shared 
