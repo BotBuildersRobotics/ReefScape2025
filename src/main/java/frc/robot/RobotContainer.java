@@ -6,8 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem.LightState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,6 +25,8 @@ public class RobotContainer {
  
   //get an instance of our subsystem, either sim or pheonix.
   private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+
+ 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -45,6 +50,10 @@ public class RobotContainer {
   private void configureBindings() {
     
     //setup our control scheme here.
+
+    m_driverController.b().onTrue(new InstantCommand(() -> LightsSubsystem.getInstance().setStrobeState(LightState.RAINBOW)));
+
+    m_driverController.a().onTrue(new InstantCommand(() -> LightsSubsystem.getInstance().setStrobeState(LightState.BLUE)));
 
    
   }
