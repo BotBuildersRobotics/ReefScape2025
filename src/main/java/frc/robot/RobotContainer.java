@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+@SuppressWarnings("unused") // Shut it
 public class RobotContainer {
  
   //get an instance of our subsystem, either sim or pheonix.
