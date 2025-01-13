@@ -17,6 +17,9 @@ public class Ports {
     public static final CanDeviceId CLIMB_ONE = new CanDeviceId(9, "canivore");
     public static final CanDeviceId CLIMB_TWO = new CanDeviceId(10, "canivore");
 
+    //End Effector Subsystem Motors
+    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(100, "canivore");
+
     public static final CanDeviceId LEDS = new CanDeviceId(21, "canivore");
 
 	public static final int PIGEON = 13;

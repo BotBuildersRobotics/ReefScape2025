@@ -62,7 +62,7 @@ public final class Constants {
   public static final class ClimbConstants {
 		
 		
-    //copying more constans
+    //copying more constants. possible to add more constants for different motors by adding more functions but for now just use the same ones
     public static TalonFXConfiguration ClimbFXConfig() {
       TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -76,6 +76,26 @@ public final class Constants {
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       return config;
   }
+
+
+}
+
+public static final class EndEffectorConstants {
+		
+		
+  //copying more constans
+  public static TalonFXConfiguration EndEffectorFXConfig() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+
+    config.CurrentLimits.SupplyCurrentLimit = 20.0;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+   
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = 80;
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    return config;
 }
 
 }
