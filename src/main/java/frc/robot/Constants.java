@@ -59,4 +59,23 @@ public final class Constants {
   }
   }
 
+  public static final class ClimbConstants {
+		
+		
+    //copying more constans
+    public static TalonFXConfiguration ClimbFXConfig() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
+
+
+      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+     
+      config.CurrentLimits.StatorCurrentLimitEnable = true;
+      config.CurrentLimits.StatorCurrentLimit = 80;
+
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      return config;
+  }
+}
+
 }
