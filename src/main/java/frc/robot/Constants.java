@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 /**
@@ -113,5 +114,22 @@ public final class Constants {
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       return config;
     }
+  }
+
+  public static final class TransferConstants{
+
+    public static TalonFXConfiguration TransferFXConfig() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
+      
+      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+      config.CurrentLimits.StatorCurrentLimitEnable = true;
+      config.CurrentLimits.StatorCurrentLimit = 80;
+
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      return config;
+    }
+
   }
 }

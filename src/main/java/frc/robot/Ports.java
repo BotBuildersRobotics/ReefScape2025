@@ -25,6 +25,8 @@ public class Ports {
     public static final CanDeviceId PIVOT_RIGHT = new CanDeviceId(8972365, "canivore");
 
     //Transfer Subsytem Motors
+    public static final CanDeviceId TRANSFER_LEFT = new CanDeviceId(1243567, "canivore");
+    public static final CanDeviceId TRANSFER_RIGHT = new CanDeviceId(142356, "canivore");
 
     public static final CanDeviceId LEDS = new CanDeviceId(21, "canivore");
 
