@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,6 +23,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.vision.apriltags.AprilTagVision;
+import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
+import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
+import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 
 
 /**
@@ -34,6 +40,8 @@ public class RobotContainer {
  
   //get an instance of our subsystem, either sim or pheonix.
   private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+
+  public final AprilTagVision aprilTagVision;
 
  
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -61,6 +69,35 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
+
+    final List<PhotonCameraProperties> camerasProperties =
+                // PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision"); //
+                // loads camera properties from
+                // deploy/PhotonCamerasProperties/5516-2024-OffSeason-Vision.xml
+                VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+
+
+    if(Robot.isReal()){
+
+       aprilTagVision =
+                        new AprilTagVision(
+                              new AprilTagVisionIOReal(camerasProperties), 
+                            camerasProperties, 
+                            drivetrain
+                          );
+    }else{
+
+       aprilTagVision = new AprilTagVision(
+                            new ApriltagVisionIOSim(
+                                    camerasProperties,
+                                    VisionConstants.fieldLayout,
+                                    () -> {return drivetrain.getState().Pose;}
+                                    ),
+                        camerasProperties,
+                        drivetrain);
+    }
+
+    
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
