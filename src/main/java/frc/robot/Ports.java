@@ -36,4 +36,5 @@ public class Ports {
 	public static final int INTAKE_BEAMBREAKTWO = 2;
 
     // Wheel krakens
+    public static final CanDeviceId TOPLEFT_LEFT = new CanDeviceId(1, "canivore");
 }
