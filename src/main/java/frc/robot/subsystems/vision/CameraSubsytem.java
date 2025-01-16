@@ -1,6 +1,6 @@
 package frc.robot.subsystems.vision;
 
-import frc.robot.lib.LimelightHelpers;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.vision.CameraIO.CameraIOOutputs;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
