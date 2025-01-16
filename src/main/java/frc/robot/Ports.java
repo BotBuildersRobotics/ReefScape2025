@@ -18,7 +18,7 @@ public class Ports {
     public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(100, "canivore");
 
     //Intake Subsystem Motors
-    public static final CanDeviceId INTAKE_TOP_ROLLER = new CanDeviceId(1, "canivore");
+    public static final CanDeviceId INTAKE_TOP_ROLLER = new CanDeviceId(18, "canivore");
     
     //Pivot Subsystem Motors
     public static final CanDeviceId PIVOT_LEFT = new CanDeviceId(139042435,"canivore");
@@ -34,4 +34,6 @@ public class Ports {
 
 	public static final int INTAKE_BEAMBREAK = 1;
 	public static final int INTAKE_BEAMBREAKTWO = 2;
+
+    // Wheel krakens
 }
