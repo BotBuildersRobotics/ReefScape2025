@@ -35,7 +35,7 @@ public interface AprilTagVisionIO {
 
         public void fromPhotonPipeLine(PhotonPipelineResult pipelineResult, boolean cameraConnected) {
             this.cameraConnected = cameraConnected;
-           // this.resultsDelaySeconds = pipelineResult.getLatencyMillis() / 1000.0;
+            this.resultsDelaySeconds = pipelineResult.metadata.getLatencyMillis() / 1000.0;
             this.currentTargetsCount = Math.min(pipelineResult.getTargets().size(), MAX_TARGET_PER_CAMERA);
             Arrays.fill(fiducialMarksID, -1);
             Arrays.fill(bestCameraToTargets, new Transform3d());
@@ -93,6 +93,8 @@ public interface AprilTagVisionIO {
     class VisionInputs implements LoggableInputs {
         public final int camerasAmount;
         public final CameraInputs[] camerasInputs;
+
+
         public double inputsFetchedRealTimeStampSeconds = 0;
 
         public VisionInputs(int camerasAmount) {

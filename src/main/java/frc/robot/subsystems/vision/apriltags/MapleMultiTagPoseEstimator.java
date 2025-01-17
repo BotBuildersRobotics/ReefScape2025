@@ -228,8 +228,8 @@ public class MapleMultiTagPoseEstimator {
         final double rotationStdDev = Statistics.getStandardDeviation(robotPoseEstimationsThetaRadians);
         Logger.recordOutput("Vision/MeasurementErrors/translationalStdDev", translationStdDev);
         Logger.recordOutput("Vision/MeasurementErrors/rotationalStdDev", Math.toDegrees(rotationStdDev));
-       // if (translationStdDev > TRANSLATIONAL_STANDARD_DEVS_THRESHOLD_DISCARD_RESULT
-       //         || rotationStdDev > ROTATIONAL_STANDARD_DEVS_THRESHOLD_DISCARD_RESULT) return Optional.empty();
+        if (translationStdDev > TRANSLATIONAL_STANDARD_DEVS_THRESHOLD_DISCARD_RESULT
+               || rotationStdDev > ROTATIONAL_STANDARD_DEVS_THRESHOLD_DISCARD_RESULT) return Optional.empty();
 
         return Optional.of(new RobotPoseEstimationResult(
                 new Pose2d(translationPointEstimate, rotationPointEstimate),

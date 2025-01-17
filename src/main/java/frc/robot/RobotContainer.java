@@ -17,9 +17,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.drive.AutoAlignment;
+import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -58,6 +63,10 @@ public class RobotContainer {
           new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   //private final Telemetry logger = new Telemetry(MaxSpeed);
+
+  private final SwerveRequest.RobotCentric lateralMovement = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+ 
+
 
   private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -144,6 +153,13 @@ public class RobotContainer {
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+
+        final AutoAlignment exampleAutoAlignment = new AutoAlignment(
+              drivetrain,
+              () -> new Pose2d(3.780, 5.444, Rotation2d.fromDegrees(-60))
+               );
+        joystick.y().onTrue(exampleAutoAlignment);
+
         drivetrain.registerTelemetry(logger::telemeterize);                
    
   }
@@ -152,10 +168,22 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
+   * 
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+
+    
+    
+    return new SequentialCommandGroup(
+      
+      new PathFindToPose(drivetrain, ()->{return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));}, 100, 0),
+       // new AutoAlignment(drivetrain, () -> new Pose2d()),
+        //  drivetrain.applyRequest(() -> lateralMovement.withVelocityX(  25))
+       // ,
+        new WaitCommand(1)
+      );
+    //return autoChooser.getSelected();
    // return Commands.print("Auto command selected");
   }
 }
