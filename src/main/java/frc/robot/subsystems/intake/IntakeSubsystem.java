@@ -37,6 +37,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
+    public void intakeOn(){
+        this.io.setTopMotorDutyCycle(1);
+    }
+
+    public void intakeOff(){
+        this.io.setTopMotorDutyCycle(0);
+    }
+
     @Override
     public void periodic() {
    
