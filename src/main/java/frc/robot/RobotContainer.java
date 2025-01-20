@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -15,14 +17,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.drive.AutoAlignment;
+import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.vision.CameraSubsytem;
+import frc.robot.subsystems.vision.apriltags.AprilTagVision;
+import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
+import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
+import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,15 +45,15 @@ import frc.robot.subsystems.vision.CameraSubsytem;
  */
 
 public class RobotContainer {
+ 
+  //get an instance of our subsystem, either sim or pheonix.
+  private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
-	// get an instance of our subsystem, either sim or pheonix.
-	private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
-	private CameraSubsytem cameraSubsytem = CameraSubsytem.getInstance();
+  public final AprilTagVision aprilTagVision;
 
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
-																					// speed
-	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
-																						// second max angular velocity
+ 
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
 	/* Setting up bindings for necessary control of the swerve drive platform */
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -56,8 +66,7 @@ public class RobotContainer {
 	private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-	// private final Telemetry logger = new Telemetry(MaxSpeed);
-
+  
 	private final CommandXboxController joystick = new CommandXboxController(0);
 
 	public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -67,12 +76,41 @@ public class RobotContainer {
 	/* Path follower */
 	private final SendableChooser<Command> autoChooser;
 
-	public RobotContainer() {
-		autoChooser = AutoBuilder.buildAutoChooser("Tests");
-		SmartDashboard.putData("Auto Mode", autoChooser);
+  public RobotContainer() {
+
+    final List<PhotonCameraProperties> camerasProperties =
+                // PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision"); //
+                // loads camera properties from
+                // deploy/PhotonCamerasProperties/5516-2024-OffSeason-Vision.xml
+                VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+
+
+    if(Robot.isReal()){
+
+       aprilTagVision =
+                        new AprilTagVision(
+                              new AprilTagVisionIOReal(camerasProperties), 
+                            camerasProperties, 
+                            drivetrain
+                          );
+    }else{
+
+       aprilTagVision = new AprilTagVision(
+                            new ApriltagVisionIOSim(
+                                    camerasProperties,
+                                    VisionConstants.fieldLayout,
+                                    () -> {return drivetrain.getState().Pose;}
+                                    ),
+                        camerasProperties,
+                        drivetrain);
+    }
+
+    
+        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
-		configureLimelight();
+		//configureLimelight();
 
 		drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 	}
@@ -137,22 +175,37 @@ public class RobotContainer {
 			intakeSubsystem.intakeOff();
 		}));
 
-		drivetrain.registerTelemetry(logger::telemeterize);
 
-	}
+        final AutoAlignment exampleAutoAlignment = new AutoAlignment(
+              drivetrain,
+              () -> new Pose2d(3.780, 5.444, Rotation2d.fromDegrees(-60))
+               );
+        joystick.y().onTrue(exampleAutoAlignment);
 
-	private void configureLimelight() {
-	//	LimelightHelpers.
-	}
+        drivetrain.registerTelemetry(logger::telemeterize);                
+   
+  }
 
-	/**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
-	 * @return the command to run in autonomous
-	 */
-	public Command getAutonomousCommand() {
-		// An example command will be run in autonomous
-		// return autoChooser.getSelected();
-		return Commands.print("Auto command selected");
-	}
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   * 
+   */
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+
+    
+    
+    return new SequentialCommandGroup(
+      
+      new PathFindToPose(drivetrain, ()->{return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));}, 100, 0),
+       // new AutoAlignment(drivetrain, () -> new Pose2d()),
+        //  drivetrain.applyRequest(() -> lateralMovement.withVelocityX(  25))
+       // ,
+        new WaitCommand(1)
+      );
+    //return autoChooser.getSelected();
+   // return Commands.print("Auto command selected");
+  }
 }
