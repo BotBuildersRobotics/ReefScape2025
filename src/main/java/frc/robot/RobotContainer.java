@@ -66,12 +66,7 @@ public class RobotContainer {
 	private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  //private final Telemetry logger = new Telemetry(MaxSpeed);
-
-  private final SwerveRequest.RobotCentric lateralMovement = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
- 
-
-
+  
 	private final CommandXboxController joystick = new CommandXboxController(0);
 
 	public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -115,7 +110,7 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
-		configureLimelight();
+		//configureLimelight();
 
 		drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 	}
