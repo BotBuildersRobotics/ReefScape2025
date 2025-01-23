@@ -3,7 +3,6 @@ package frc.robot.commands.drive;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 

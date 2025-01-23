@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision.apriltags;
 
 import static frc.robot.LogPaths.*;
 import static frc.robot.VisionConstants.*;
-import static frc.robot.subsystems.vision.apriltags.MapleMultiTagPoseEstimator.RobotPoseEstimationResult;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,8 +13,6 @@ import frc.robot.utils.Alert;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.SignalLogger;
 
 public class AprilTagVision extends SubsystemBase {
     private final AprilTagVisionIO io;

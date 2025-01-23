@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import org.littletonrobotics.junction.Logger;
@@ -31,6 +29,7 @@ public class Robot extends LoggedRobot {
 
   private final LinearFilter average = LinearFilter.movingAverage(50);
 
+  private PowerDistribution power; //Fixes resource leak
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -41,7 +40,7 @@ public class Robot extends LoggedRobot {
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+      power = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
     } else {
        Logger.addDataReceiver(new NT4Publisher());
        // setUseTiming(false); // Run as fast as possible
@@ -134,4 +133,13 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  @Override
+  public void teleopExit() {
+      power.close();
+  }
+  @Override
+  public void testExit() {
+      power.close();
+  }
 }

@@ -270,6 +270,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
 
+    @SuppressWarnings("unchecked") //Thanks for the warning telling me the code is doing what i told it to
     private void startSimThread() {
         mapleSimSwerveDrivetrain = new MapleSimSwerveDrivetrain(
                 Seconds.of(kSimLoopPeriod),

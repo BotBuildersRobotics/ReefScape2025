@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision.apriltags;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.RobotController;
 
-import org.littletonrobotics.junction.Logger;
 
 //import frc.robot.utils.MapleTimeUtils;
 import java.util.List;
