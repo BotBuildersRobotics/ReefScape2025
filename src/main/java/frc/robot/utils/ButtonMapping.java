@@ -45,8 +45,8 @@ public class ButtonMapping {
 
         public void invert() {
             isAlternate = !isAlternate;
-            for(MultiFunctionButton button : associatedButtons) {
-                button.button.onTrue(button.current_function(isAlternate));
+            for(MultiFunctionButton multibutton : associatedButtons) {
+                multibutton.button.onTrue(multibutton.current_function(isAlternate));
             }
         }
     }
