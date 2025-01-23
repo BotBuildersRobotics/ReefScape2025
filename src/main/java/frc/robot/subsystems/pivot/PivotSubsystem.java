@@ -1,6 +1,7 @@
 package frc.robot.subsystems.pivot;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;;
 
 
@@ -15,8 +16,10 @@ public class PivotSubsystem extends SubsystemBase {
     //this is a singleton pattern
 	public static PivotSubsystem getInstance() {
 		if (mInstance == null) {
-            //TODO: add a check to see if we are in sim mode, if we are, then create a new simulation instance.
 			mInstance = new PivotSubsystem(new PivotIOPhoenix6());
+            if(!Robot.isReal()) {
+                //TODO: Create sim instance
+            }
 		}
 		return mInstance;
 	}

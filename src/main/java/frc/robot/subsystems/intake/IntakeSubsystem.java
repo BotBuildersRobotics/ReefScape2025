@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 
@@ -20,8 +21,10 @@ public class IntakeSubsystem extends SubsystemBase {
     //this is a singleton pattern
 	public static IntakeSubsystem getInstance() {
 		if (mInstance == null) {
-            //TODO: add a check to see if we are in sim mode, if we are, then create a new simulation instance.
 			mInstance = new IntakeSubsystem(new IntakeIOPhoenix6());
+            if(!Robot.isReal()) {
+                //TODO: Create sim instance
+            }
 		}
 		return mInstance;
 	}
