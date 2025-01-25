@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PathFollowingConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utils.MaplePIDController;
 import frc.robot.utils.MapleProfiledPIDController;
@@ -23,7 +24,8 @@ public class DriveToPose extends Command {
     private final Pose2d tolerance;
 
     public DriveToPose(CommandSwerveDrivetrain driveSubsystem, Supplier<Pose2d> desiredPoseSupplier) {
-        this(driveSubsystem, desiredPoseSupplier, new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(10)), 3);
+        //set a default Pose - this doesn't get used.
+        this(driveSubsystem, desiredPoseSupplier, new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(10)), PathFollowingConstants.SpeedConstrainMPS);
     }
 
     public DriveToPose(
@@ -77,7 +79,7 @@ public class DriveToPose extends Command {
     @Override
     public boolean isFinished() {
         final Pose2d desiredPose = desiredPoseSupplier.get(), currentPose = driveSubsystem.getState().Pose;
-        final ChassisSpeeds speeds = driveSubsystem.getState().Speeds;// .getMeasuredChassisSpeedsFieldRelative();
+        final ChassisSpeeds speeds = driveSubsystem.getState().Speeds;
         return Math.abs(desiredPose.getX() - currentPose.getX()) < tolerance.getX()
                 && Math.abs(desiredPose.getY() - currentPose.getY()) < tolerance.getY()
                 && Math.abs(desiredPose.getRotation().getDegrees()
@@ -91,8 +93,8 @@ public class DriveToPose extends Command {
        
       
        final TrapezoidProfile.Constraints chassisRotationalConstraints = new TrapezoidProfile.Constraints(
-               15,// driveSubsystem.getChassisMaxAngularVelocity(),
-                15); //driveSubsystem.getChassisMaxAngularAccelerationRadPerSecSq());
+               PathFollowingConstants.ChassisMaxAngularVelocity,
+               PathFollowingConstants.ChassisMaxAngularAccelerationRadPerSecSq); 
 
                 MaplePIDController.MaplePIDConfig CHASSIS_TRANSLATION_CLOSE_LOOP = new MaplePIDController.MaplePIDConfig(2, 1.2, 0, 0.03, 0, false, 0);
                 MaplePIDController.MaplePIDConfig CHASSIS_ROTATION_CLOSE_LOOP =

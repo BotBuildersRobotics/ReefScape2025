@@ -169,4 +169,21 @@ public final class Constants {
     }
 
   }
+
+  public static final class PathFollowingConstants{
+
+    public static double SpeedConstrainMPS = 2;
+
+    public static double AutoAlignSpeedMultiplier = 0.75;
+
+    public static double RotationKp = 1;
+
+    public static double RotationKd = 0;
+
+    public static double RotationKi = 0;
+
+    public static double ChassisMaxAngularVelocity = 3;
+
+    public static double ChassisMaxAngularAccelerationRadPerSecSq = 3;
+  }
 }

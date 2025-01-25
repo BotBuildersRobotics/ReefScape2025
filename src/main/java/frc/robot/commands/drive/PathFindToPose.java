@@ -1,5 +1,6 @@
 package frc.robot.commands.drive;
 
+import frc.robot.Constants.PathFollowingConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -24,10 +25,9 @@ public class PathFindToPose extends CommandOnFly {
               
           super(() -> AutoBuilder.pathfindToPose(
                         targetPose.get(),  new PathConstraints(
-                3.0, 4.0,
+                PathFollowingConstants.SpeedConstrainMPS, 4.0,
                 Units.degreesToRadians(540), Units.degreesToRadians(720)), goalEndVelocity)
-                //.beforeStarting(Commands.runOnce(() -> SwerveDrive.swerveHeadingController.setHeadingRequest(
-                //        new ChassisHeadingController.NullRequest()))));
+                
                 .beforeStarting(Commands.print("Starting path")));
     }
 }

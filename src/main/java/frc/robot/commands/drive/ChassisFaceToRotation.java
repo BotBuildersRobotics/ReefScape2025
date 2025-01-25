@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PathFollowingConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -24,7 +25,7 @@ public class ChassisFaceToRotation extends Command {
         this.targetRotationSupplier = targetRotationSupplier;
         this.tolerance = tolerance;
 
-        this.chassisRotationController = new PIDController(5, 0, 0);// new MaplePIDController(DriveControlLoops.CHASSIS_ROTATION_CLOSE_LOOP);
+        this.chassisRotationController = new PIDController(PathFollowingConstants.RotationKp, PathFollowingConstants.RotationKi, PathFollowingConstants.RotationKd);
     }
 
     @Override
