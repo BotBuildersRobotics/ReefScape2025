@@ -56,8 +56,8 @@ public class DriveToPose extends Command {
        
         final ChassisSpeeds csp = feedBackSpeeds;
 
-        driveSubsystem.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(csp.vxMetersPerSecond).withVelocityY(csp.vyMetersPerSecond)) ;   
-       // driveSubsystem.runRobotCentricChassisSpeeds(feedBackSpeeds);
+        driveSubsystem.setControl( new SwerveRequest.RobotCentric().withVelocityX(csp.vxMetersPerSecond).withVelocityY(csp.vyMetersPerSecond)) ;   
+       
     }
 
     @Override
