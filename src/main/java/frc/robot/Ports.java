@@ -18,12 +18,12 @@ public class Ports {
     public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(100, "canivore");
 
     //Intake Subsystem Motors
-    public static final CanDeviceId INTAKE_TOP_ROLLER = new CanDeviceId(18, "canivore");
+    public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
+    public static final CanDeviceId TRANSFER = new CanDeviceId(19, "canivore");
     
     //Pivot Subsystem Motors
-    public static final CanDeviceId PIVOT_LEFT = new CanDeviceId(139042435,"canivore");
-    public static final CanDeviceId PIVOT_RIGHT = new CanDeviceId(8972365, "canivore");
-
+    public static final CanDeviceId PIVOT = new CanDeviceId(139042435,"canivore");
+   
     //Transfer Subsytem Motors
     public static final CanDeviceId TRANSFER_LEFT = new CanDeviceId(1243567, "canivore");
     public static final CanDeviceId TRANSFER_RIGHT = new CanDeviceId(142356, "canivore");

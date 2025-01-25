@@ -1,25 +1,44 @@
 package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLog;
 
+
 public interface IntakeIO {
     default void updateInputs(IntakeIOInputs inputs) {}
 
     @AutoLog
-    class IntakeIOInputs {
+    public class IntakeIOInputs {
+       
         //this is an output, it will be set to either true or false
-        public boolean topMotorConnected = true;
+        public boolean intakeConnected = true;
         //we want to log the temp of the motor (output)
-        public double topMotorTemperature = 0.0;
+        public double intakeTemperature = 0.0;
         // we want to log the revolutions per second of the motor (output)
-        public double topMotorRPS = 0.0;
+        public double intakeMotorRPS = 0.0;
         
         //we pass (input) in a duty cycle, lets log that as well.
-        public double topMotorDutyCycle = 0.0;
+        public double intakeMotorDutyCycle = 0.0;
+
+        public double intakeCurrent = 0;
+
+        //this is an output, it will be set to either true or false
+        public boolean transferConnected = true;
+        //we want to log the temp of the motor (output)
+        public double transferTemperature = 0.0;
+        // we want to log the revolutions per second of the motor (output)
+        public double transferMotorRPS = 0.0;
+        
+        //we pass (input) in a duty cycle, lets log that as well.
+        public double transferMotorDutyCycle = 0.0;
+
+        public double transferCurrent = 0;
         
       
     }
 
     //we can create methods that our concrete implementations can perform.
-    default void setTopMotorDutyCycle(double percent) {}
+    default void setIntakeDutyCycle(double percent) {}
+
+    default void setTransferDutyCycle(double percent) {}
+
 
 }

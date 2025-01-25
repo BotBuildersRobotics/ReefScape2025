@@ -21,9 +21,11 @@ public class IntakeSubsystem extends SubsystemBase {
     //this is a singleton pattern
 	public static IntakeSubsystem getInstance() {
 		if (mInstance == null) {
-			mInstance = new IntakeSubsystem(new IntakeIOPhoenix6());
-            if(!Robot.isReal()) {
-                //TODO: Create sim instance
+			
+            if(Robot.isReal()) {
+                mInstance = new IntakeSubsystem(new IntakeIOPhoenix6());
+            }else{
+                mInstance = new IntakeSubsystem(new IntakeIOSim());
             }
 		}
 		return mInstance;
@@ -31,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private IntakeIO io;
     //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
-    private IntakeIOInputs inputs = new IntakeIOInputs();
+    private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
    
 
     public IntakeSubsystem(IntakeIO io) {
@@ -40,19 +42,54 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
-    public void intakeOn(){
-        this.io.setTopMotorDutyCycle(1);
+    public enum IntakeSystemState 
+    {
+        IDLE(0.0, 0.0),
+		INTAKE(8.0, 8.0),
+		REVERSE(-6.0, -6.0),
+        HUMAN_PLAYER(8, 8);
+
+        public double intake_voltage;
+        public double transfer_voltage;
+       
+
+		IntakeSystemState(double intake_voltage, double transfer_voltage) {
+			this.intake_voltage = intake_voltage;
+            this.transfer_voltage = transfer_voltage;
+            
+		}
     }
 
-    public void intakeOff(){
-        this.io.setTopMotorDutyCycle(0);
+    private IntakeSystemState currentState = IntakeSystemState.IDLE;
+
+    public IntakeSystemState getCurrentState()
+    {
+        return currentState;
     }
 
+    public void setWantedState(IntakeSystemState state) {
+
+        currentState = state;
+
+    }
+    
     @Override
     public void periodic() {
    
         //this actually writes to the log file.
         io.updateInputs(inputs);
+
+        SmartDashboard.putString("Intake State",currentState.toString());
+        Logger.processInputs("intake", inputs);
+
+        // Stop moving when disabled
+        if (DriverStation.isDisabled()) {
+            currentState = IntakeSystemState.IDLE;
+        }
+
+        io.setIntakeDutyCycle(currentState.intake_voltage);
+        io.setTransferDutyCycle(currentState.transfer_voltage);
+       
 
     }
 }

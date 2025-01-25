@@ -21,11 +21,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Intake.IntakeIdleCommand;
+import frc.robot.commands.Intake.IntakeOnCommand;
+import frc.robot.commands.Pivot.IntakePivotCommand;
+import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
@@ -46,6 +51,9 @@ public class RobotContainer {
 	// get an instance of our subsystem, either sim or pheonix.
 	private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
+	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+
+
 	public final AprilTagVision aprilTagVision;
 
 	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -63,7 +71,7 @@ public class RobotContainer {
 	private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-	private final CommandXboxController joystick = new CommandXboxController(0);
+	private final CommandXboxController driverControl = new CommandXboxController(0);
 
 	public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -132,47 +140,49 @@ public class RobotContainer {
 				// Drivetrain will execute this command periodically
 				drivetrain.applyRequest(
 						() -> drive.withVelocityX(
-								-joystick.getLeftY() * MaxSpeed) // Drive forward with
+								-driverControl.getLeftY() * MaxSpeed) // Drive forward with
 																	// negative Y (forward)
-								.withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive
+								.withVelocityY(-driverControl.getLeftX() * MaxSpeed) // Drive
 																				// left
 																				// with
 																				// negative
 																				// X
 																				// (left)
-								.withRotationalRate(-joystick.getRightX()
+								.withRotationalRate(-driverControl.getRightX()
 										* MaxAngularRate) // Drive
 															// counterclockwise
 															// with negative X
 															// (left)
 				));
 
-		joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-		joystick.b()
+		driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
+		driverControl.b()
 				.whileTrue(drivetrain.applyRequest(
-						() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(),
-								-joystick.getLeftX()))));
+						() -> point.withModuleDirection(new Rotation2d(-driverControl.getLeftY(),
+								-driverControl.getLeftX()))));
 
-		joystick.pov(0)
+		driverControl.pov(0)
 				.whileTrue(drivetrain.applyRequest(
 						() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-		joystick.pov(180)
+		driverControl.pov(180)
 				.whileTrue(drivetrain.applyRequest(
 						() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-		joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-		joystick.povDown().onTrue(new InstantCommand(() -> {
-			intakeSubsystem.intakeOn();
-		}));
-		joystick.povUp().onTrue(new InstantCommand(() -> {
-			intakeSubsystem.intakeOff();
-		}));
+		//simple intake controls
+		driverControl.rightTrigger()
+				.onTrue(new IntakeOnCommand(intakeSubsystem))
+				.onFalse(new IntakeIdleCommand(intakeSubsystem));
+
+		//simplePivotCommands.
+		driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
+
 
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
 				() -> new Pose2d(3.780, 5.444, Rotation2d.fromDegrees(-60)));
-		joystick.y().onTrue(exampleAutoAlignment);
+		driverControl.y().onTrue(exampleAutoAlignment);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

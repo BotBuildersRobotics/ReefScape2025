@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -100,7 +104,7 @@ public final class Constants {
 
   public static final class PivotConstants {
 
-    // copying more constans
+   
     public static TalonFXConfiguration PivotFXConfig() {
       TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -110,7 +114,39 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimitEnable = true;
       config.CurrentLimits.StatorCurrentLimit = 80;
 
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+      config.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs();
+      config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+      config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      //config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 20; //TODO: Work out
+
+
+      config.Slot0 = new Slot0Configs();
+      config.Slot0.kA = 0;
+      config.Slot0.kP = 0.3;
+      config.Slot0.kI = 0;
+      config.Slot0.kD = 0;
+      config.Slot0.kS = 0.3;
+      config.Slot0.kV = 0.12;
+
+      
+
+
+      config.MotionMagic = new MotionMagicConfigs();
+      config.MotionMagic.MotionMagicAcceleration = 100;
+      config.MotionMagic.MotionMagicCruiseVelocity = 100;
+      config.MotionMagic.MotionMagicJerk = 0;
+      
+
+
+      config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
+      config.ClosedLoopRamps .DutyCycleClosedLoopRampPeriod = 0.02;
+      config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
+      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
+
+
       return config;
     }
   }
