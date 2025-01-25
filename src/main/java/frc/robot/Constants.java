@@ -8,6 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.utils.TargettedReef;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -24,6 +27,16 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static TargettedReef Reef1 = new TargettedReef(
+   "Front",
+   new Pose2d(2.868, 3.972, Rotation2d.fromDegrees(-60))
+  );
+
+  public static TargettedReef Reef2 = new TargettedReef(
+   "FrontLeft",
+   new Pose2d(3.631, 5.429, Rotation2d.fromDegrees(-60))
+  );
 
   // Right now each motor is using common config for all intake motors
   // its ok to have a specific motor config

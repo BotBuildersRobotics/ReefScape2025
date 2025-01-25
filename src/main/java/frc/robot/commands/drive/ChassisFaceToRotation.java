@@ -45,14 +45,14 @@ public class ChassisFaceToRotation extends Command {
        robotSpeed
             .withSpeeds(new ChassisSpeeds(0, 0, rotationFeedBack))
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-            driveSubsystem.applyRequest(() -> robotSpeed);
-
+          //  driveSubsystem.applyRequest(() -> robotSpeed);
+        driveSubsystem.setControl(robotSpeed);
         Logger.recordOutput("FaceToRotationCommand/ErrorDegrees", getError().getDegrees());
     }
 
     @Override
     public void end(boolean interrupted) {
-        driveSubsystem.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+        driveSubsystem.setControl( new SwerveRequest.SwerveDriveBrake());
     }
 
     @Override

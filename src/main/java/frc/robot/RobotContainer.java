@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.drive.AlignToTagPhotonvision;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstants;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
 import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
+import frc.robot.utils.FieldConstants;
 
 
 /**
@@ -48,6 +50,7 @@ public class RobotContainer {
  
   //get an instance of our subsystem, either sim or pheonix.
   private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private RobotState robotState = RobotState.getInstance();
 
   public final AprilTagVision aprilTagVision;
 
@@ -175,12 +178,33 @@ public class RobotContainer {
 			intakeSubsystem.intakeOff();
 		}));
 
+                joystick.povLeft().onTrue(new InstantCommand(() ->
+                       { 
+                        robotState.TargetReef = Constants.Reef1;
+                       }
+                ));
+
+                joystick.rightBumper().onTrue(
+                        new AutoAlignment(
+                                drivetrain,
+                                      () ->  FieldConstants.CoralStation.leftCenterFace
+                                )
+                );
+
+                joystick.povRight().onTrue(new InstantCommand(() ->
+                       { 
+                        robotState.TargetReef = Constants.Reef2;
+                       }
+                ));
+
 
         final AutoAlignment exampleAutoAlignment = new AutoAlignment(
               drivetrain,
-              () -> new Pose2d(3.780, 5.444, Rotation2d.fromDegrees(-60))
+              () -> robotState.TargetReef.Location
                );
         joystick.y().onTrue(exampleAutoAlignment);
+
+        joystick.x().onTrue(new AlignToTagPhotonvision(drivetrain));
 
         drivetrain.registerTelemetry(logger::telemeterize);                
    
