@@ -71,12 +71,12 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
    
+        inputs.pivotPosition = currentState.angle;
         //this actually writes to the log file.
         io.updateInputs(inputs);
         SmartDashboard.putString("Pivot State",currentState.toString());
         Logger.processInputs("Pivot", inputs);
-        
-        io.setPivotAngle(inputs.pivotPosition);
+
 
     }
 }

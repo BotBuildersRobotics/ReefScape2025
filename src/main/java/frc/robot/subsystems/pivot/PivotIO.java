@@ -21,9 +21,6 @@ public interface PivotIO {
       
     }
 
-   
-    default void setPivotAngle(double degrees) {}
-   
     
 
 }

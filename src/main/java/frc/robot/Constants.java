@@ -146,6 +146,8 @@ public final class Constants {
       config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
       config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
 
+      config.Feedback.SensorToMechanismRatio = 51;
+
 
       return config;
     }

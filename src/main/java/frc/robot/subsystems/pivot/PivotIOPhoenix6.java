@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -44,22 +45,16 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotRPS = pivotMotor.getRotorVelocity().getValueAsDouble();
         inputs.pivotCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
 
+        //we have told the motor the SensorToMechanismRatio, we just need to tell it how many rotations
        
-      //  pivotMotor.setRo
-
-        //TODO work out the number of turns per degree.
-        //50 turns of the motor -> results in 1 turn of the shaft
-        //1.8 rotations per degree
-        double desiredRotations = inputs.pivotPosition * 1.8;
+        
+        double desiredRotations = Units.degreesToRotations(inputs.pivotPosition);
         pivotMotor.setControl(new MotionMagicVoltage(desiredRotations));
        
 
     }
 
-    @Override
-    public void setPivotAngle(double angle) {
-        
-    }
+   
 
    
 }
