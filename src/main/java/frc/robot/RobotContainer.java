@@ -29,6 +29,9 @@ import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.ReefTargeting;
+import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
+import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
@@ -178,11 +181,16 @@ public class RobotContainer {
 		//simplePivotCommands.
 		driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
 
+		//Test way to show how to set reef target and get the pose
+
+		final ReefTargeting target = new ReefTargeting();
+		target.setTarget(ReefBranch.A, ReefBranchLevel.L4 );
 
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
-				() -> new Pose2d(3.780, 5.444, Rotation2d.fromDegrees(-60)));
+				() -> target.getTargetPose());
 		driverControl.y().onTrue(exampleAutoAlignment);
+		
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
