@@ -54,7 +54,7 @@ public class VisionSubsystem extends SubsystemBase {
                 
                 mInstance = new VisionSubsystem(
                   CommandSwerveDrivetrain.getInstance(),
-                  new VisionIOLimelight("limelight", null ))
+                  new VisionIOLimelight("limelight", CommandSwerveDrivetrain.getInstance().getRotation() ))
                   ;
             }else{
                

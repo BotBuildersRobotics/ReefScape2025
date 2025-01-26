@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
@@ -193,7 +194,7 @@ public final class Constants {
 
   public class VisionConstants {
     // AprilTag layout
-    public static AprilTagFieldLayout APRILTAG_LAYOUT;
+    public static AprilTagFieldLayout APRILTAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     // Camera names, must match names configured on coprocessor
     public static String CAM_0_NAME = "limelight";
