@@ -34,6 +34,7 @@ import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
@@ -56,6 +57,8 @@ public class RobotContainer {
 
 	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
 
+	private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
+
 
 	public final AprilTagVision aprilTagVision;
 
@@ -76,7 +79,7 @@ public class RobotContainer {
 
 	private final CommandXboxController driverControl = new CommandXboxController(0);
 
-	public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+	public final CommandSwerveDrivetrain drivetrain = CommandSwerveDrivetrain.getInstance();// TunerConstants.createDrivetrain();
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -190,7 +193,7 @@ public class RobotContainer {
 				drivetrain,
 				() -> target.getTargetPose());
 		driverControl.y().onTrue(exampleAutoAlignment);
-		
+
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
