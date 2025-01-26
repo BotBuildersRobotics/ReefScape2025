@@ -26,7 +26,8 @@ public class PivotIOPhoenix6 implements PivotIO{
         //only need to look in one place to change all motor configs.
         TalonUtil.applyAndCheckConfiguration(pivotMotor, Constants.PivotConstants.PivotFXConfig());
        
-        pivotMotor.optimizeBusUtilization();
+       // pivotMotor.optimizeBusUtilization();
+       
     }
 
     @Override
@@ -37,6 +38,7 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotConnected = BaseStatusSignal.refreshAll(
                         pivotMotor.getStatorCurrent(),
                         pivotMotor.getDeviceTemp(),
+                        pivotMotor.getPosition(),
                         pivotMotor.getVelocity())
                         .isOK();
 
@@ -44,14 +46,17 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotTemperature = pivotMotor.getDeviceTemp().getValueAsDouble();
         inputs.pivotRPS = pivotMotor.getRotorVelocity().getValueAsDouble();
         inputs.pivotCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
+        inputs.pivotMotorPos = pivotMotor.getPosition().getValueAsDouble();
 
-        //we have told the motor the SensorToMechanismRatio, we just need to tell it how many rotations
+        //360 degrees of pivot movement would be roughly 50 motor rotations
+        //90 degrees of pivot movement is around 12.5 rotations or 0.13 rotations per degree
+
        
         
-        double desiredRotations = Units.degreesToRotations(inputs.pivotPosition);
+        double desiredRotations = inputs.pivotPosition * 0.13;
         pivotMotor.setControl(new MotionMagicVoltage(desiredRotations));
        
-
+        
     }
 
    

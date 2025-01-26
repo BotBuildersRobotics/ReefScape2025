@@ -22,7 +22,7 @@ public class Ports {
     public static final CanDeviceId TRANSFER = new CanDeviceId(19, "canivore");
     
     //Pivot Subsystem Motors
-    public static final CanDeviceId PIVOT = new CanDeviceId(139042435,"canivore");
+    public static final CanDeviceId PIVOT = new CanDeviceId(17,"canivore");
    
     //Transfer Subsytem Motors
     public static final CanDeviceId TRANSFER_LEFT = new CanDeviceId(1243567, "canivore");

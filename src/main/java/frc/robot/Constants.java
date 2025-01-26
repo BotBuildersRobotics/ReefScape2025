@@ -116,11 +116,11 @@ public final class Constants {
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-      config.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs();
+     /*   config.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs();
       config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
       config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
       config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-      //config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 20; //TODO: Work out
+      //config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 20; //TODO: Work out */
 
 
       config.Slot0 = new Slot0Configs();
@@ -146,7 +146,7 @@ public final class Constants {
       config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
       config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
 
-      config.Feedback.SensorToMechanismRatio = 51;
+      //config.Feedback.SensorToMechanismRatio = 51;
 
 
       return config;

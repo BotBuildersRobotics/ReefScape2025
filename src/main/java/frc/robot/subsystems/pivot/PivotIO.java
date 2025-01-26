@@ -18,7 +18,7 @@ public interface PivotIO {
 
         public double pivotPosition = 0.0;
         
-      
+        public double pivotMotorPos = 0.0;
     }
 
     
