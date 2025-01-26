@@ -121,6 +121,7 @@ public class VisionSubsystem extends SubsystemBase {
                 || observation.pose().getY() < 0.0
                 || observation.pose().getY() > Constants.VisionConstants.APRILTAG_LAYOUT.getFieldWidth();
 
+        
         // Add pose to log
         robotPoses.add(observation.pose());
         if (rejectPose) {
@@ -131,6 +132,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Skip if rejected
         if (rejectPose) {
+         
           continue;
         }
 
@@ -149,6 +151,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         // Send vision observation
+       
         consumer.accept(
             observation.pose().toPose2d(),
             observation.timestamp(),

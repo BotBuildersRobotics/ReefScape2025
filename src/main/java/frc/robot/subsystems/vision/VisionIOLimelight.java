@@ -23,11 +23,15 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.LimelightHelpers;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.Utils;
 
 /** IO implementation for real Limelight hardware. */
 public class VisionIOLimelight implements VisionIO {
@@ -53,6 +57,7 @@ public class VisionIOLimelight implements VisionIO {
     latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
     txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
     tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
+
     megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     megatag2Subscriber =
         table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
@@ -81,12 +86,14 @@ public class VisionIOLimelight implements VisionIO {
     for (var rawSample : megatag1Subscriber.readQueue()) {
       if (rawSample.value.length == 0) continue;
       for (int i = 10; i < rawSample.value.length; i += 7) {
+        
         tagIds.add((int) rawSample.value[i]);
       }
       poseObservations.add(
           new PoseObservation(
               // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-9 - rawSample.value[7] * 1.0e-3,
+              Utils.fpgaToCurrentTime(rawSample.timestamp), //
+              //rawSample.timestamp * 1.0e-9 - rawSample.value[7] * 1.0e-3,
 
               // 3D pose estimate
               parsePose(rawSample.value),
@@ -111,6 +118,7 @@ public class VisionIOLimelight implements VisionIO {
       poseObservations.add(
           new PoseObservation(
               // Timestamp, based on server timestamp of publish and latency
+              //Utils.fpgaToCurrentTime(rawSample.timestamp), 
               rawSample.timestamp * 1.0e-9 - rawSample.value[7] * 1.0e-3,
 
               // 3D pose estimate
