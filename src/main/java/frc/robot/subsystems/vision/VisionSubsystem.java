@@ -110,17 +110,22 @@ public class VisionSubsystem extends SubsystemBase {
         // Check whether to reject pose
         boolean rejectPose =
             observation.tagCount() == 0 // Must have at least one tag
-                || (observation.tagCount() == 1
-                    && observation.ambiguity() > Constants.VisionConstants.maxAmbiguity) // Cannot be high ambiguity
-                || Math.abs(observation.pose().getZ())
+                 || Math.abs(observation.pose().getZ())
                     > Constants.VisionConstants.maxZError // Must have realistic Z coordinate
 
+                //TODO: could add check for distance?
                 // Must be within the field boundaries
                 || observation.pose().getX() < 0.0
                 || observation.pose().getX() > Constants.VisionConstants.APRILTAG_LAYOUT.getFieldLength()
                 || observation.pose().getY() < 0.0
                 || observation.pose().getY() > Constants.VisionConstants.APRILTAG_LAYOUT.getFieldWidth();
 
+               
+        Logger.recordOutput("Vision/tagcount", observation.tagCount());
+        Logger.recordOutput("Vision/getz", observation.pose().getZ());
+        Logger.recordOutput("Vision/PoseX",  observation.pose().getX());
+        Logger.recordOutput("Vision/PoseY",  observation.pose().getY());
+        Logger.recordOutput("Vision/Rejected",  rejectPose);
         
         // Add pose to log
         robotPoses.add(observation.pose());
