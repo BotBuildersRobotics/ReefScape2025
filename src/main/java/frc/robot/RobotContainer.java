@@ -27,13 +27,14 @@ import frc.robot.commands.Pivot.IntakePivotCommand;
 import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.PathFindToPose;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstantsAlpha;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
@@ -52,14 +53,16 @@ import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 public class RobotContainer {
 
 	// get an instance of our subsystem, either sim or pheonix.
-	private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+	//private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
-	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+	//private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+
+	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
 
 
-	public final AprilTagVision aprilTagVision;
+	//public final AprilTagVision aprilTagVision;
 
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+	private double MaxSpeed = TunerConstantsAlpha.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
 																						// max angular velocity
 
@@ -76,7 +79,7 @@ public class RobotContainer {
 
 	private final CommandXboxController driverControl = new CommandXboxController(0);
 
-	public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+	public final CommandSwerveDrivetrain drivetrain = CommandSwerveDrivetrain.getInstance();// TunerConstants.createDrivetrain();
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -84,15 +87,16 @@ public class RobotContainer {
 	private final SendableChooser<Command> autoChooser;
 
 	public RobotContainer() {
-
-		final List<PhotonCameraProperties> camerasProperties =
+		//the below is for simulation / Photon Vision testing
+		//Limelight is integrated into the CommandSwerveDrivetrain
+		//final List<PhotonCameraProperties> camerasProperties =
 				// PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision");
 				// //
 				// loads camera properties from
 				// deploy/PhotonCamerasProperties/5516-2024-OffSeason-Vision.xml
-				VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+			//	VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
 
-		if (Robot.isReal()) {
+		/*if (Robot.isReal()) {
 
 			aprilTagVision = new AprilTagVision(
 					new AprilTagVisionIOReal(camerasProperties),
@@ -109,13 +113,13 @@ public class RobotContainer {
 							}),
 					camerasProperties,
 					drivetrain);
-		}
+		}*/
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
 		SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
-		// configureLimelight();
+		
 
 		drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 	}
@@ -140,25 +144,15 @@ public class RobotContainer {
 		// Note that X is defined as forward according to WPILib convention,
 		// and Y is defined as to the left according to WPILib convention.
 		drivetrain.setDefaultCommand(
-				// Drivetrain will execute this command periodically
-				drivetrain.applyRequest(
-						() -> drive.withVelocityX(
-								-driverControl.getLeftY() * MaxSpeed) // Drive forward with
-																	// negative Y (forward)
-								.withVelocityY(-driverControl.getLeftX() * MaxSpeed) // Drive
-																				// left
-																				// with
-																				// negative
-																				// X
-																				// (left)
-								.withRotationalRate(-driverControl.getRightX()
-										* MaxAngularRate) // Drive
-															// counterclockwise
-															// with negative X
-															// (left)
-				));
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-driverControl.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverControl.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-driverControl.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
 
-		driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
+		/*driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
 		driverControl.b()
 				.whileTrue(drivetrain.applyRequest(
 						() -> point.withModuleDirection(new Rotation2d(-driverControl.getLeftY(),
@@ -171,15 +165,15 @@ public class RobotContainer {
 				.whileTrue(drivetrain.applyRequest(
 						() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));*/
 
 		//simple intake controls
-		driverControl.rightTrigger()
+		/*driverControl.rightTrigger()
 				.onTrue(new IntakeOnCommand(intakeSubsystem))
-				.onFalse(new IntakeIdleCommand(intakeSubsystem));
+				.onFalse(new IntakeIdleCommand(intakeSubsystem));*/
 
 		//simplePivotCommands.
-		driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
+		//driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
 
 		//Test way to show how to set reef target and get the pose
 
@@ -189,8 +183,8 @@ public class RobotContainer {
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
 				() -> target.getTargetPose());
-		driverControl.y().onTrue(exampleAutoAlignment);
-		
+		//driverControl.y().onTrue(exampleAutoAlignment);
+
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
