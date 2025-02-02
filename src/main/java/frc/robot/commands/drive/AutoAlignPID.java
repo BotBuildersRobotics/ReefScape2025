@@ -60,7 +60,7 @@ public class AutoAlignPID extends Command {
   public void execute() {
     super.execute();
     // Gets the error between the desired pos (the target) and the current pos of the robot
-    Pose2d drivePose = swerveDrive.getState().Pose;
+    Pose2d drivePose = swerveDrive.getState().Pose; //current robot estimate
     double xPoseError = Pose.getX() - drivePose.getX();
     double yPoseError = Pose.getY() - drivePose.getY();
     double thetaPoseError = Pose.getRotation().getRadians() - drivePose.getRotation().getRadians();
@@ -77,7 +77,7 @@ public class AutoAlignPID extends Command {
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            xOutput, yOutput, turnOutput, swerveDrive.getState().RawHeading); //TODO: Check if we need odom pose
+            xOutput, yOutput, turnOutput, swerveDrive.getState().Pose.getRotation()); 
 
 
     final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
