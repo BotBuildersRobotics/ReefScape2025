@@ -53,14 +53,14 @@ import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 public class RobotContainer {
 
 	// get an instance of our subsystem, either sim or pheonix.
-	//private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+	private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
-	//private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
 
-	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
+	private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
 
 
-	//public final AprilTagVision aprilTagVision;
+	public final AprilTagVision aprilTagVision;
 
 	private double MaxSpeed = TunerConstantsAlpha.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -89,14 +89,14 @@ public class RobotContainer {
 	public RobotContainer() {
 		//the below is for simulation / Photon Vision testing
 		//Limelight is integrated into the CommandSwerveDrivetrain
-		//final List<PhotonCameraProperties> camerasProperties =
-				// PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision");
+	final List<PhotonCameraProperties> camerasProperties =
+			//	 PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision");
 				// //
 				// loads camera properties from
 				// deploy/PhotonCamerasProperties/5516-2024-OffSeason-Vision.xml
-			//	VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+				VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
 
-		/*if (Robot.isReal()) {
+		if (Robot.isReal()) {
 
 			aprilTagVision = new AprilTagVision(
 					new AprilTagVisionIOReal(camerasProperties),
@@ -113,7 +113,7 @@ public class RobotContainer {
 							}),
 					camerasProperties,
 					drivetrain);
-		}*/
+		}
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
 		SmartDashboard.putData("Auto Mode", autoChooser);
@@ -152,7 +152,7 @@ public class RobotContainer {
             )
         );
 
-		/*driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
+	   driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
 		driverControl.b()
 				.whileTrue(drivetrain.applyRequest(
 						() -> point.withModuleDirection(new Rotation2d(-driverControl.getLeftY(),
@@ -165,7 +165,7 @@ public class RobotContainer {
 				.whileTrue(drivetrain.applyRequest(
 						() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));*/
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 		//simple intake controls
 		/*driverControl.rightTrigger()
@@ -183,7 +183,7 @@ public class RobotContainer {
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
 				() -> target.getTargetPose());
-		//driverControl.y().onTrue(exampleAutoAlignment);
+		driverControl.y().onTrue(exampleAutoAlignment);
 
 
 		drivetrain.registerTelemetry(logger::telemeterize);

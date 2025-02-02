@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.Utils;
 
 /** IO implementation for real Limelight hardware. */
@@ -56,11 +58,16 @@ public class VisionIOLimelight implements VisionIO {
     // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+
+    inputs.connected = true;
     
     PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.limelightName);
 
+    Logger.recordOutput("LL Name",this.limelightName);
+
     if(estimate != null){
       
+      Logger.recordOutput("PE",estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(estimate.timestampSeconds),
                               new Pose3d(estimate.pose),
@@ -74,12 +81,14 @@ public class VisionIOLimelight implements VisionIO {
       for(int i =0; i < estimate.rawFiducials.length; i++){
         tagIds.add(estimate.rawFiducials[i].id);
       }
+     
     }
     LimelightHelpers.SetRobotOrientation(this.limelightName, this.rotationSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
     PoseEstimate megaTag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.limelightName);
    
     if(megaTag2Estimate != null){
 
+      Logger.recordOutput("PE2",megaTag2Estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(megaTag2Estimate.timestampSeconds),
                               new Pose3d(megaTag2Estimate.pose),
