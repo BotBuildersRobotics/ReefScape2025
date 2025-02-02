@@ -41,4 +41,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
 
     }
+
+    public void setElevatorPosition(double position){
+
+        io.setElevatorPosition(position);
+    }
 }

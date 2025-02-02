@@ -16,6 +16,9 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -68,7 +71,36 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimitEnable = true;
       config.CurrentLimits.StatorCurrentLimit = 80;
 
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      //want the motors to stop.
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+      //slot configs
+
+      config.Slot0 = new Slot0Configs();
+      config.Slot0.kA = 0;
+      config.Slot0.kP = 0.3;
+      config.Slot0.kI = 0;
+      config.Slot0.kD = 0;
+      config.Slot0.kS = 0.3;
+      config.Slot0.kV = 0.12;
+
+
+        //motion magic
+
+      config.MotionMagic = new MotionMagicConfigs();
+      config.MotionMagic.MotionMagicAcceleration = 100;
+      config.MotionMagic.MotionMagicCruiseVelocity = 100;
+      config.MotionMagic.MotionMagicJerk = 0;
+      
+
+
+      config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
+      config.ClosedLoopRamps .DutyCycleClosedLoopRampPeriod = 0.02;
+      config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
+      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
+
+
+
       return config;
 
     }
@@ -228,6 +260,20 @@ public final class Constants {
     public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
     public static double angularStdDevMegatag2Factor =
         Double.POSITIVE_INFINITY; // No rotation data available
+  }
+
+  public static class TrajectoryConstants {
+
+    public static final double AUTO_LINEUP_ROTATION_P = 5;
+    public static final double AUTO_LINEUP_ROTATION_I = 0;
+    public static final double AUTO_LINEUP_ROTATION_D = 0;
+    public static final Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS =
+        new Constraints(4 * Math.PI, 6 * Math.PI);
+
+    public static final double AUTO_LINEUP_TRANSLATION_P = 4.0;
+    public static final double AUTO_LINEUP_TRANSLATION_I = 0;
+    public static final double AUTO_LINEUP_TRANSLATION_D = 0;
+    public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(3, 4);
   }
 
 }
