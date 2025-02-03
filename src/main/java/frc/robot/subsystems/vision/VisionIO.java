@@ -3,15 +3,30 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public interface VisionIO {
+
   @AutoLog
-  public static class VisionIOInputs {
+  public static interface VisionIOInputs {
+  }
+
+  public static class AprilTagIOInputs implements VisionIOInputs {
     public boolean connected = false;
-    public TargetObservation latestTargetObservation =
-        new TargetObservation(new Rotation2d(), new Rotation2d());
+    public TargetObservation latestTargetObservation = 
+      new TargetObservation(new Rotation2d(), new Rotation2d());
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
+  }
+
+  public static class PhotonIOInputs implements VisionIOInputs {
+    public boolean connected = false;
+    public TargetObservation latestTargetObservation = 
+      new TargetObservation(new Rotation2d(), new Rotation2d());
+    public PoseObservation[] poseObservations = new PoseObservation[0];
+    public PhotonPipelineResult result;
+    public PhotonTrackedTarget bestTarget;
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */

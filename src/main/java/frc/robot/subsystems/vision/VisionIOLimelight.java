@@ -53,7 +53,7 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs) {
+  public void updateInputs(AprilTagIOInputs inputs) {
   
     // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
