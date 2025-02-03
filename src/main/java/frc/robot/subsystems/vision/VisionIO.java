@@ -2,6 +2,8 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.LimelightHelpers.RawFiducial;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
@@ -24,6 +26,7 @@ public interface VisionIO {
       double ambiguity,
       int tagCount,
       double averageTagDistance,
+      RawFiducial[] rawFiducials,
       PoseObservationType type) {}
 
   public static enum PoseObservationType {

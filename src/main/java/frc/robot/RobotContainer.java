@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,7 @@ import frc.robot.commands.Intake.IntakeOnCommand;
 import frc.robot.commands.Pivot.IntakePivotCommand;
 import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
+import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.generated.TunerConstantsAlpha;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -39,6 +41,7 @@ import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
 import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
+import frc.robot.utils.JoystickInterruptible;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -77,9 +80,16 @@ public class RobotContainer {
 	private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+	
 	private final CommandXboxController driverControl = new CommandXboxController(0);
 
 	public final CommandSwerveDrivetrain drivetrain = CommandSwerveDrivetrain.getInstance();// TunerConstants.createDrivetrain();
+
+
+	private final Command leftCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 0), driverControl, 0.5);
+    private final Command rightCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 1), driverControl, 0.5);
+   
+
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -182,9 +192,12 @@ public class RobotContainer {
 
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
-				() -> target.getTargetPose());
-		//driverControl.y().onTrue(exampleAutoAlignment);
+				() -> target.getTargetPose().plus(new Transform2d(0,-1, Rotation2d.k180deg)));
+		driverControl.y().onTrue(exampleAutoAlignment);
 
+
+		driverControl.leftBumper().whileTrue(leftCoralAutoDrive);
+        driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

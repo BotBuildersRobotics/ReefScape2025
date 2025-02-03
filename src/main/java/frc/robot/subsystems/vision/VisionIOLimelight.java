@@ -58,8 +58,11 @@ public class VisionIOLimelight implements VisionIO {
     List<PoseObservation> poseObservations = new LinkedList<>();
     
     PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.limelightName);
+   
 
     if(estimate != null){
+
+
       
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(estimate.timestampSeconds),
@@ -67,6 +70,7 @@ public class VisionIOLimelight implements VisionIO {
                               0.0, 
                               estimate.tagCount, 
                               estimate.avgTagDist, 
+                              estimate.rawFiducials,
                               PoseObservationType.MEGATAG_1
                             )
       );
@@ -86,6 +90,7 @@ public class VisionIOLimelight implements VisionIO {
                               0.0, 
                               megaTag2Estimate.tagCount, 
                               megaTag2Estimate.avgTagDist, 
+                              estimate.rawFiducials,
                               PoseObservationType.MEGATAG_2
                             )
       );
