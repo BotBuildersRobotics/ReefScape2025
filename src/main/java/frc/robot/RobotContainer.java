@@ -34,7 +34,7 @@ import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.TagVisionSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
 import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
@@ -57,7 +57,7 @@ public class RobotContainer {
 
 	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
 
-	private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
+	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
 
 
 	public final AprilTagVision aprilTagVision;

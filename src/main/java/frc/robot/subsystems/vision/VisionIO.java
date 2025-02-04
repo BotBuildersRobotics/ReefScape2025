@@ -9,22 +9,18 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public interface VisionIO {
 
   @AutoLog
-  public static interface VisionIOInputs {
-  }
-
-  public static class AprilTagIOInputs implements VisionIOInputs {
+  public static class VisionIOInputs {
     public boolean connected = false;
     public TargetObservation latestTargetObservation = 
       new TargetObservation(new Rotation2d(), new Rotation2d());
-    public PoseObservation[] poseObservations = new PoseObservation[0];
+  }
+
+  public static class AprilTagIOInputs extends VisionIOInputs{
     public int[] tagIds = new int[0];
+    public PoseObservation[] poseObservations = new PoseObservation[0];
   }
 
-  public static class PhotonIOInputs implements VisionIOInputs {
-    public boolean connected = false;
-    public TargetObservation latestTargetObservation = 
-      new TargetObservation(new Rotation2d(), new Rotation2d());
-    public PoseObservation[] poseObservations = new PoseObservation[0];
+  public static class PhotonIOInputs extends VisionIOInputs{
     public PhotonPipelineResult result;
     public PhotonTrackedTarget bestTarget;
   }
@@ -47,5 +43,5 @@ public interface VisionIO {
     PHOTONVISION
   }
 
-  public default void updateInputs(VisionIOInputs inputs) {}
+  public default <T extends VisionIOInputs> void updateInputs(T inputs) {}
 }

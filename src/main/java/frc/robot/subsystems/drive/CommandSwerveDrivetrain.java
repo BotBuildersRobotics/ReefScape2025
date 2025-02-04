@@ -33,7 +33,8 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.intake.IntakeIOPhoenix6;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem.VisionConsumer;
+import frc.robot.subsystems.vision.PhotonVisionSubsystem.PhotonConsumer;
+import frc.robot.subsystems.vision.TagVisionSubsystem.VisionConsumer;
 import frc.robot.utils.simulation.MapleSimSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -41,7 +42,7 @@ import java.util.function.Supplier;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily be used in
  * command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, VisionConsumer {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, VisionConsumer, PhotonConsumer {
     private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier m_simNotifier = null;
 

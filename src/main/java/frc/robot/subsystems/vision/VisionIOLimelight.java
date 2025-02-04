@@ -53,7 +53,14 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
-  public void updateInputs(AprilTagIOInputs inputs) {
+  public <T extends VisionIOInputs> void updateInputs(T mInputs) {
+    AprilTagIOInputs inputs;
+    if(mInputs instanceof AprilTagIOInputs) {
+      inputs = (AprilTagIOInputs) mInputs;
+    }
+    else {
+      throw new IllegalArgumentException("Limelight updateInputs must take AprilTagIOInputs, not " + mInputs.getClass().toString());
+    }
   
     // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();

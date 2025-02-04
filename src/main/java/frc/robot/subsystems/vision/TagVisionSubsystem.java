@@ -19,20 +19,20 @@ import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
-public class VisionSubsystem extends SubsystemBase {
+public class TagVisionSubsystem extends SubsystemBase {
 	private final VisionConsumer consumer;
 	private final VisionIO[] io;
-	private final VisionIOInputsAutoLogged[] inputs;
+	private final AprilTagIOInputsAutoLogged[] inputs;
 	private final Alert[] disconnectedAlerts;
 
-	public VisionSubsystem(VisionConsumer consumer, VisionIO... io) {
+	public TagVisionSubsystem(VisionConsumer consumer, VisionIO... io) {
 		this.consumer = consumer;
 		this.io = io;
 
 		// Initialize inputs
-		this.inputs = new VisionIOInputsAutoLogged[io.length];
+		this.inputs = new AprilTagIOInputsAutoLogged[io.length];
 		for (int i = 0; i < inputs.length; i++) {
-			inputs[i] = new VisionIOInputsAutoLogged();
+			inputs[i] = new AprilTagIOInputsAutoLogged();
 		}
 
 		// Initialize disconnected alerts
@@ -43,14 +43,14 @@ public class VisionSubsystem extends SubsystemBase {
 		}
 	}
 
-	public static VisionSubsystem mInstance = null;
+	public static TagVisionSubsystem mInstance = null;
 
-	public static VisionSubsystem getInstance() {
+	public static TagVisionSubsystem getInstance() {
 		if (mInstance == null) {
 
 			if (Robot.isReal()) {
 
-				mInstance = new VisionSubsystem(
+				mInstance = new TagVisionSubsystem(
 						CommandSwerveDrivetrain.getInstance(),
 						new VisionIOLimelight("limelight", CommandSwerveDrivetrain.getInstance().getRotation()));
 			} else {
