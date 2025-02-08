@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.vision.VisionIO.TargetObservation;
 
 public class PhotonVisionSubsystem extends SubsystemBase{
     private final PhotonConsumer consumer;
@@ -33,18 +34,39 @@ public class PhotonVisionSubsystem extends SubsystemBase{
 
     public static PhotonVisionSubsystem mInstance;
 
-    public static PhotonVisionSubsystem getInstance() {
+    public static PhotonVisionSubsystem getInstance(int photonID) {
         if(mInstance == null) {
-            mInstance = new PhotonVisionSubsystem(CommandSwerveDrivetrain.getInstance(), new VisionIOPhoton("photonvision")); //TODO: Change photon name
+            mInstance= new PhotonVisionSubsystem(CommandSwerveDrivetrain.getInstance(), new VisionIOPhoton[]{new VisionIOPhoton("photonvision-1"), new VisionIOPhoton("photonvision-2")});
         }
         return mInstance;
     }
 
+    @Override
+    public void periodic() {
+        for (int i = 0; i < io.length; i++) {
+            io[i].updateInputs(inputs[i]);
+        }
+
+        for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+            disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
+
+            PhotonIOInputsAutoLogged input = inputs[cameraIndex];
+            if(!input.result.hasTargets()) {
+                continue;
+            }
+            //TargetObservation
+
+            consumer.acceptPhoton(null, cameraIndex, null);
+        }
+
+    }
+
     @FunctionalInterface
 	public static interface PhotonConsumer {
-		public void accept(
+		public void acceptPhoton(
 				Pose2d visionRobotPoseMeters,
 				double timestampSeconds,
 				Matrix<N3, N1> visionMeasurementStdDevs);
 	}
+    
 }

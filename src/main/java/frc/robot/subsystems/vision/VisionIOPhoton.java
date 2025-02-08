@@ -1,14 +1,9 @@
 package frc.robot.subsystems.vision;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import com.ctre.phoenix6.Utils;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.LimelightHelpers.PoseEstimate;
 
 public class VisionIOPhoton implements VisionIO{
     private final String name;
@@ -39,6 +34,7 @@ public class VisionIOPhoton implements VisionIO{
         PhotonPipelineResult result = camera.getLatestResult();
         inputs.result = result;
         inputs.bestTarget = result.getBestTarget();
+        //PhotonUtils.
         inputs.latestTargetObservation = new TargetObservation(new Rotation2d(inputs.bestTarget.yaw), new Rotation2d(inputs.bestTarget.pitch));
     }
 }
