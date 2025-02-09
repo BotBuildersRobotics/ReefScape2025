@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.vision.PhotonVisionSubsystem.PhotonConsumer;
-import frc.robot.subsystems.vision.VisionIO.TargetObservation;
 
 public class PhotonVisionSubsystem extends SubsystemBase{
     private final PhotonConsumer consumer;

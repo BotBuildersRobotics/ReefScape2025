@@ -8,7 +8,6 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
 import frc.robot.lib.TalonUtil;
-import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 public class IntakeIOPhoenix6 implements IntakeIO{
     private TalonFX intakeRollersFx;
