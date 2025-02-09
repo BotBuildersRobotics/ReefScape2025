@@ -31,6 +31,9 @@ public interface IntakeIO {
         public double transferMotorDutyCycle = 0.0;
 
         public double transferCurrent = 0;
+
+        public boolean intakeBeamBreakOneTripped = false;
+        public boolean intakeBeamBreakTwoTripped = false;
         
       
     }

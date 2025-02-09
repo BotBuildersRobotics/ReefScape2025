@@ -19,6 +19,8 @@ public interface EndEffectorIO {
         public boolean motorPivotConnected = true;
         public double motorPivotTemperature = 0.0;
         public double motorPivotRPS = 0.0;
+
+        public boolean endEffectorBeamBreakTripped = false;
       
     }
 

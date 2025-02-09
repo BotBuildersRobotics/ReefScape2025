@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -13,6 +14,8 @@ import frc.robot.lib.TalonUtil;
 public class ElevatorIOPhoenix6 implements ElevatorIO{
     private TalonFX elevatorLeft;
     private TalonFX elevatorRight;
+
+    private DigitalInput elevatorBeamBreak;
 
     //this is a TalonFX implementation of our elevator
     //we could in theory write one for REV motors but we love krakens so hello TalonFX.
@@ -31,11 +34,14 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
         elevatorLeft.setControl(new Follower(Ports.ELEVATOR_RIGHT.getDeviceNumber(), true));
 
+        elevatorBeamBreak = new DigitalInput(Ports.ELEVATOR_BEAMBREAK);
+
     }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs){
-       
+       inputs.elevatorBeamBreakTripped = !elevatorBeamBreak.get();
+
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
         inputs.elevatorLeftConnected = BaseStatusSignal.refreshAll(

@@ -35,8 +35,10 @@ public class Ports {
 
 	public static final int PIGEON = 13;
 
-	public static final int INTAKE_BEAMBREAK = 1;
-	public static final int INTAKE_BEAMBREAKTWO = 2;
+	public static final int INTAKE_BEAMBREAK_ONE = 1;
+	public static final int INTAKE_BEAMBREAK_TWO = 2;
+    public static final int END_EFFECTOR_BEAMBREAK = 3;
+    public static final int ELEVATOR_BEAMBREAK = 4;
 
     // Wheel krakens
    /* public static final CanDeviceId TOPRIGHT_ROT = new CanDeviceId(1, "canivore");

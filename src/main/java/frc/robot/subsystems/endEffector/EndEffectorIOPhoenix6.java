@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -12,6 +13,8 @@ import frc.robot.lib.TalonUtil;
 public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     private TalonFX endEffectorRoller;
     private TalonFX endEffectorPivot;
+
+    private DigitalInput endEffectorBeamBreak;
 
     private double dutyCycleRoller = 0;
     
@@ -27,11 +30,14 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
         TalonUtil.applyAndCheckConfiguration(endEffectorPivot, Constants.EndEffectorConstants.EndEffectorFXPivotConfig());
        
+        endEffectorBeamBreak = new DigitalInput(Ports.END_EFFECTOR_BEAMBREAK);
     }
 
     @Override
     public void updateInputs(EndEffectorIOInputs inputs){
        
+        inputs.endEffectorBeamBreakTripped = !endEffectorBeamBreak.get();
+
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
         inputs.motorRollerConnected = BaseStatusSignal.refreshAll(
