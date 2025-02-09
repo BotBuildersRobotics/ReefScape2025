@@ -1,6 +1,7 @@
 package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -12,21 +13,26 @@ import frc.robot.lib.TalonUtil;
 
 public class PivotIOPhoenix6 implements PivotIO{
    //left and right is based off the forward direction
-    private TalonFX pivotMotor;
+    private TalonFX pivotLeftMotor;
+    private TalonFX pivotRightMotor;
 
-    
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public PivotIOPhoenix6() {
 
         //use our helpers to write config over the CAN Bus
-        pivotMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT);
-       
+        pivotLeftMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_LEFT);
+        pivotRightMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_RIGHT);
+        
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
-        TalonUtil.applyAndCheckConfiguration(pivotMotor, Constants.PivotConstants.PivotFXConfig());
+        TalonUtil.applyAndCheckConfiguration(pivotLeftMotor, Constants.PivotConstants.PivotFXConfig());
+        TalonUtil.applyAndCheckConfiguration(pivotRightMotor, Constants.PivotConstants.PivotFXConfig());
        
        // pivotMotor.optimizeBusUtilization();
+
+       //Set up for pivot leader/follower
+       pivotLeftMotor.setControl(new Follower(Ports.PIVOT_RIGHT.getDeviceNumber(), true));
        
     }
 
@@ -35,31 +41,40 @@ public class PivotIOPhoenix6 implements PivotIO{
        
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
-        inputs.pivotConnected = BaseStatusSignal.refreshAll(
-                        pivotMotor.getStatorCurrent(),
-                        pivotMotor.getDeviceTemp(),
-                        pivotMotor.getPosition(),
-                        pivotMotor.getVelocity())
+        inputs.pivotLeftConnected = BaseStatusSignal.refreshAll(
+                        pivotLeftMotor.getStatorCurrent(),
+                        pivotLeftMotor.getDeviceTemp(),
+                        pivotLeftMotor.getPosition(),
+                        pivotLeftMotor.getVelocity())
                         .isOK();
 
         //the motor knows we want info from it, so the following requests should be cool
-        inputs.pivotTemperature = pivotMotor.getDeviceTemp().getValueAsDouble();
-        inputs.pivotRPS = pivotMotor.getRotorVelocity().getValueAsDouble();
-        inputs.pivotCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
-        inputs.pivotMotorPos = pivotMotor.getPosition().getValueAsDouble();
+        inputs.pivotLeftTemperature = pivotLeftMotor.getDeviceTemp().getValueAsDouble();
+        inputs.pivotLeftRPS = pivotLeftMotor.getRotorVelocity().getValueAsDouble();
+        inputs.pivotLeftCurrent = pivotLeftMotor.getStatorCurrent().getValueAsDouble();
+        inputs.pivotLeftMotorPos = pivotLeftMotor.getPosition().getValueAsDouble();
+
+        //repeat for right motor
+        inputs.pivotLeftConnected = BaseStatusSignal.refreshAll(
+                        pivotRightMotor.getStatorCurrent(),
+                        pivotRightMotor.getDeviceTemp(),
+                        pivotRightMotor.getPosition(),
+                        pivotRightMotor.getVelocity())
+                        .isOK();
+
+        inputs.pivotRightTemperature = pivotRightMotor.getDeviceTemp().getValueAsDouble();
+        inputs.pivotRightRPS = pivotRightMotor.getRotorVelocity().getValueAsDouble();
+        inputs.pivotRightCurrent = pivotRightMotor.getStatorCurrent().getValueAsDouble();
+        inputs.pivotRightMotorPos = pivotRightMotor.getPosition().getValueAsDouble();
+
 
         //360 degrees of pivot movement would be roughly 50 motor rotations
         //90 degrees of pivot movement is around 12.5 rotations or 0.13 rotations per degree
-
-       
         
-        double desiredRotations = inputs.pivotPosition * 0.13;
-        pivotMotor.setControl(new MotionMagicVoltage(desiredRotations));
-       
+        double desiredRotations = inputs.pivotLeftPosition * 0.13;
+        pivotLeftMotor.setControl(new MotionMagicVoltage(desiredRotations));
         
-    }
-
-   
+    }   
 
    
 }

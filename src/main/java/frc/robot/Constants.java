@@ -109,7 +109,7 @@ public final class Constants {
   public static final class EndEffectorConstants {
 
     // copying more constans
-    public static TalonFXConfiguration EndEffectorFXConfig() {
+    public static TalonFXConfiguration EndEffectorFXRollerConfig() {
       TalonFXConfiguration config = new TalonFXConfiguration();
 
       config.CurrentLimits.SupplyCurrentLimit = 20.0;
@@ -120,6 +120,19 @@ public final class Constants {
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       return config;
+    }
+
+    public static TalonFXConfiguration EndEffectorFXPivotConfig() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
+  
+        config.CurrentLimits.SupplyCurrentLimit = 20.0;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+  
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = 80;
+  
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        return config;
     }
   }
 
