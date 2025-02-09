@@ -313,6 +313,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public Supplier<Pose2d> getPose() {
+        return () -> this.getState().Pose;
+    }
+
     public Supplier<Rotation2d> getRotation(){
         return () -> this.getState().Pose.getRotation();
     }
@@ -332,6 +336,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void acceptPhoton(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
-        //TODO: Make this functional
+        SmartDashboard.putNumber("AcceptPhoton", timestampSeconds);
+        this.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
     }
 }

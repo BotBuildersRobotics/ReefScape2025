@@ -23,11 +23,13 @@ public interface VisionIO {
   public static class PhotonIOInputs extends VisionIOInputs{
     public PhotonPipelineResult result;
     public PhotonTrackedTarget bestTarget;
+    public State robotState = new State(0, 0); //TODO: Figure these values out
+    public PhotonTargetObservation[] targetObservations = new PhotonTargetObservation[0];
+    public double meanDistance;
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
   public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
-
   /** Represents a robot pose sample used for pose estimation. */
   public static record PoseObservation(
       double timestamp,
@@ -39,9 +41,15 @@ public interface VisionIO {
 
   public static enum PoseObservationType {
     MEGATAG_1,
-    MEGATAG_2,
-    PHOTONVISION
+    MEGATAG_2
   }
+
+  public static record State(
+      double cameraHeight,
+      double cameraPitch
+  ) {}
+
+  public static record PhotonTargetObservation(PhotonTrackedTarget target, double distanceToTarget) {}
 
   public default <T extends VisionIOInputs> void updateInputs(T inputs) {}
 }

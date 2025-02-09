@@ -1,6 +1,9 @@
 package frc.robot.subsystems.vision;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -8,6 +11,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.vision.PhotonVisionSubsystem.PhotonConsumer;
 import frc.robot.subsystems.vision.VisionIO.TargetObservation;
 
 public class PhotonVisionSubsystem extends SubsystemBase{
@@ -54,19 +58,35 @@ public class PhotonVisionSubsystem extends SubsystemBase{
             if(!input.result.hasTargets()) {
                 continue;
             }
-            //TargetObservation
 
-            consumer.acceptPhoton(null, cameraIndex, null);
+            // Standard deviation
+            // Maybe unecessary if we're just using the best target, consider switching to just the distance(stdDev of any single value = 0)
+            // But I'm copying the tag subsystem for now
+        
+            double devs = 0;
+            for(int i = 0; i < input.targetObservations.length; i++) {
+                devs += Math.pow(input.targetObservations[i].distanceToTarget() - input.meanDistance, 2);
+            }
+            double stdDevFactor = Math.sqrt(devs / input.targetObservations.length);
+            double linearStdDev = stdDevFactor * 1; // Meant to replicate the constansts, figure it out once more
+            double angularStdDev = stdDevFactor * 1;
+
+            double distanceThreshold = Double.MAX_VALUE; //TODO: Figure out a good threshold
+            if(input.meanDistance < distanceThreshold) {
+                consumer.acceptPhoton(consumer.getPose().get(), System.currentTimeMillis(), VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+            }
+
         }
 
     }
 
-    @FunctionalInterface
 	public static interface PhotonConsumer {
 		public void acceptPhoton(
 				Pose2d visionRobotPoseMeters,
 				double timestampSeconds,
 				Matrix<N3, N1> visionMeasurementStdDevs);
+
+        public Supplier<Pose2d> getPose();
 	}
     
 }
