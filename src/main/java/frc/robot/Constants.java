@@ -13,6 +13,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
@@ -288,5 +290,79 @@ public final class Constants {
     public static final double AUTO_LINEUP_TRANSLATION_D = 0;
     public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(3, 4);
   }
+
+  public static class SwerveConstants {
+
+        public static final double DRIVE_KP = 0.17105;
+        public static final double DRIVE_KI = 0.0;
+        public static final double DRIVE_KD = 0.0;
+        public static final double DRIVE_KS = 0.045286;
+        public static final double DRIVE_KV = 0.1141075;
+        public static final double DRIVE_KA = 0.005900075;
+        
+        public static final double TURNING_KP = 75.0;
+        public static final double TURNING_KI = 0.0;
+        public static final double TURNING_KD = 0.0;
+        public static final double TURNING_KS = 0.0;
+        public static final double TURNING_KV = 0.0;
+        public static final double TURNING_KA = 0.0;
+
+        public static final double ROTATION_KP = 0.0;
+        public static final double ROTATION_KI = 0.0;
+        public static final double ROTATION_KD = 0.0;
+        public static final double ROTATION_KS = 0.0;
+        public static final double ROTATION_KV = 0.0;
+        public static final double ROTATION_KA = 0.0;
+
+        public static final double TRANSLATION_PP_KP = 4.0;
+        public static final double TRANSLATION_PP_KI = 0.0;
+        public static final double TRANSLATION_PP_KD = 0.0;
+
+        public static final double ROTATION_PP_KP = 2.5;
+        public static final double ROTATION_PP_KI = 0.0;
+        public static final double ROTATION_PP_KD = 0.0;
+
+        public static final double CLOSE_TRANSLATION_PP_KP = 3.0;
+        public static final double CLOSE_TRANSLATION_PP_KI = 0.0;
+        public static final double CLOSE_TRANSLATION_PP_KD = 0.0;
+
+        public static final double CLOSE_ROTATION_PP_KP = 2.0;
+        public static final double CLOSE_ROTATION_PP_KI = 0.0;
+        public static final double CLOSE_ROTATION_PP_KD = 0.0;
+
+        public static final double MAX_LINEAR_VELOCITY = 2.0;
+        public static final double MAX_LINEAR_ACCELERATION = 1.5;
+        public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION = 4 * Math.PI;
+
+    }
+
+    public static class AutoDriveConstants {
+
+        public static final Pose2d[] BLUE_REEF_POSES = {
+            new Pose2d(2.823, 4.000, new Rotation2d(0 * Math.PI / 180.0)),
+            new Pose2d(3.719, 2.614, new Rotation2d(60 * Math.PI / 180.0)),
+            new Pose2d(5.430, 2.640, new Rotation2d(120 * Math.PI / 180.0)),
+            new Pose2d(6.131, 4.000, new Rotation2d(180 * Math.PI / 180.0)),
+            new Pose2d(5.384, 5.406, new Rotation2d(-120 * Math.PI / 180.0)),
+            new Pose2d(3.689, 5.515, new Rotation2d(-60 * Math.PI / 180.0))
+        };
+
+        public static final Pose2d[] RED_REEF_POSES = {
+            new Pose2d(2.823 + 8.553921, 4.000, new Rotation2d(0 * Math.PI / 180.0)),
+            new Pose2d(3.719 + 8.553921, 2.614, new Rotation2d(60 * Math.PI / 180.0)),
+            new Pose2d(5.430 + 8.553921, 2.640, new Rotation2d(120 * Math.PI / 180.0)),
+            new Pose2d(6.000 + 8.553921, 4.000, new Rotation2d(180 * Math.PI / 180.0)),
+            new Pose2d(5.384 + 8.553921, 5.406, new Rotation2d(-120 * Math.PI / 180.0)),
+            new Pose2d(3.689 + 8.553921, 5.515, new Rotation2d(-60 * Math.PI / 180.0))
+        };
+
+        public static final double[][] ADDITIONS = {
+            {0.342, 0}, // LEFT ADDITION
+            {0.342, -0.348}  // RIGHT ADDITION
+        };
+
+    }
+
 
 }

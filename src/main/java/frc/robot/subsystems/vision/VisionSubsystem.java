@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
@@ -71,6 +72,36 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Rotation2d getTargetX(int cameraIndex) {
     return inputs[cameraIndex].latestTargetObservation.tx();
+  }
+
+  public RawFiducial getTagData(int searchTagId){
+
+    for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+      
+      for (var tagId : inputs[cameraIndex].tagIds) {
+
+          if(tagId == searchTagId){
+            //found the tag now find the observation and raw fiducial
+
+            for (var rawPoseEstimate : inputs[cameraIndex].poseObservations) {
+
+              for (var rawFid : rawPoseEstimate.rawFiducials()) {
+
+                if(rawFid.id == searchTagId){
+                  //found our tag
+                  return rawFid;
+                }
+              }
+
+            }
+
+          }
+
+      }
+
+    }
+
+    return new RawFiducial(0, 0, 0, 0, 0, 0, 0);
   }
 
   @Override
