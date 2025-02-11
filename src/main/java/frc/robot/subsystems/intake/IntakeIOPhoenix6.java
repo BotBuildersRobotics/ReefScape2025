@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -13,6 +14,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 public class IntakeIOPhoenix6 implements IntakeIO{
     private TalonFX intakeRollersFx;
     private TalonFX transferRollersFx;
+
+    private DigitalInput intakeBeamBreakOne;
+    private DigitalInput intakeBeamBreakTwo;
 
     private double intakeDutyCycle = 0;
     private double transferDutyCycle = 0;
@@ -31,12 +35,17 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
         TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeConstants.IntakeFXConfig());
 
+        intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
+        intakeBeamBreakTwo = new DigitalInput(Ports.INTAKE_BEAMBREAK_TWO);
        
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs){
        
+        inputs.intakeBeamBreakOneTripped = !intakeBeamBreakOne.get();
+        inputs.intakeBeamBreakTwoTripped = !intakeBeamBreakTwo.get();
+
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
         inputs.intakeConnected = BaseStatusSignal.refreshAll(

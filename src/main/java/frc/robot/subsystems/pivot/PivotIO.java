@@ -7,18 +7,26 @@ public interface PivotIO {
     @AutoLog
     class PivotIOInputs {
         //this is an output, it will be set to either true or false
-        public boolean pivotConnected = true;
+        public boolean pivotLeftConnected = true;
         //we want to log the temp of the motor (output)
-        public double pivotTemperature = 0.0;
+        public double pivotLeftTemperature = 0.0;
         // we want to log the revolutions per second of the motor (output)
-        public double pivotRPS = 0.0;
+        public double pivotLeftRPS = 0.0;
         
        
-        public double pivotCurrent = 0.0;
+        public double pivotLeftCurrent = 0.0;
 
-        public double pivotPosition = 0.0;
+        public double pivotLeftPosition = 0.0;
         
-        public double pivotMotorPos = 0.0;
+        public double pivotLeftMotorPos = 0.0;
+
+       //repeat for right motor
+        public boolean pivotRightConnected = true;
+        public double pivotRightTemperature = 0.0;
+        public double pivotRightRPS = 0.0;
+        public double pivotRightCurrent = 0.0;
+        public double pivotRightPosition = 0.0;
+        public double pivotRightMotorPos = 0.0;
     }
 
     
