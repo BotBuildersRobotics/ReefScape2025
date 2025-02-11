@@ -1,19 +1,43 @@
 {
-    "version": "2025.0",
-    "command": {
-      "type": "sequential",
-      "data": {
-        "commands": [
-          {
-            "type": "path",
-            "data": {
-              "pathName": "SimplePath"
-            }
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SimplePath"
           }
-        ]
-      }
-    },
-    "resetOdom": true,
-    "folder": null,
-    "choreoAuto": false
-  }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HumanPlayerIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SimplePath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignToReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4Score"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}
