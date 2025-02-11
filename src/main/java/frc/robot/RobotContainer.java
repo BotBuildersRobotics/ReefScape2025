@@ -11,9 +11,13 @@ import java.util.List;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +39,7 @@ import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
@@ -174,8 +179,8 @@ public class RobotContainer {
 		driverControl.pov(180)
 				.whileTrue(drivetrain.applyRequest(
 						() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));*/
+*/
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 		//simple intake controls
 		/*driverControl.rightTrigger()
@@ -185,6 +190,8 @@ public class RobotContainer {
 		//simplePivotCommands.
 		//driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
 
+
+		
 		//Test way to show how to set reef target and get the pose
 
 		final ReefTargeting target = new ReefTargeting();
@@ -201,6 +208,8 @@ public class RobotContainer {
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
+
+		
 	}
 
 	/**
@@ -210,18 +219,7 @@ public class RobotContainer {
 	 * 
 	 */
 	public Command getAutonomousCommand() {
-		// An example command will be run in autonomous
-
-		return new SequentialCommandGroup(
-
-				new PathFindToPose(drivetrain, () -> {
-					return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));
-				}, 100, 0),
-				// new AutoAlignment(drivetrain, () -> new Pose2d()),
-				// drivetrain.applyRequest(() -> lateralMovement.withVelocityX( 25))
-				// ,
-				new WaitCommand(1));
-		// return autoChooser.getSelected();
-		// return Commands.print("Auto command selected");
+		 return autoChooser.getSelected();
+		
 	}
 }

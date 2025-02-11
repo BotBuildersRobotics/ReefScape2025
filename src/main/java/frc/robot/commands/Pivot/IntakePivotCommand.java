@@ -18,4 +18,5 @@ public class IntakePivotCommand  extends Command
   public void initialize() {
     pivotSubSystem.setWantedState(PivotSystemState.INTAKE);
   }
+
 }

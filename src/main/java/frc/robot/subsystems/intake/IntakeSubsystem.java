@@ -64,6 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSystemState getCurrentState()
     {
+        
         return currentState;
     }
 

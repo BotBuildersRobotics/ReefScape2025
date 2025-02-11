@@ -183,7 +183,7 @@ public final class Constants {
       config.Slot0.kS = 0.3;
       config.Slot0.kV = 0.12;
 
-      
+     
 
 
       config.MotionMagic = new MotionMagicConfigs();
