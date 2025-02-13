@@ -11,6 +11,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +30,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
+import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.utils.JoystickInterruptible;
 
@@ -189,6 +192,21 @@ public class RobotContainer {
         driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
+
+		Trigger lowTimeNotify = new Trigger(() -> {
+			boolean teleopEnabled = DriverStation.isTeleopEnabled() && DriverStation.isFMSAttached();
+			double matchTime = DriverStation.getMatchTime();
+			double ts = Timer.getFPGATimestamp();
+			return teleopEnabled && (matchTime >= 15 && matchTime <= 35) && ((ts - Math.floor(ts)) > 0.7);
+		});
+		lowTimeNotify.whileTrue(
+			new Command() {
+				@Override
+				public void initialize() {
+					LightsSubsystem.getInstance().lowTimeLed();
+				}
+			}
+		);
 
 	}
 
