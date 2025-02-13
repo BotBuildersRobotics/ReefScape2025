@@ -15,6 +15,7 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoAlignPID extends Command {
 
   private final CommandSwerveDrivetrain swerveDrive;
+  @SuppressWarnings("unused")
   private final VisionSubsystem visionSubsystem;
 
   private Pose2d Pose;

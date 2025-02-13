@@ -5,9 +5,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.util.List;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,12 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Intake.IntakeIdleCommand;
-import frc.robot.commands.Intake.IntakeOnCommand;
 import frc.robot.commands.Pivot.IntakePivotCommand;
 import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
@@ -34,13 +28,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.vision.apriltags.AprilTagVision;
-import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
-import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
-import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 import frc.robot.utils.JoystickInterruptible;
 
 /**
@@ -53,12 +41,13 @@ import frc.robot.utils.JoystickInterruptible;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 
+ @SuppressWarnings("unused")
 public class RobotContainer {
 
 	// get an instance of our subsystem, either sim or pheonix.
 	//private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
-	//private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
 
 	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
 
@@ -183,7 +172,7 @@ public class RobotContainer {
 				.onFalse(new IntakeIdleCommand(intakeSubsystem));*/
 
 		//simplePivotCommands.
-		//driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
+		driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
 
 		//Test way to show how to set reef target and get the pose
 

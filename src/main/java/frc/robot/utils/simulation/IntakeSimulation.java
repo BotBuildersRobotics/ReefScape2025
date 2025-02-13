@@ -48,6 +48,7 @@ public abstract class IntakeSimulation extends BodyFixture  {
 
     protected abstract boolean isIntakeRunning();
 
+    @SuppressWarnings("rawtypes")
     public final class GamePieceContactListener implements ContactListener<Body> {
         @Override
         public void begin(ContactCollisionData collision, Contact contact) {

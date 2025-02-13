@@ -2,6 +2,8 @@ package frc.robot.utils;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.RobotController;
+
 public class MapleTimeUtils {
     public static void delay(double seconds) {
         try {
@@ -26,6 +28,6 @@ public class MapleTimeUtils {
     }
 
     public static double getRealTimeSeconds() {
-        return Logger.getRealTimestamp() / 1_000_000.0;
+        return RobotController.getFPGATime() / 1_000_000.0;
     }
 }
