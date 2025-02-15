@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean checkElevatorPosition(ElevatorPosition target) {
-        return target.isNear();
+        return target.isNear(inputs.elevatorLeftRPS) && target.isNear(inputs.elevatorRightPosition);
     }
 
     public enum ElevatorPosition {
@@ -89,16 +89,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         public double lowerBound;
         public double upperBound;
-        private double target;
         ElevatorPosition(double lower, double upper) {
             lowerBound = lower;
             upperBound = upper;
-            target = (lower + upper) / 2;
         }
 
-        private boolean isNear() { //* This function is needed because java doesnt allow you to chain comparison statments. For reference, see https://www.geeksforgeeks.org/chaining-comparison-operators-python/
-            boolean over = this.lowerBound < target;
-            boolean under = target < this.upperBound;
+        private boolean isNear(double position) { //* This function is needed because java doesnt allow you to chain comparison statments. For reference, see https://www.geeksforgeeks.org/chaining-comparison-operators-python/
+            boolean over = this.lowerBound < position;
+            boolean under = position < this.upperBound;
             return over && under;
         }
         
