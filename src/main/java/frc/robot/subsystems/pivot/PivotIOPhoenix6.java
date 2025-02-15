@@ -4,6 +4,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -29,8 +31,10 @@ public class PivotIOPhoenix6 implements PivotIO{
        
        // pivotMotor.optimizeBusUtilization();
 
+       
+
        //Set up for pivot leader/follower
-       pivotLeftMotor.setControl(new Follower(Ports.PIVOT_RIGHT.getDeviceNumber(), true));
+       pivotLeftMotor.setControl(new Follower(Ports.PIVOT_RIGHT.getDeviceNumber(), false));
        
     }
 
@@ -53,7 +57,7 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotLeftMotorPos = pivotLeftMotor.getPosition().getValueAsDouble();
 
         //repeat for right motor
-        inputs.pivotLeftConnected = BaseStatusSignal.refreshAll(
+        inputs.pivotRightConnected = BaseStatusSignal.refreshAll(
                         pivotRightMotor.getStatorCurrent(),
                         pivotRightMotor.getDeviceTemp(),
                         pivotRightMotor.getPosition(),
@@ -66,11 +70,14 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotRightMotorPos = pivotRightMotor.getPosition().getValueAsDouble();
 
 
+        //2.1 * 125 = 262
+
         //360 degrees of pivot movement would be roughly 50 motor rotations
         //90 degrees of pivot movement is around 12.5 rotations or 0.13 rotations per degree
         
-        double desiredRotations = inputs.pivotLeftPosition * 0.13;
-        pivotLeftMotor.setControl(new MotionMagicVoltage(desiredRotations));
+        double desiredRotations = inputs.pivotPosition * 0.71;
+        SmartDashboard.putNumber("DesiredRotations", desiredRotations);
+        pivotRightMotor.setControl(new MotionMagicVoltage(desiredRotations));
         
     }   
 

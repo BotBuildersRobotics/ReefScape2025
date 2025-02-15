@@ -9,28 +9,25 @@ public class Ports {
 
     //Climb Subsystem Motors
     public static final CanDeviceId CLIMB_ONE = new CanDeviceId(15, "canivore");
-    public static final CanDeviceId CLIMB_TWO = new CanDeviceId(16, "canivore");
+    
 
     //Elevator Subsystem Motors
-    public static final CanDeviceId ELEVATOR_LEFT = new CanDeviceId(23, "canivore");
-    public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(24, "canivore");
+    public static final CanDeviceId ELEVATOR_LEFT = new CanDeviceId(20, "canivore");
+    public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(14, "canivore");
 
     //End Effector Subsystem Motors
     public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(34, "canivore");
     public static final CanDeviceId END_EFFECTOR_PIVOT = new CanDeviceId(35, "canivore");
 
     //Intake Subsystem Motors
-    public static final CanDeviceId INTAKE = new CanDeviceId(19, "canivore");
-    public static final CanDeviceId TRANSFER = new CanDeviceId(20, "canivore");
+    public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
+    public static final CanDeviceId TRANSFER = new CanDeviceId(16, "canivore");
     
     //Pivot Subsystem Motors
     public static final CanDeviceId PIVOT_LEFT = new CanDeviceId(17,"canivore");
-    public static final CanDeviceId PIVOT_RIGHT = new CanDeviceId(18, "canivore");
+    public static final CanDeviceId PIVOT_RIGHT = new CanDeviceId(22, "canivore");
    
-    //Transfer Subsytem Motors
-    public static final CanDeviceId TRANSFER_LEFT = new CanDeviceId(21, "canivore");
-    public static final CanDeviceId TRANSFER_RIGHT = new CanDeviceId(22, "canivore");
-
+  
     public static final CanDeviceId LEDS = new CanDeviceId(25, "canivore");
 
 	public static final int PIGEON = 13;

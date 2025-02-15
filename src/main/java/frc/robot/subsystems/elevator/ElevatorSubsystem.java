@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
@@ -25,7 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private ElevatorIO io;
     //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
-    private ElevatorIOInputs inputs = new ElevatorIOInputs();
+    private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
    
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -40,10 +42,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         //this actually writes to the log file.
         io.updateInputs(inputs);
 
+        //48 tooth pulley = 75mm diameter
+        //1 rotation = 75mm lift
+        //75 * 13 = 975mm of lift
+
+        Logger.processInputs("Elevator", inputs);
     }
 
     public void setElevatorPosition(double position){
 
-        io.setElevatorPosition(position);
+        inputs.elevatorPosition = position;
     }
 }

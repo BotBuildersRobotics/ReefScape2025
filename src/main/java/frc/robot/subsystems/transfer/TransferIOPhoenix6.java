@@ -21,12 +21,12 @@ public class TransferIOPhoenix6 implements TransferIO{
     public TransferIOPhoenix6() {
 
         //use our helpers to write config over the CAN Bus
-        transferPulleyLeft = TalonFXFactory.createDefaultTalon(Ports.TRANSFER_LEFT);
-        transferPulleyRight = TalonFXFactory.createDefaultTalon(Ports.TRANSFER_RIGHT);
+      //  transferPulleyLeft = TalonFXFactory.createDefaultTalon(Ports.TRANSFER_LEFT);
+       // transferPulleyRight = TalonFXFactory.createDefaultTalon(Ports.TRANSFER_RIGHT);
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
-        TalonUtil.applyAndCheckConfiguration(transferPulleyLeft, Constants.TransferConstants.TransferFXConfig());
-        TalonUtil.applyAndCheckConfiguration(transferPulleyRight, Constants.TransferConstants.TransferFXConfig());
+     //   TalonUtil.applyAndCheckConfiguration(transferPulleyLeft, Constants.TransferConstants.TransferFXConfig());
+      //  TalonUtil.applyAndCheckConfiguration(transferPulleyRight, Constants.TransferConstants.TransferFXConfig());
        
     }
 
@@ -35,7 +35,7 @@ public class TransferIOPhoenix6 implements TransferIO{
        
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
-        inputs.transferPulleyLeftConnected = BaseStatusSignal.refreshAll(
+      /*  inputs.transferPulleyLeftConnected = BaseStatusSignal.refreshAll(
                         
                         transferPulleyLeft.getDeviceTemp(),
                         transferPulleyLeft.getVelocity())
@@ -56,7 +56,7 @@ public class TransferIOPhoenix6 implements TransferIO{
 
         inputs.transferPulleyRightTemperature = transferPulleyRight.getDeviceTemp().getValueAsDouble();
         inputs.transferPulleyRightRPS = transferPulleyRight.getVelocity().getValueAsDouble();
-        inputs.transferPulleyRightDutyCycle = dutyCycleRight;
+        inputs.transferPulleyRightDutyCycle = dutyCycleRight;*/
 
     }
 
@@ -65,12 +65,12 @@ public class TransferIOPhoenix6 implements TransferIO{
         //store this for future logging.
         this.dutyCycleLeft = percent;
         //simple way to set the motor value.
-        transferPulleyLeft.setControl(new DutyCycleOut(dutyCycleLeft));
+      //  transferPulleyLeft.setControl(new DutyCycleOut(dutyCycleLeft));
     }
 
     //repeat for other motor
     public void setTransferPulleyRightDutyCycle(double percent) {
         this.dutyCycleRight = percent;
-        transferPulleyRight.setControl(new DutyCycleOut(dutyCycleRight));
+       // transferPulleyRight.setControl(new DutyCycleOut(dutyCycleRight));
     }
 }

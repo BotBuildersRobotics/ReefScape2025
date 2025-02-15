@@ -35,8 +35,8 @@ public class PivotSubsystem extends SubsystemBase {
     //this allows us to model gravity feedforward with a cosine.
 
     public enum PivotSystemState{
-        STOWED(90),
-        INTAKE(0),
+        STOWED(0),
+        INTAKE(120),
         HUMAN_PLAYER(45),
         RAISED(60);
 

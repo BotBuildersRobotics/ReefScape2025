@@ -30,6 +30,8 @@ public interface ElevatorIO {
         public double elevatorRightPosition = 0.0;
 
         public boolean elevatorBeamBreakTripped = false;
+
+        public double elevatorPosition = 0.0;
       
     }
 

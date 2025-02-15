@@ -18,6 +18,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Elevator.ElevatorHomeCommand;
+import frc.robot.commands.Elevator.ElevatorL1Command;
+import frc.robot.commands.Intake.IntakeIdleCommand;
+import frc.robot.commands.Intake.IntakeOnCommand;
 import frc.robot.commands.Pivot.IntakePivotCommand;
 import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
@@ -28,6 +32,8 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.utils.JoystickInterruptible;
 
@@ -45,9 +51,11 @@ import frc.robot.utils.JoystickInterruptible;
 public class RobotContainer {
 
 	// get an instance of our subsystem, either sim or pheonix.
-	//private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+	private IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
 
 	private PivotSubsystem pivotSubsystem = PivotSubsystem.getInstance();
+
+	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
 	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
 
@@ -142,14 +150,14 @@ public class RobotContainer {
 		// setup our control scheme here.
 		// Note that X is defined as forward according to WPILib convention,
 		// and Y is defined as to the left according to WPILib convention.
-		drivetrain.setDefaultCommand(
+		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverControl.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverControl.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverControl.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
-        );
+        );*/
 
 		/*driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
 		driverControl.b()
@@ -172,8 +180,14 @@ public class RobotContainer {
 				.onFalse(new IntakeIdleCommand(intakeSubsystem));*/
 
 		//simplePivotCommands.
-		driverControl.leftTrigger().onTrue(new StowPivotCommand(pivotSubsystem)).onFalse(new IntakePivotCommand(pivotSubsystem));
+		//driverControl.leftTrigger().onTrue(new IntakePivotCommand(pivotSubsystem)).onFalse(new StowPivotCommand(pivotSubsystem));
 
+		driverControl.y().onTrue(new ElevatorL1Command(elevatorSubsystem));
+		driverControl.x().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
+		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
+		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
+
+		driverControl.rightTrigger().onTrue(new IntakeOnCommand(intakeSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
 		//Test way to show how to set reef target and get the pose
 
 		final ReefTargeting target = new ReefTargeting();
@@ -182,11 +196,11 @@ public class RobotContainer {
 		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
 				drivetrain,
 				() -> target.getTargetPose().plus(new Transform2d(0,-1, Rotation2d.k180deg)));
-		driverControl.y().onTrue(exampleAutoAlignment);
+		//driverControl.y().onTrue(exampleAutoAlignment);
 
 
-		driverControl.leftBumper().whileTrue(leftCoralAutoDrive);
-        driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
+		//driverControl.leftBumper().whileTrue(leftCoralAutoDrive);
+        //driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

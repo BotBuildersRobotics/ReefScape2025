@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -146,8 +147,25 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimit = 80;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       return config;
     }
+  }
+  public static final class IntakeTransferConstants {
+
+      public static TalonFXConfiguration IntakeFXConfig() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+  
+        config.CurrentLimits.SupplyCurrentLimit = 20.0;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+  
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = 80;
+  
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        return config;
+      }
   }
 
   public static final class PivotConstants {
@@ -196,6 +214,7 @@ public final class Constants {
 
       //config.Feedback.SensorToMechanismRatio = 51;
 
+      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
       return config;
     }
