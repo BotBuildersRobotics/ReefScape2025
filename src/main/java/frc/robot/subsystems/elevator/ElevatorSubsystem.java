@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -75,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
+    @AutoLogOutput
     public boolean checkElevatorPosition(ElevatorPosition target) {
         return target.isNear(inputs.elevatorLeftRPS) && target.isNear(inputs.elevatorRightPosition);
     }
