@@ -18,4 +18,10 @@ public class IntakePivotCommand  extends Command
   public void initialize() {
     pivotSubSystem.setWantedState(PivotSystemState.INTAKE);
   }
+
+  @Override
+  public boolean isFinished(){
+    return pivotSubSystem.isAtLocation(PivotSystemState.INTAKE);
+  }
+
 }
