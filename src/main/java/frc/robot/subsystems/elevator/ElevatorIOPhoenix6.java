@@ -73,8 +73,9 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
         inputs.elevatorRightCurrent = elevatorRight.getSupplyCurrent().getValueAsDouble();
 
         double desiredRotations = inputs.elevatorPosition;
+
         SmartDashboard.putNumber("DesiredRotations", desiredRotations);
-        elevatorRight.setControl(new MotionMagicVoltage(desiredRotations));
+        elevatorRight.setControl(new MotionMagicVoltage(desiredRotations).withSlot(0));
        
     }
 
