@@ -76,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public enum ElevatorPosition {
+        //! TODO Change positions
         STOWED(-20, 20),
         L1(80, 120),
         L2(180, 220),
