@@ -31,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
 		return mInstance;
 	}
 
-    private IntakeIO io;
+    IntakeIO io;
     //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
    
@@ -90,6 +90,9 @@ public class IntakeSubsystem extends SubsystemBase {
         io.setIntakeDutyCycle(currentState.intake_voltage);
         io.setTransferDutyCycle(currentState.transfer_voltage);
        
+    }
 
+    public boolean isBeamBreakOneTripped() {
+        return io.getBeamBreakOneState();
     }
 }

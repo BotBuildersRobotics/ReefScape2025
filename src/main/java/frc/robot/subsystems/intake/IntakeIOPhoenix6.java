@@ -96,4 +96,9 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         transferRollersFx.setControl(new VoltageOut(voltage));
     }
     
+    @Override
+    public boolean getBeamBreakOneState() {
+        return !intakeBeamBreakOne.get();
+    }
+
 }
