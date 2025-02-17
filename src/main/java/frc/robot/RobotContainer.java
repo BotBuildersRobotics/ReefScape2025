@@ -40,6 +40,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.vision.TagVisionSubsystem;
 import frc.robot.utils.JoystickInterruptible;
 
 /**
@@ -62,7 +63,7 @@ public class RobotContainer {
 
 	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
-	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
+	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
 
 
 	//public final AprilTagVision aprilTagVision;
