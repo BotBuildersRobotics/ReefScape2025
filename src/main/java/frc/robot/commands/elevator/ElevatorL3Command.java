@@ -8,11 +8,11 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorPosition;
 
 
 
-public class ElevatorL1Command extends Command
+public class ElevatorL3Command extends Command
 {
   private final ElevatorSubsystem elevatorSubsystem;
 
-  public ElevatorL1Command(ElevatorSubsystem subsystem) {
+  public ElevatorL3Command(ElevatorSubsystem subsystem) {
     elevatorSubsystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -20,6 +20,6 @@ public class ElevatorL1Command extends Command
 
   @Override
   public void initialize() {
-    elevatorSubsystem.setElevatorPosition(ElevatorPosition.L1);
+    elevatorSubsystem.setElevatorPosition(ElevatorPosition.L3);
   }
 }

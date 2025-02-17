@@ -1,10 +1,10 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
 
 
@@ -52,5 +52,55 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setElevatorPosition(double position){
 
         inputs.elevatorPosition = position;
+    }
+
+    public void setElevatorPosition(ElevatorPosition position) {
+        switch (position) {
+            case STOWED:
+                inputs.elevatorPosition = 0;
+                break;
+            case L1:
+                inputs.elevatorPosition = 100;
+                break;
+            case L2:
+                inputs.elevatorPosition = 200;
+                break;
+            case L3:
+                inputs.elevatorPosition = 300;
+                break;
+            case L4:
+                inputs.elevatorPosition = 400;
+                break;
+            default:
+                break;
+        }
+    }
+
+    @AutoLogOutput
+    public boolean checkElevatorPosition(ElevatorPosition target) {
+        return target.isNear(inputs.elevatorLeftRPS) && target.isNear(inputs.elevatorRightPosition);
+    }
+
+    public enum ElevatorPosition {
+        //! TODO Change positions
+        STOWED(-20, 20),
+        L1(80, 120),
+        L2(180, 220),
+        L3(280, 320),
+        L4(380, 420);
+
+        public double lowerBound;
+        public double upperBound;
+        ElevatorPosition(double lower, double upper) {
+            lowerBound = lower;
+            upperBound = upper;
+        }
+
+        private boolean isNear(double position) { //* This function is needed because java doesnt allow you to chain comparison statments. For reference, see https://www.geeksforgeeks.org/chaining-comparison-operators-python/
+            boolean over = this.lowerBound < position;
+            boolean under = position < this.upperBound;
+            return over && under;
+        }
+        
     }
 }

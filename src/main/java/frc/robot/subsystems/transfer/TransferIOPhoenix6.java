@@ -1,13 +1,7 @@
 package frc.robot.subsystems.transfer;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.Constants;
-import frc.robot.Ports;
-import frc.robot.lib.TalonFXFactory;
-import frc.robot.lib.TalonUtil;
 
 public class TransferIOPhoenix6 implements TransferIO{
     private TalonFX transferPulleyLeft;
