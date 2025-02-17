@@ -67,6 +67,10 @@ public class PivotSubsystem extends SubsystemBase {
         return currentState.angle;
     }
 
+    public boolean isAtLocation(PivotSystemState targetLocationState) {
+        return io.getPivotAngle() <= targetLocationState.angle + 1 && io.getPivotAngle() >= targetLocationState.angle - 1;
+    }
+
     @Override
     public void periodic() {
    
