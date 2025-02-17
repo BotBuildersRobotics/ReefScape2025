@@ -24,6 +24,7 @@ import frc.robot.commands.Elevator.ElevatorHomeCommand;
 import frc.robot.commands.Elevator.ElevatorL1Command;
 import frc.robot.commands.Intake.IntakeIdleCommand;
 import frc.robot.commands.Intake.IntakeOnCommand;
+import frc.robot.commands.Intake.IntakeReverseCommand;
 import frc.robot.commands.Pivot.IntakePivotCommand;
 import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
@@ -183,10 +184,10 @@ public class RobotContainer {
 				.onFalse(new IntakeIdleCommand(intakeSubsystem));*/
 
 		//simplePivotCommands.
-		//driverControl.leftTrigger().onTrue(new IntakePivotCommand(pivotSubsystem)).onFalse(new StowPivotCommand(pivotSubsystem));
+		driverControl.leftTrigger().onTrue(new IntakeReverseCommand(intakeSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		driverControl.y().onTrue(new ElevatorL1Command(elevatorSubsystem));
-		driverControl.x().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
+		//driverControl.y().onTrue(new ElevatorL1Command(elevatorSubsystem));
+		//driverControl.x().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
 		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
 		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
 
