@@ -26,12 +26,14 @@ import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
+import frc.robot.commands.elevator.ElevatorPositionToggleCommand;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.intake.IntakeReverseCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.generated.TunerConstantsAlpha;
+import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
@@ -64,6 +66,8 @@ public class RobotContainer {
 	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
 	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
+
+	private SuperSystem superSystem = SuperSystem.getInstance();
 
 
 	//public final AprilTagVision aprilTagVision;
@@ -190,6 +194,9 @@ public class RobotContainer {
 
 		//driverControl.y().onTrue(new ElevatorL1Command(elevatorSubsystem));
 		//driverControl.x().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
+
+		driverControl.povUp().onTrue(new ElevatorPositionToggleCommand(superSystem));
+
 		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
 		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
 
