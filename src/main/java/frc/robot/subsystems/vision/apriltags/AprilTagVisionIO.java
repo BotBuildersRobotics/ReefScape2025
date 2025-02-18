@@ -55,6 +55,7 @@ public interface AprilTagVisionIO {
            
         }
 
+        @SuppressWarnings("unused")
         private static final Transform3d NULL_TRANSFORM = new Transform3d(-114514, -114514, -114514, new Rotation3d());
 
         public void fromLog(LogTable table, int cameraID) {

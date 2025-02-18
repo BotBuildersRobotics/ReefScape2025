@@ -1,4 +1,4 @@
-package frc.robot.commands.Pivot;
+package frc.robot.commands.pivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -18,4 +18,10 @@ public class IntakePivotCommand  extends Command
   public void initialize() {
     pivotSubSystem.setWantedState(PivotSystemState.INTAKE);
   }
+
+  @Override
+  public boolean isFinished(){
+    return pivotSubSystem.isAtLocation(PivotSystemState.INTAKE);
+  }
+
 }

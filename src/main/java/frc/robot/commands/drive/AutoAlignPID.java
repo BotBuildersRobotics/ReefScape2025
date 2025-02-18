@@ -10,12 +10,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.TagVisionSubsystem;
+
 
 public class AutoAlignPID extends Command {
 
   private final CommandSwerveDrivetrain swerveDrive;
-  private final VisionSubsystem visionSubsystem;
+  @SuppressWarnings("unused")
+  private final TagVisionSubsystem visionSubsystem;
 
   private Pose2d Pose;
 
@@ -47,7 +49,7 @@ public class AutoAlignPID extends Command {
    * @param swerveDrive The subsystem for the swerve drive
    * @param targetPose The target pose for the robot to align to
    */
-  public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, VisionSubsystem visionSubsystem, Pose2d targetPose) {
+  public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, TagVisionSubsystem visionSubsystem, Pose2d targetPose) {
    
     this.Pose = targetPose;
     this.swerveDrive = swerveDrive;

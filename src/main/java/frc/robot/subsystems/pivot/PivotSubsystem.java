@@ -35,8 +35,8 @@ public class PivotSubsystem extends SubsystemBase {
     //this allows us to model gravity feedforward with a cosine.
 
     public enum PivotSystemState{
-        STOWED(90),
-        INTAKE(0),
+        STOWED(0),
+        INTAKE(120),
         HUMAN_PLAYER(45),
         RAISED(60);
 
@@ -65,6 +65,10 @@ public class PivotSubsystem extends SubsystemBase {
 
     public double getCurrentPosition(){
         return currentState.angle;
+    }
+
+    public boolean isAtLocation(PivotSystemState targetLocationState) {
+        return io.getPivotAngle() <= targetLocationState.angle + 1 && io.getPivotAngle() >= targetLocationState.angle - 1;
     }
 
     @Override

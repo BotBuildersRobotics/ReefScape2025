@@ -16,7 +16,7 @@ public interface IntakeIO {
         public double intakeMotorRPS = 0.0;
         
         //we pass (input) in a duty cycle, lets log that as well.
-        public double intakeMotorDutyCycle = 0.0;
+        public double intakeMotorVoltage = 0.0;
 
         public double intakeCurrent = 0;
 
@@ -28,7 +28,7 @@ public interface IntakeIO {
         public double transferMotorRPS = 0.0;
         
         //we pass (input) in a duty cycle, lets log that as well.
-        public double transferMotorDutyCycle = 0.0;
+        public double transferVoltage = 0.0;
 
         public double transferCurrent = 0;
 
@@ -43,5 +43,6 @@ public interface IntakeIO {
 
     default void setTransferDutyCycle(double percent) {}
 
+    default boolean getBeamBreakOneState() {return false;}
 
 }

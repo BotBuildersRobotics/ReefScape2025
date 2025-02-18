@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climb;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants;
@@ -22,11 +20,11 @@ public class ClimbIOPhoenix6 implements ClimbIO{
 
         //use our helpers to write config over the CAN Bus
         climbOne = TalonFXFactory.createDefaultTalon(Ports.CLIMB_ONE);
-        climbTwo = TalonFXFactory.createDefaultTalon(Ports.CLIMB_TWO);
+       // climbTwo = TalonFXFactory.createDefaultTalon(Ports.CLIMB_TWO);
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
         TalonUtil.applyAndCheckConfiguration(climbOne, Constants.ClimbConstants.ClimbFXConfig());
-        TalonUtil.applyAndCheckConfiguration(climbTwo, Constants.ClimbConstants.ClimbFXConfig());
+        //TalonUtil.applyAndCheckConfiguration(climbTwo, Constants.ClimbConstants.ClimbFXConfig());
        
     }
 
@@ -35,7 +33,7 @@ public class ClimbIOPhoenix6 implements ClimbIO{
        
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
-        inputs.climbOneConnected = BaseStatusSignal.refreshAll(
+      /*   inputs.climbOneConnected = BaseStatusSignal.refreshAll(
                         
                         climbOne.getDeviceTemp(),
                         climbOne.getVelocity())
@@ -56,7 +54,7 @@ public class ClimbIOPhoenix6 implements ClimbIO{
 
         inputs.climbTwoTemperature = climbTwo.getDeviceTemp().getValueAsDouble();
         inputs.climbTwoRPS = climbTwo.getVelocity().getValueAsDouble();
-        inputs.climbTwoDutyCycle = dutyCycleTwo;
+        inputs.climbTwoDutyCycle = dutyCycleTwo;*/
 
     }
 
@@ -65,12 +63,12 @@ public class ClimbIOPhoenix6 implements ClimbIO{
         //store this for future logging.
         this.dutyCycleOne = percent;
         //simple way to set the motor value.
-        climbOne.setControl(new DutyCycleOut(dutyCycleOne));
+      //  climbOne.setControl(new DutyCycleOut(dutyCycleOne));
     }
 
     //repeat for other motor
     public void setClimbTwoDutyCycle(double percent) {
         this.dutyCycleTwo = percent;
-        climbTwo.setControl(new DutyCycleOut(dutyCycleTwo));
+      //  climbTwo.setControl(new DutyCycleOut(dutyCycleTwo));
     }
 }

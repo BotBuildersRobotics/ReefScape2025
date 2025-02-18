@@ -8,11 +8,11 @@ import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 
 
-public class IntakeIdleCommand extends Command
+public class IntakeReverseCommand extends Command
 {
   private final IntakeSubsystem intakeSubSystem;
 
-  public IntakeIdleCommand(IntakeSubsystem subsystem) {
+  public IntakeReverseCommand(IntakeSubsystem subsystem) {
       intakeSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -20,6 +20,6 @@ public class IntakeIdleCommand extends Command
 
   @Override
   public void initialize() {
-    intakeSubSystem.setWantedState(IntakeSystemState.IDLE);
+    intakeSubSystem.setWantedState(IntakeSystemState.REVERSE);
   }
 }

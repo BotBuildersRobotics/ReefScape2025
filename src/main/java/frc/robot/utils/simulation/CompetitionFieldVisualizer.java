@@ -113,6 +113,7 @@ public class CompetitionFieldVisualizer {
             });
     }
 
+    @SuppressWarnings("unused")
     private static List<Pose2d> getPose2ds(Set<ObjectOnFieldDisplay> objects) {
         final List<Pose2d> pose2dList = new ArrayList<>();
 

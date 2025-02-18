@@ -1,15 +1,15 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
 import frc.robot.lib.TalonUtil;
-import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 public class IntakeIOPhoenix6 implements IntakeIO{
     private TalonFX intakeRollersFx;
@@ -18,8 +18,8 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     private DigitalInput intakeBeamBreakOne;
     private DigitalInput intakeBeamBreakTwo;
 
-    private double intakeDutyCycle = 0;
-    private double transferDutyCycle = 0;
+    private double intakeVoltage = 0;
+    private double transferVoltage = 0;
     
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
@@ -33,7 +33,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
         transferRollersFx = TalonFXFactory.createDefaultTalon(Ports.TRANSFER);
 
-        TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeConstants.IntakeFXConfig());
+        TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeTransferConstants.IntakeFXConfig());
 
         intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
         intakeBeamBreakTwo = new DigitalInput(Ports.INTAKE_BEAMBREAK_TWO);
@@ -60,37 +60,44 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         inputs.intakeCurrent = intakeRollersFx.getStatorCurrent().getValueAsDouble();
 
         //also log the duty cycle we are asking for.
-        inputs.intakeMotorDutyCycle = intakeDutyCycle;
+       // inputs.intakeMotorDutyCycle = intakeDutyCycle;
 
         inputs.transferConnected = BaseStatusSignal.refreshAll(
-                        intakeRollersFx.getStatorCurrent(),
-                        intakeRollersFx.getDeviceTemp(),
-                        intakeRollersFx.getVelocity())
+                        transferRollersFx.getStatorCurrent(),
+                        transferRollersFx.getDeviceTemp(),
+                        transferRollersFx.getVelocity())
                         .isOK();
 
         //the motor knows we want info from it, so the following requests should be cool
-        inputs.transferTemperature = intakeRollersFx.getDeviceTemp().getValueAsDouble();
-        inputs.transferMotorRPS = intakeRollersFx.getRotorVelocity().getValueAsDouble();
-        inputs.transferCurrent = intakeRollersFx.getStatorCurrent().getValueAsDouble();
+        inputs.transferTemperature = transferRollersFx.getDeviceTemp().getValueAsDouble();
+        inputs.transferMotorRPS = transferRollersFx.getRotorVelocity().getValueAsDouble();
+        inputs.transferCurrent = transferRollersFx.getStatorCurrent().getValueAsDouble();
 
         //also log the duty cycle we are asking for.
-        inputs.transferMotorDutyCycle = transferDutyCycle;
+       // inputs.transferMotorDutyCycle = transferDutyCycle;
+        //inputs.intakeMotorDutyCycle = intakeDutyCycle;
     }
 
     @Override
-    public void setIntakeDutyCycle(double percent) {
+    public void setIntakeDutyCycle(double voltage) {
         //store this for future logging.
-        this.intakeDutyCycle = percent;
+        this.intakeVoltage = voltage;
         //simple way to set the motor value.
-        intakeRollersFx.setControl(new DutyCycleOut(intakeDutyCycle));
+        SmartDashboard.putNumber("Intake Percent", voltage);
+        intakeRollersFx.setControl(new VoltageOut(voltage));
     }
 
     @Override
-    public void setTransferDutyCycle(double percent) {
+    public void setTransferDutyCycle(double voltage) {
         //store this for future logging.
-        this.transferDutyCycle = percent;
+        this.transferVoltage = voltage;
         //simple way to set the motor value.
-        transferRollersFx.setControl(new DutyCycleOut(transferDutyCycle));
+        transferRollersFx.setControl(new VoltageOut(voltage));
     }
     
+    @Override
+    public boolean getBeamBreakOneState() {
+        return !intakeBeamBreakOne.get();
+    }
+
 }
