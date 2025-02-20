@@ -18,8 +18,9 @@ public interface PivotIO {
 
 
         public double pivotPosition = 0.0;
+
     }
 
-    
+    default double getPivotAngle() {return 0.0;}
 
 }

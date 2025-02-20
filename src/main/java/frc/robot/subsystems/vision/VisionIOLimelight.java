@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.Utils;
 
 /** IO implementation for real Limelight hardware. */
@@ -44,26 +46,34 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs) {
+  public <T extends VisionIOInputs> void updateInputs(T mInputs) {
+    AprilTagIOInputs inputs;
+    if(mInputs instanceof AprilTagIOInputs) {
+      inputs = (AprilTagIOInputs) mInputs;
+    }
+    else {
+      throw new IllegalArgumentException("Limelight updateInputs must take AprilTagIOInputs, not " + mInputs.getClass().toString());
+    }
   
     // Read new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+
+    inputs.connected = true;
     
     PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.limelightName);
-   
+
+    Logger.recordOutput("LL Name",this.limelightName);
 
     if(estimate != null){
-
-
       
+      Logger.recordOutput("PE",estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(estimate.timestampSeconds),
                               new Pose3d(estimate.pose),
                               0.0, 
                               estimate.tagCount, 
                               estimate.avgTagDist, 
-                              estimate.rawFiducials,
                               PoseObservationType.MEGATAG_1
                             )
       );
@@ -71,19 +81,20 @@ public class VisionIOLimelight implements VisionIO {
       for(int i =0; i < estimate.rawFiducials.length; i++){
         tagIds.add(estimate.rawFiducials[i].id);
       }
+     
     }
     LimelightHelpers.SetRobotOrientation(this.limelightName, this.rotationSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
     PoseEstimate megaTag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.limelightName);
    
     if(megaTag2Estimate != null){
 
+      Logger.recordOutput("PE2",megaTag2Estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(megaTag2Estimate.timestampSeconds),
                               new Pose3d(megaTag2Estimate.pose),
                               0.0, 
                               megaTag2Estimate.tagCount, 
                               megaTag2Estimate.avgTagDist, 
-                              estimate.rawFiducials,
                               PoseObservationType.MEGATAG_2
                             )
       );

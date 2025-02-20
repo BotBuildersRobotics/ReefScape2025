@@ -2,24 +2,25 @@ package frc.robot.commands.elevator;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorPosition;
 
 
 
 
-public class ElevatorL1Command extends Command
+public class ElevatorPositionToggleCommand extends Command
 {
-  private final ElevatorSubsystem elevatorSubsystem;
+  private final SuperSystem superSystem;
 
-  public ElevatorL1Command(ElevatorSubsystem subsystem) {
-    elevatorSubsystem = subsystem;
+  public ElevatorPositionToggleCommand(SuperSystem subsystem) {
+    superSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
   }
 
   @Override
   public void initialize() {
-    elevatorSubsystem.setElevatorPosition(ElevatorPosition.L1);
+    superSystem.toggleScoringHeight();
   }
 }

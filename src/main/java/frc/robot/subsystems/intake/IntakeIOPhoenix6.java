@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -96,4 +95,9 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         transferRollersFx.setControl(new VoltageOut(voltage));
     }
     
+    @Override
+    public boolean getBeamBreakOneState() {
+        return !intakeBeamBreakOne.get();
+    }
+
 }

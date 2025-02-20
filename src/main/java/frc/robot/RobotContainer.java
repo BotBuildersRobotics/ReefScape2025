@@ -17,21 +17,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Elevator.ElevatorHomeCommand;
-import frc.robot.commands.Elevator.ElevatorL1Command;
-import frc.robot.commands.Intake.IntakeIdleCommand;
-import frc.robot.commands.Intake.IntakeOnCommand;
-import frc.robot.commands.Intake.IntakeReverseCommand;
-import frc.robot.commands.Pivot.IntakePivotCommand;
-import frc.robot.commands.Pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
-import frc.robot.generated.TunerConstants;
+
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
@@ -40,6 +34,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.vision.TagVisionSubsystem;
 import frc.robot.utils.JoystickInterruptible;
 
 /**
@@ -62,7 +57,9 @@ public class RobotContainer {
 
 	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
-	//private VisionSubsystem visionSubsystem = VisionSubsystem.getInstance();
+	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
+
+	private SuperSystem superSystem = SuperSystem.getInstance();
 
 
 	//public final AprilTagVision aprilTagVision;
@@ -213,21 +210,7 @@ public class RobotContainer {
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
-		Trigger lowTimeNotify = new Trigger(() -> {
-			boolean teleopEnabled = DriverStation.isTeleopEnabled() && DriverStation.isFMSAttached();
-			double matchTime = DriverStation.getMatchTime();
-			double ts = Timer.getFPGATimestamp();
-			return teleopEnabled && (matchTime >= 15 && matchTime <= 35) && ((ts - Math.floor(ts)) > 0.7);
-		});
-		lowTimeNotify.whileTrue(
-			new Command() {
-				@Override
-				public void initialize() {
-					LightsSubsystem.getInstance().lowTimeLed();
-				}
-			}
-		);
-
+		
 	}
 
 	/**

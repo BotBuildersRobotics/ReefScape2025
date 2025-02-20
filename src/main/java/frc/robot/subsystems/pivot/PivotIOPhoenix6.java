@@ -81,5 +81,10 @@ public class PivotIOPhoenix6 implements PivotIO{
         
     }   
 
+    @Override
+    public double getPivotAngle() {
+        return pivotRightMotor.getPosition().getValueAsDouble() * 0.71;
+    }
+
    
 }

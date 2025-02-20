@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
@@ -31,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
 		return mInstance;
 	}
 
-    private IntakeIO io;
+    IntakeIO io;
     //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
    
@@ -90,6 +91,11 @@ public class IntakeSubsystem extends SubsystemBase {
         io.setIntakeDutyCycle(currentState.intake_voltage);
         io.setTransferDutyCycle(currentState.transfer_voltage);
        
-
     }
+
+    public boolean isBeamBreakOneTripped() {
+        return io.getBeamBreakOneState();
+    }
+
+   
 }
