@@ -2,9 +2,12 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -19,6 +22,8 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
     private DigitalInput elevatorBeamBreak;
 
     private double inputRotations = 0;
+
+    private MotionMagicExpoTorqueCurrentFOC moveRequest = new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
 
     //this is a TalonFX implementation of our elevator
     //we could in theory write one for REV motors but we love krakens so hello TalonFX.
@@ -39,6 +44,7 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
         elevatorBeamBreak = new DigitalInput(Ports.ELEVATOR_BEAMBREAK);
 
+        
     }
 
     @Override
@@ -74,8 +80,14 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
         double desiredRotations = inputs.elevatorPosition;
         SmartDashboard.putNumber("DesiredRotations", desiredRotations);
-        elevatorRight.setControl(new MotionMagicVoltage(desiredRotations));
+        //elevatorRight.setControl(new MotionMagicVoltage(desiredRotations));
        
+        //elevatorRight.setControl(moveRequest.withPosition(desiredRotations));
+       
+    }
+
+    public void setVoltage(Voltage volts){
+        elevatorRight.setControl(new VoltageOut(volts));
     }
 
    

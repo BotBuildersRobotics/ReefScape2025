@@ -44,8 +44,8 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     @Override
     public void updateInputs(IntakeIOInputs inputs){
        
-        inputs.intakeBeamBreakOneTripped = !intakeBeamBreakOne.get();
-        inputs.intakeBeamBreakTwoTripped = !intakeBeamBreakTwo.get();
+        inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
+        inputs.intakeBeamBreakTwoTripped = intakeBeamBreakTwo.get();
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.

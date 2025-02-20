@@ -32,7 +32,7 @@ public class Ports {
 
 	public static final int PIGEON = 13;
 
-	public static final int INTAKE_BEAMBREAK_ONE = 1;
+	public static final int INTAKE_BEAMBREAK_ONE = 0;
 	public static final int INTAKE_BEAMBREAK_TWO = 2;
     public static final int END_EFFECTOR_BEAMBREAK = 3;
     public static final int ELEVATOR_BEAMBREAK = 4;

@@ -27,8 +27,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.generated.TunerConstants;
-import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.generated.TunerConstantsBeta;
+import frc.robot.generated.TunerConstantsBeta.TunerSwerveDrivetrain;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionConsumer;
 import frc.robot.utils.simulation.MapleSimSwerveDrivetrain;
 import java.util.function.Supplier;
@@ -112,7 +112,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 		if (mInstance == null) {
 			
             if(Robot.isReal()) {
-                mInstance = TunerConstants.createDrivetrain();
+                mInstance = TunerConstantsBeta.createDrivetrain();
             }else{
                
             }
@@ -301,10 +301,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 getModuleLocations(),
                 getPigeon2(),
                 getModules(),
-                TunerConstants.FrontLeft,
-                TunerConstants.FrontRight,
-                TunerConstants.BackLeft,
-                TunerConstants.BackRight);
+                TunerConstantsBeta.FrontLeft,
+                TunerConstantsBeta.FrontRight,
+                TunerConstantsBeta.BackLeft,
+                TunerConstantsBeta.BackRight);
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         m_simNotifier = new Notifier(mapleSimSwerveDrivetrain::update);
         m_simNotifier.startPeriodic(kSimLoopPeriod);

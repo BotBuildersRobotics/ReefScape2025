@@ -1,6 +1,9 @@
 package frc.robot.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Voltage;
+
 //Interface to log the status of the elevator motors
 
 public interface ElevatorIO {
@@ -38,5 +41,6 @@ public interface ElevatorIO {
     //TBD: can we measure in terms of mm ? The slides can't go to exact measurements
     //as they are driven by a sprocket, but we could do approx.
     default void setElevatorPosition(double position) {}
+    default void setVoltage(Voltage volts){}
 
 }

@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public enum IntakeSystemState 
     {
         IDLE(0.0, 0.0),
-		INTAKE(9.0, 3),
+		INTAKE(12, 3),
 		REVERSE(-6.0, -6.0),
         HUMAN_PLAYER(8, 8);
 

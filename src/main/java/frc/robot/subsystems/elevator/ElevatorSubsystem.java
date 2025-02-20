@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
@@ -52,5 +53,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setElevatorPosition(double position){
 
         inputs.elevatorPosition = position;
+    }
+
+    public void setVoltage(double volts){
+        io.setVoltage(Units.Volts.of(volts));
     }
 }

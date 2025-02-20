@@ -8,8 +8,11 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +20,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -76,27 +81,36 @@ public final class Constants {
       //slot configs
 
       config.Slot0 = new Slot0Configs();
-      config.Slot0.kA = 0;
-      config.Slot0.kP = 0.3;
+      
+      config.Slot0.kP = 0.5;
       config.Slot0.kI = 0;
       config.Slot0.kD = 0;
-      config.Slot0.kS = 0.3;
-      config.Slot0.kV = 0.12;
+      config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+      //config.Slot0.kS = 0.3;
+     // config.Slot0.kV = 0.001;
+      config.Slot0.kG = 0.3; //volts to overcome gravity
+      config.Slot0.kS = 1.8; // volts to get over the static friction
+      config.Slot0.kV = 0.001;// volts to get velocity of 1 rps
+      config.Slot0.kA = 0; //volts for accel of 
+      config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 
         //motion magic
 
       config.MotionMagic = new MotionMagicConfigs();
-      config.MotionMagic.MotionMagicAcceleration = 100;
-      config.MotionMagic.MotionMagicCruiseVelocity = 100;
-      config.MotionMagic.MotionMagicJerk = 0;
+      config.MotionMagic.MotionMagicAcceleration = 400;
+      config.MotionMagic.MotionMagicCruiseVelocity = 1100;
       
+      config.MotionMagic.MotionMagicExpo_kV = 0.12;
+      
+      
+     
+      config.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(80)).withPeakReverseTorqueCurrent(Amps.of(-80));
 
-
-      config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
+      /*config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
       config.ClosedLoopRamps .DutyCycleClosedLoopRampPeriod = 0.02;
       config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
-      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
+      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;*/
 
 
 
@@ -163,7 +177,7 @@ public final class Constants {
         config.CurrentLimits.StatorCurrentLimit = 80;
   
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         return config;
       }
   }

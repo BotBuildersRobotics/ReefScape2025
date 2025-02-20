@@ -21,6 +21,6 @@ public class ElevatorL1Command extends Command
 
   @Override
   public void initialize() {
-    elevatorSubsystem.setElevatorPosition(13.5);
+    elevatorSubsystem.setElevatorPosition(8);
   }
 }
