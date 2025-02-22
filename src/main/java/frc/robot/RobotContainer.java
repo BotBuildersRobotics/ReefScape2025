@@ -37,6 +37,7 @@ import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.intake.IntakeReverseCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
+import frc.robot.commands.leds.SetLedCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -74,6 +75,8 @@ public class RobotContainer {
 	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
 
 	private EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
+
+	private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
 
 	private SuperSystem superSystem = SuperSystem.getInstance();
 
@@ -225,8 +228,8 @@ public class RobotContainer {
 			new ParallelCommandGroup(
 				//Commands.runOnce( () -> new EndEffectorRollerReverse(endEffectorSubsystem)).withTimeout(1),
 				new EndEffectorRollerReverse(endEffectorSubsystem),
-				new IntakeOnCommand(intakeSubsystem)
-
+				new IntakeOnCommand(intakeSubsystem),
+				new SetLedCommand(lightsSubsystem, superSystem.GetLightState())
 			)
 			
 			).onFalse(
