@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.175,
+        "x": 1.921,
         "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2984232028594844,
-        "y": 2.6793758935996057
+        "x": 2.689391767387158,
+        "y": 4.012767000471266
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.92075,
-        "y": 2.2
+        "x": 3.1745062360236243,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.858713320825837,
-        "y": 3.4753191110309745
+        "x": 1.9401457841643592,
+        "y": 3.9846264003304097
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "3 Coral - Field",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

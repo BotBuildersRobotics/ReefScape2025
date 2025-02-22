@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueDepositPreload"
+                  "pathName": "DepositPreload - Field"
                 }
               },
               {
@@ -49,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueCollectTop"
+                  "pathName": "CollectTop - Field"
                 }
               },
               {
@@ -80,7 +80,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueDepositTop"
+                  "pathName": "DepositTop - Field"
                 }
               },
               {
@@ -118,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueCollectMid"
+                  "pathName": "CollectMid - Field"
                 }
               },
               {
@@ -149,7 +149,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueDepositMid"
+                  "pathName": " DepositMid - Field"
                 }
               },
               {
@@ -187,7 +187,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueCollectLow"
+                  "pathName": "CollectLow - Field"
                 }
               },
               {
@@ -218,7 +218,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueDepositLow"
+                  "pathName": "DepositLow - Field"
                 }
               },
               {
