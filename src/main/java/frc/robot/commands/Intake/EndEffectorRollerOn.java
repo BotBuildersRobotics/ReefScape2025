@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
 public class EndEffectorRollerOn extends Command
 {
@@ -15,6 +16,7 @@ public class EndEffectorRollerOn extends Command
 
   @Override
   public void initialize() {
-    effectorSubSystem.EndEffectorRollersOn(20);
+    effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
+    effectorSubSystem.SetEndEffectorRollers();
   }
 }

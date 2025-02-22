@@ -1,7 +1,10 @@
 package frc.robot.commands.intake;
 
+import java.net.http.HttpClient.Redirect;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
 //designed to open the rollers
 public class EndEffectorRollerReverse extends Command
@@ -16,12 +19,14 @@ public class EndEffectorRollerReverse extends Command
 
   @Override
   public void initialize() {
-    effectorSubSystem.EndEffectorRollersOn(-5);
+    effectorSubSystem.setWantedState(EndEffectorState.REVERSE);
+    effectorSubSystem.SetEndEffectorRollers();
   }
 
   @Override
   public void end(boolean interupted)
   {
-    effectorSubSystem.EndEffectorRollersOn(0);
+    effectorSubSystem.setWantedState(EndEffectorState.IDLE);
+    effectorSubSystem.SetEndEffectorRollers();
   }
 }
