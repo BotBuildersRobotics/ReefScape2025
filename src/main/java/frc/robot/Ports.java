@@ -16,9 +16,11 @@ public class Ports {
     public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(14, "canivore");
 
     //End Effector Subsystem Motors
-    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(34, "canivore");
-    public static final CanDeviceId END_EFFECTOR_PIVOT = new CanDeviceId(35, "canivore");
-
+    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(53, "canivore");
+    public static final CanDeviceId END_EFFECTOR_PIVOT = new CanDeviceId(55, "canivore");
+    public static final CanDeviceId END_EFFECTOR_ARM = new CanDeviceId(19, "canivore");
+    public static final CanDeviceId END_EFFECTOR_BEAM_BREAK = new CanDeviceId(101, "canivore"); //TODO: find ID
+    
     //Intake Subsystem Motors
     public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
     public static final CanDeviceId TRANSFER = new CanDeviceId(16, "canivore");
@@ -34,7 +36,7 @@ public class Ports {
 
 	public static final int INTAKE_BEAMBREAK_ONE = 0;
 	public static final int INTAKE_BEAMBREAK_TWO = 2;
-    public static final int END_EFFECTOR_BEAMBREAK = 3;
+    
     public static final int ELEVATOR_BEAMBREAK = 4;
 
     // Wheel krakens

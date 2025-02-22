@@ -36,7 +36,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     public enum PivotSystemState{
         STOWED(0),
-        INTAKE(123),
+        INTAKE(120),
         HUMAN_PLAYER(45),
         RAISED(60);
 

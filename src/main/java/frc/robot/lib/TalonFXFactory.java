@@ -2,8 +2,10 @@ package frc.robot.lib;
 
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
@@ -26,6 +28,18 @@ public class TalonFXFactory {
     // create a CANTalon with the default (out of the box) configuration
     public static TalonFX createDefaultTalon(CanDeviceId id) {
         return createDefaultTalon(id, true);
+    }
+
+    public static TalonFXS createDefaultTalonFXS(CanDeviceId id){
+        return createDefaultTalonFXS(id, true);
+    }
+
+    public static TalonFXS createDefaultTalonFXS(CanDeviceId id, boolean trigger_config) {
+        var talon = createTalonFXS(id);
+        if (trigger_config) {
+            TalonUtil.applyAndCheckConfiguration(talon, getDefaultConfigFXS());
+        }
+        return talon;
     }
 
     public static TalonFX createDefaultTalon(CanDeviceId id, boolean trigger_config) {
@@ -81,8 +95,48 @@ public class TalonFXFactory {
         return config;
     }
 
+    public static TalonFXSConfiguration getDefaultConfigFXS() {
+        TalonFXSConfiguration config = new TalonFXSConfiguration();
+
+        config.MotorOutput.NeutralMode = NEUTRAL_MODE;
+        config.MotorOutput.Inverted = INVERT_VALUE;
+        config.MotorOutput.DutyCycleNeutralDeadband = NEUTRAL_DEADBAND;
+        config.MotorOutput.PeakForwardDutyCycle = 1.0;
+        config.MotorOutput.PeakReverseDutyCycle = -1.0;
+
+        config.CurrentLimits.SupplyCurrentLimitEnable = false;
+        config.CurrentLimits.StatorCurrentLimitEnable = false;
+
+        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0;
+        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+
+       
+
+        config.HardwareLimitSwitch.ForwardLimitEnable = false;
+        config.HardwareLimitSwitch.ForwardLimitAutosetPositionEnable = false;
+        config.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
+        config.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+        config.HardwareLimitSwitch.ReverseLimitEnable = false;
+        config.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = false;
+        config.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
+        config.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
+
+        config.Audio.BeepOnBoot = true;
+
+        return config;
+    }
+
     private static TalonFX createTalon(CanDeviceId id) {
         TalonFX talon = new TalonFX(id.getDeviceNumber(), id.getBus());
+        talon.clearStickyFaults();
+
+        return talon;
+    }
+
+    private static TalonFXS createTalonFXS(CanDeviceId id) {
+        TalonFXS talon = new TalonFXS(id.getDeviceNumber(), id.getBus());
         talon.clearStickyFaults();
 
         return talon;

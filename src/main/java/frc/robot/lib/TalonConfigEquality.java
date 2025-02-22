@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 
@@ -31,6 +32,23 @@ public class TalonConfigEquality {
                 isEqual(a.Voltage, b.Voltage) &&
                 isEqual(a.TorqueCurrent, b.TorqueCurrent) &&
                 isEqual(a.Feedback, b.Feedback) &&
+                isEqual(a.OpenLoopRamps, b.OpenLoopRamps) &&
+                isEqual(a.ClosedLoopRamps, b.ClosedLoopRamps) &&
+                isEqual(a.HardwareLimitSwitch, b.HardwareLimitSwitch) &&
+                isEqual(a.Audio, b.Audio) &&
+                isEqual(a.SoftwareLimitSwitch, b.SoftwareLimitSwitch) &&
+                isEqual(a.MotionMagic, b.MotionMagic);
+    }
+
+    public static boolean isEqual(TalonFXSConfiguration a, TalonFXSConfiguration b) {
+        return isEqual(a.Slot0, b.Slot0) &&
+                isEqual(a.Slot1, b.Slot1) &&
+                isEqual(a.Slot2, b.Slot2) &&
+                isEqual(a.MotorOutput, b.MotorOutput) &&
+                isEqual(a.CurrentLimits, b.CurrentLimits) &&
+                isEqual(a.Voltage, b.Voltage) &&
+               // isEqual(a.TorqueCurrent, b.TorqueCurrent) &&
+               // isEqual(a.Feedback, b.Feedback) &&
                 isEqual(a.OpenLoopRamps, b.OpenLoopRamps) &&
                 isEqual(a.ClosedLoopRamps, b.ClosedLoopRamps) &&
                 isEqual(a.HardwareLimitSwitch, b.HardwareLimitSwitch) &&

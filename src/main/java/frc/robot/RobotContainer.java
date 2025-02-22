@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -25,12 +27,24 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
-
+import frc.robot.commands.elevator.ElevatorHomeCommand;
+import frc.robot.commands.intake.EndEffectorPivotIntake;
+import frc.robot.commands.intake.EndEffectorPivotL4;
+import frc.robot.commands.intake.EndEffectorRollerOff;
+import frc.robot.commands.intake.EndEffectorRollerReverse;
+import frc.robot.commands.intake.IntakeIdleCommand;
+import frc.robot.commands.intake.IntakeOnCommand;
+import frc.robot.commands.intake.IntakeReverseCommand;
+import frc.robot.commands.pivot.IntakePivotCommand;
+import frc.robot.commands.pivot.StowPivotCommand;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -59,6 +73,8 @@ public class RobotContainer {
 
 	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
 
+	private EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
+
 	private SuperSystem superSystem = SuperSystem.getInstance();
 
 
@@ -81,6 +97,7 @@ public class RobotContainer {
 
 	
 	private final CommandXboxController driverControl = new CommandXboxController(0);
+	private final CommandXboxController operatorControl = new CommandXboxController(1);
 
 	public final CommandSwerveDrivetrain drivetrain = CommandSwerveDrivetrain.getInstance();// TunerConstants.createDrivetrain();
 
@@ -193,7 +210,32 @@ public class RobotContainer {
 		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
 		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
 
-		driverControl.rightTrigger().onTrue(new IntakeOnCommand(intakeSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
+
+		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
+
+		//driverControl.leftBumper()
+		//.onTrue(new EndEffectorPivotIntake(endEffectorSubsystem))
+		//.onFalse(new EndEffectorPivotL4(endEffectorSubsystem));
+
+	//.	driverControl.rightBumper()
+	//	.onTrue(new InstantCommand(() -> endEffectorSubsystem.SetEndEffectorArmPos(5)))
+	//	.onFalse(new InstantCommand(() -> endEffectorSubsystem.SetEndEffectorArmPos(0)));
+
+		driverControl.rightTrigger().onTrue(
+			new ParallelCommandGroup(
+				//Commands.runOnce( () -> new EndEffectorRollerReverse(endEffectorSubsystem)).withTimeout(1),
+				new EndEffectorRollerReverse(endEffectorSubsystem),
+				new IntakeOnCommand(intakeSubsystem)
+
+			)
+			
+			).onFalse(
+				new ParallelCommandGroup(				
+					
+				new IntakeIdleCommand(intakeSubsystem),
+				new EndEffectorRollerOff(endEffectorSubsystem)
+				
+				));
 		//Test way to show how to set reef target and get the pose
 
 		final ReefTargeting target = new ReefTargeting();

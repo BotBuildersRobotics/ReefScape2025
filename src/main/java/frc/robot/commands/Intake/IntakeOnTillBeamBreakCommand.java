@@ -6,7 +6,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 
-
+//runs the intake until the beam break is detected on the transfer
 
 public class IntakeOnTillBeamBreakCommand extends Command
 {

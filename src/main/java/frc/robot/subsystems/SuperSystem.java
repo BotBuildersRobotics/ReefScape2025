@@ -97,4 +97,26 @@ public class SuperSystem extends SubsystemBase {
        
     }
 
+    public Command ToggleReefHeight(){
+        return Commands.runOnce(() -> this.toggleScoringHeight());
+    }
+
+    public Command HumanPlayerIntake()
+    {
+        //TODO: Need to make sure no coral is in the transfer
+        //then pivot to a height that is correct for the coral station
+        //then we intake just the front rollers (no stars)
+        //once the sensor triggers in the intake, 
+        //then we need to pivot down, so the coral can go through the transfer
+        //we then start the transfer stars
+        //kick the end effector in reverse for a brief second to open the arms up
+        //then when we trigger the transfer beam break, we start the intake of the end effector
+        //we then stop once the end effector detects the coral.
+        return Commands.print("TODO: Complete me");
+    }
+
+    
+
+    
+
 }

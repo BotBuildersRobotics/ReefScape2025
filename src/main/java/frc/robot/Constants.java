@@ -8,8 +8,10 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
@@ -122,8 +124,8 @@ public final class Constants {
   public static final class EndEffectorConstants {
 
     // copying more constans
-    public static TalonFXConfiguration EndEffectorFXRollerConfig() {
-      TalonFXConfiguration config = new TalonFXConfiguration();
+    public static TalonFXSConfiguration EndEffectorFXRollerConfig() {
+      TalonFXSConfiguration config = new TalonFXSConfiguration();
 
       config.CurrentLimits.SupplyCurrentLimit = 20.0;
       config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -132,11 +134,12 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimit = 80;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      config.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
       return config;
     }
 
-    public static TalonFXConfiguration EndEffectorFXPivotConfig() {
-      TalonFXConfiguration config = new TalonFXConfiguration();
+    public static TalonFXSConfiguration EndEffectorFXPivotConfig() {
+      TalonFXSConfiguration config = new TalonFXSConfiguration();
   
         config.CurrentLimits.SupplyCurrentLimit = 20.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -144,9 +147,68 @@ public final class Constants {
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.StatorCurrentLimit = 80;
   
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+
+        config.Slot0 = new Slot0Configs();
+        config.Slot0.kA = 0;
+        config.Slot0.kP = 0.3;
+        config.Slot0.kI = 0;
+        config.Slot0.kD = 0;
+        config.Slot0.kS = 0.3;
+        config.Slot0.kV = 0.12;
+
+        //config.ExternalFeedback.RotorToSensorRatio = 4.5;
+
+        config.MotionMagic = new MotionMagicConfigs();
+        config.MotionMagic.MotionMagicAcceleration = 100;
+        config.MotionMagic.MotionMagicCruiseVelocity = 100;
+        config.MotionMagic.MotionMagicJerk = 0;
+
         return config;
     }
+
+    public static TalonFXConfiguration EndEffectorArmPivot(){
+      TalonFXConfiguration config = new TalonFXConfiguration();
+
+      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+      config.CurrentLimits.StatorCurrentLimitEnable = true;
+      config.CurrentLimits.StatorCurrentLimit = 80;
+
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+      config.Slot0 = new Slot0Configs();
+      
+      /*config.Slot0.kP = 5.75;
+      config.Slot0.kI = 0.7;
+      config.Slot0.kD = 0.5;
+      config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+      config.Slot0.kS = 0.28;
+      config.Slot0.kV = 0.3;*/
+
+     // config.Slot0.kG = 0.3; //volts to overcome gravity
+      //config.Slot0.kS = 1.8; // volts to get over the static friction
+      //config.Slot0.kV = 0.001;// volts to get velocity of 1 rps
+      //config.Slot0.kA = 0; //volts for accel of 
+      //config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+
+
+        //motion magic
+
+     /* config.MotionMagic = new MotionMagicConfigs();
+      config.MotionMagic.MotionMagicAcceleration = 40;
+      config.MotionMagic.MotionMagicCruiseVelocity = 60;*/
+      
+      //config.MotionMagic.MotionMagicExpo_kV = 0.12;
+
+
+      return config;
+    }
+
+    public static double CORAL_DETECT_MIN_DISTANCE_MM = 25;
   }
 
   public static final class IntakeConstants {
