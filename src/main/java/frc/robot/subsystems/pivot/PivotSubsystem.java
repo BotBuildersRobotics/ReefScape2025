@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 
 
@@ -13,6 +14,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     //notice the static, this is shared 
     public static PivotSubsystem mInstance;
+    public IntakeSubsystem intakeSubsystem;
 
     private PivotSystemState currentState = PivotSystemState.STOWED;
 
@@ -56,11 +58,14 @@ public class PivotSubsystem extends SubsystemBase {
     public PivotSubsystem(PivotIO io) {
         //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
         this.io = io;
+        this.intakeSubsystem = IntakeSubsystem.getInstance();
 
     }
 
     public void setWantedState(PivotSystemState wantedState){
-        this.currentState = wantedState;
+        if(!intakeSubsystem.isBeamBreakTwoTripped()) {
+            this.currentState = wantedState;
+        }
     }
 
     public double getCurrentPosition(){

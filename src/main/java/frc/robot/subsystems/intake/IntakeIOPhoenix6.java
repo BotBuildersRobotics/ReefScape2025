@@ -104,4 +104,5 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     public boolean getBeamBreakTwoState() {
         return !intakeBeamBreakTwo.get();
     }
+
 }

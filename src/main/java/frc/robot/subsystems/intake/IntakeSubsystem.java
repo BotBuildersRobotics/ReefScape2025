@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import java.security.cert.PKIXBuilderParameters;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -100,6 +102,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public boolean isBeamBreakOneTripped() {
         return io.getBeamBreakOneState();
+    }
+    
+    public boolean isBeamBreakTwoTripped() {
+        return io.getBeamBreakTwoState();
     }
 
     public boolean isBeamBreakTwoTripped() {
