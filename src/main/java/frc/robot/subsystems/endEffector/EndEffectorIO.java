@@ -24,9 +24,9 @@ public interface EndEffectorIO {
 
         public double armPivotPosition = 0;
 
-        public double desiredArmPivotPos = 0;
+        public double desiredPivotPos = 10;
 
-        public double desiredArmPos = 0;
+        public double desiredArmPos = -12;
 
         public boolean motorArmConnected = false;
 

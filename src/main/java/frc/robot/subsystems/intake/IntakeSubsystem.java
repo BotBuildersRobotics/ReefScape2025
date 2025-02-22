@@ -48,7 +48,8 @@ public class IntakeSubsystem extends SubsystemBase {
         IDLE(0.0, 0.0),
 		INTAKE(12, 3),
 		REVERSE(-6.0, -6.0),
-        HUMAN_PLAYER(8, 8);
+        HUMAN_PLAYER(8, 8),
+        STARS(0, 2);
 
         public double intake_voltage;
         public double transfer_voltage;

@@ -28,12 +28,16 @@ import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
+import frc.robot.commands.intake.EndEffectorArmIntake;
+import frc.robot.commands.intake.EndEffectorArmL4;
 import frc.robot.commands.intake.EndEffectorPivotIntake;
 import frc.robot.commands.intake.EndEffectorPivotL4;
 import frc.robot.commands.intake.EndEffectorRollerOff;
+import frc.robot.commands.intake.EndEffectorRollerOn;
 import frc.robot.commands.intake.EndEffectorRollerReverse;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
+import frc.robot.commands.intake.IntakeOnTillBeamBreakCommand;
 import frc.robot.commands.intake.IntakeReverseCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
@@ -72,6 +76,8 @@ public class RobotContainer {
 	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
 	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
+
+	private LightsSubsystem leds = LightsSubsystem.getInstance();
 
 	private EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
 
@@ -213,21 +219,30 @@ public class RobotContainer {
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 
-		//driverControl.leftBumper()
-		//.onTrue(new EndEffectorPivotIntake(endEffectorSubsystem))
-		//.onFalse(new EndEffectorPivotL4(endEffectorSubsystem));
+		leds.coralStagedLed();
 
-	//.	driverControl.rightBumper()
-	//	.onTrue(new InstantCommand(() -> endEffectorSubsystem.SetEndEffectorArmPos(5)))
-	//	.onFalse(new InstantCommand(() -> endEffectorSubsystem.SetEndEffectorArmPos(0)));
+		//driverControl.leftBumper()
+		//.onFalse(new EndEffectorPivotIntake(endEffectorSubsystem))
+		//.onTrue(new EndEffectorPivotL4(endEffectorSubsystem));
+
+		driverControl.rightBumper()
+		.onTrue(new EndEffectorArmL4(endEffectorSubsystem))
+		.onFalse(new EndEffectorArmIntake(endEffectorSubsystem));
+
+		//driverControl.leftBumper().onTrue(new EndEffectorRollerReverse(endEffectorSubsystem))
+		//.onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
 
 		driverControl.rightTrigger().onTrue(
-			new ParallelCommandGroup(
+			//new SequentialCommandGroup(
+			//	new EndEffectorPivotIntake(endEffectorSubsystem),
+			//new ParallelCommandGroup(
 				//Commands.runOnce( () -> new EndEffectorRollerReverse(endEffectorSubsystem)).withTimeout(1),
-				new EndEffectorRollerReverse(endEffectorSubsystem),
-				new IntakeOnCommand(intakeSubsystem)
+			//	new EndEffectorRollerReverse(endEffectorSubsystem),
+				
+				new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem)
+				//superSystem.IntakeIntoEndEffector()
 
-			)
+			//))
 			
 			).onFalse(
 				new ParallelCommandGroup(				

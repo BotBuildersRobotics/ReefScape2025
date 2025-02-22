@@ -3,11 +3,11 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 
-public class EndEffectorPivotIntake extends Command
+public class EndEffectorArmIntake extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorPivotIntake(EndEffectorSubsystem subsystem) {
+  public EndEffectorArmIntake(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -16,5 +16,6 @@ public class EndEffectorPivotIntake extends Command
   @Override
   public void initialize() {
     effectorSubSystem.SetEndEffectorPivotPos(0);
+    effectorSubSystem.SetEndEffectorArmPos(0);
   }
 }

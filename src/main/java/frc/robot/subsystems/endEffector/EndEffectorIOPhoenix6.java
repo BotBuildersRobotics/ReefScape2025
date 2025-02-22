@@ -1,9 +1,12 @@
 package frc.robot.subsystems.endEffector;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
@@ -29,7 +32,9 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     private CANrange effectorBeamBreak;
 
     private MotionMagicVoltage armMotionMagic = new MotionMagicVoltage(0);
-    
+
+    private MotionMagicVoltage pivotMotionMagic = new MotionMagicVoltage(0);
+
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public EndEffectorIOPhoenix6() {
@@ -41,6 +46,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         endEffectorPivot = TalonFXFactory.createDefaultTalonFXS(Ports.END_EFFECTOR_PIVOT);
 
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
+
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
         TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
@@ -85,7 +91,8 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
         inputs.armPivotPosition = endEffectorArm.getPosition().getValueAsDouble();
 
-        setEndEffectorPivotPosition(inputs.desiredArmPivotPos);
+        setEndEffectorPivotPosition(inputs.desiredPivotPos);
+        setArmPosition(inputs.desiredArmPos);
 
         inputs.isBeamBreakConnected = BaseStatusSignal.refreshAll(
                         effectorBeamBreak.getDistance()
@@ -105,23 +112,25 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
     public void setEndEffectorPivotPosition(double angle){
         //todo: work out the angle
-        // 12:44 -> 23:29 = 
-        // 3.6 * 1.26 = 4.5  rotations of motor to the full rotation of the pivot.
-        // 0.01 rotations per degree
+        // 12:56 -> 23:29 = 
+        // 4.6 * 1.26 = 5.8  rotations of motor to the full rotation of the pivot.
+        
         //we set this up in the motor config.
         //endEffectorPivot.setControl(new PositionDutyCycle(Angle.ofBaseUnits(angle, Units.Degrees)));
-        SmartDashboard.putNumber("Effector Pivot", angle * 0.0125);
-        endEffectorPivot.setControl(new MotionMagicVoltage(angle * 0.0125));
+        SmartDashboard.putNumber("Effector Pivot", Angle.ofBaseUnits(angle, Degrees).baseUnitMagnitude());
+        //endEffectorPivot.setControl(pivotMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
+        endEffectorPivot.setControl(pivotMotionMagic.withPosition(0.016 * angle).withSlot(0));
     }
 
     public void setArmPosition(double angle){
         // 45:1
         //0.125 rotations per degree
-        SmartDashboard.putNumber("Effector Arm", angle);
-        PositionDutyCycle pos = new PositionDutyCycle(angle);
-        pos.withFeedForward(0.08);
-       
-        endEffectorArm.setControl(pos);
+        SmartDashboard.putNumber("Effector Arm", Angle.ofBaseUnits(angle, Degrees).baseUnitMagnitude());
+        //PositionDutyCycle pos = new PositionDutyCycle(angle);
+        //pos.withFeedForward(0.08);
+        //endEffectorArm.setControl(m_positionTorque.withPosition(0.125 * angle));
+       // endEffectorArm.setControl(new MotionMagicVoltage(0.125 * angle));
+        endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
     }
 
     @Override

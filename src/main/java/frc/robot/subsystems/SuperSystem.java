@@ -15,7 +15,9 @@ import frc.robot.commands.elevator.ElevatorL4Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
@@ -24,6 +26,7 @@ public class SuperSystem extends SubsystemBase {
     
     private ElevatorSubsystem elevator = ElevatorSubsystem.getInstance();
     private IntakeSubsystem intake = IntakeSubsystem.getInstance();
+    private EndEffectorSubsystem effector = EndEffectorSubsystem.getInstance();
     private PivotSubsystem pivot = PivotSubsystem.getInstance();
     private LightsSubsystem leds = LightsSubsystem.getInstance();
     private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
@@ -115,7 +118,18 @@ public class SuperSystem extends SubsystemBase {
         return Commands.print("TODO: Complete me");
     }
 
-    
+    public Command IntakeIntoEndEffector(){
+
+        return Commands.run( () ->{
+
+            if(intake.isBeamBreakOneTripped()){
+                intake.setWantedState(IntakeSystemState.STARS);
+                effector.EndEffectorRollersOn(80);
+            }else{
+                intake.setWantedState(IntakeSystemState.INTAKE);
+            }
+        });
+    }
 
     
 

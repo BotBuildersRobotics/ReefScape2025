@@ -15,6 +15,6 @@ public class EndEffectorPivotL4 extends Command
 
   @Override
   public void initialize() {
-    effectorSubSystem.SetEndEffectorPivotPos(45);
+    effectorSubSystem.SetEndEffectorPivotPos(70);
   }
 }

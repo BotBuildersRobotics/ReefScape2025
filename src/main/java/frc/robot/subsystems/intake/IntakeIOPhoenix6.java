@@ -97,7 +97,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     
     @Override
     public boolean getBeamBreakOneState() {
-        return !intakeBeamBreakOne.get();
+        return intakeBeamBreakOne.get();
     }
 
 }

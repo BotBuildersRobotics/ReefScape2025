@@ -149,21 +149,26 @@ public final class Constants {
   
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        config.Slot0 = new Slot0Configs();
-        config.Slot0.kA = 0;
-        config.Slot0.kP = 0.3;
-        config.Slot0.kI = 0;
-        config.Slot0.kD = 0;
-        config.Slot0.kS = 0.3;
-        config.Slot0.kV = 0.12;
+        //config.ExternalFeedback.RotorToSensorRatio = 5.8;
 
-        //config.ExternalFeedback.RotorToSensorRatio = 4.5;
+            /* Configure Motion Magic */
+        MotionMagicConfigs mm = config.MotionMagic;
+        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(50)) 
+          .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(80))
+          // Take approximately 0.1 seconds to reach max accel 
+          .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
 
-        config.MotionMagic = new MotionMagicConfigs();
-        config.MotionMagic.MotionMagicAcceleration = 100;
-        config.MotionMagic.MotionMagicCruiseVelocity = 100;
-        config.MotionMagic.MotionMagicJerk = 0;
+      Slot0Configs slot0 = config.Slot0;
+      slot0.kS = 0.99; //  overcome static friction
+      slot0.kA = 0.001;
+     // slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+      slot0.kA = 0.02; // An acceleration of 1 rps/s requires 0.02 V output
+      slot0.kP = 2.5; // 
+    // slot0.kI = 0; // No output for integrated error
+     // slot0.kD = 0.05; 
+   
 
         return config;
     }
@@ -180,29 +185,25 @@ public final class Constants {
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-      config.Slot0 = new Slot0Configs();
+      config.Feedback.RotorToSensorRatio = 45;
       
-      /*config.Slot0.kP = 5.75;
-      config.Slot0.kI = 0.7;
-      config.Slot0.kD = 0.5;
-      config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-      config.Slot0.kS = 0.28;
-      config.Slot0.kV = 0.3;*/
 
-     // config.Slot0.kG = 0.3; //volts to overcome gravity
-      //config.Slot0.kS = 1.8; // volts to get over the static friction
-      //config.Slot0.kV = 0.001;// volts to get velocity of 1 rps
-      //config.Slot0.kA = 0; //volts for accel of 
-      //config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+       /* Configure Motion Magic */
+    MotionMagicConfigs mm = config.MotionMagic;
+    mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(200)) 
+      .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(260))
+      // Take approximately 0.1 seconds to reach max accel 
+      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(450));
 
-
-        //motion magic
-
-     /* config.MotionMagic = new MotionMagicConfigs();
-      config.MotionMagic.MotionMagicAcceleration = 40;
-      config.MotionMagic.MotionMagicCruiseVelocity = 60;*/
-      
-      //config.MotionMagic.MotionMagicExpo_kV = 0.12;
+    Slot0Configs slot0 = config.Slot0;
+    slot0.kS = 0.35; //  overcome static friction
+    slot0.kA = 0.05;
+    slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0.kP = 5.2; // 
+   // slot0.kI = 0; // No output for integrated error
+    slot0.kD = 0.05; 
+    slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
 
       return config;
