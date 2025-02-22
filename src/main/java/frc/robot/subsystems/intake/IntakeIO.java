@@ -45,4 +45,6 @@ public interface IntakeIO {
 
     default boolean getBeamBreakOneState() {return false;}
 
+    default boolean getBeamBreakTwoState() {return false;}
+
 }
