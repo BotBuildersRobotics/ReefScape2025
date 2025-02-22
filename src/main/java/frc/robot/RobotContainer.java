@@ -126,6 +126,9 @@ public class RobotContainer {
 		}*/
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
+		if(SmartDashboard.containsKey("Auto Mode")) {
+			SmartDashboard.getEntry("Auto Mode").close();
+		}
 		SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
