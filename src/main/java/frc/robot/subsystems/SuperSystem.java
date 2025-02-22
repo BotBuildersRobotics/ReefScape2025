@@ -16,7 +16,9 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem.LightState;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
 
@@ -34,6 +36,10 @@ public class SuperSystem extends SubsystemBase {
     public static SuperSystem mInstance;
 
     ReefBranchLevel desiredReefLevel = ReefBranchLevel.L4;
+
+    LightState desiredLightState = LightState.OFF;
+
+    private boolean finishedAutoAlignment = false;
 
     public static SuperSystem getInstance() {
 
@@ -101,8 +107,12 @@ public class SuperSystem extends SubsystemBase {
         return Commands.runOnce(() -> this.toggleScoringHeight());
     }
 
-    public Command HumanPlayerIntake()
-    {
+    public Command HumanPlayerIntake() {
+        if(intake.isBeamBreakOneTripped()) {
+            intake.setWantedState(IntakeSystemState.HUMAN_PLAYER);
+        }
+        
+        
         //TODO: Need to make sure no coral is in the transfer
         //then pivot to a height that is correct for the coral station
         //then we intake just the front rollers (no stars)
@@ -114,6 +124,26 @@ public class SuperSystem extends SubsystemBase {
         //we then stop once the end effector detects the coral.
         return Commands.print("TODO: Complete me");
     }
+
+
+    public LightState GetLightState() {
+        if (intake.getCurrentState() == IntakeSystemState.INTAKE || intake.getCurrentState() == IntakeSystemState.HUMAN_PLAYER) {
+            desiredLightState = LightState.ORANGE;
+        } else if (intake.getCurrentState() == IntakeSystemState.IDLE) {
+            if (intake.isBeamBreakOneTripped()) {
+                if (finishedAutoAlignment) {
+                    desiredLightState = LightState.GREEN;
+                } else {
+                    desiredLightState = LightState.BLUE;
+                }
+            } else {
+                desiredLightState = LightState.OFF;
+            }
+        }
+        return desiredLightState;
+    }
+
+
 
     
 
