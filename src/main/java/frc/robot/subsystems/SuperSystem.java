@@ -15,9 +15,13 @@ import frc.robot.commands.elevator.ElevatorL4Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
 
 public class SuperSystem extends SubsystemBase {
@@ -27,6 +31,7 @@ public class SuperSystem extends SubsystemBase {
     private PivotSubsystem pivot = PivotSubsystem.getInstance();
     private LightsSubsystem leds = LightsSubsystem.getInstance();
     private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
+    private EndEffectorSubsystem effector = EndEffectorSubsystem.getInstance();
     
 
     private CommandSwerveDrivetrain swerveDriveTrain = CommandSwerveDrivetrain.getInstance();
@@ -112,6 +117,24 @@ public class SuperSystem extends SubsystemBase {
         //kick the end effector in reverse for a brief second to open the arms up
         //then when we trigger the transfer beam break, we start the intake of the end effector
         //we then stop once the end effector detects the coral.
+
+        if(effector.isCoralInIntake()) {
+            pivot.setWantedState(PivotSystemState.HUMAN_PLAYER);
+            intake.setWantedState(IntakeSystemState.HUMAN_PLAYER);
+            if(intake.isBeamBreakOneTripped()) {
+                pivot.setWantedState(PivotSystemState.INTAKE);
+                intake.setWantedState(IntakeSystemState.INTAKE);
+                if(!effector.isCoralInIntake()) {
+                    effector.setWantedState(EndEffectorState.REVERSE);
+                    if(intake.isBeamBreakTwoTripped()) {
+                        effector.setWantedState(EndEffectorState.INTAKE);
+                    }
+                } else {
+                    effector.setWantedState(EndEffectorState.IDLE);
+                }
+            }
+        }
+
         return Commands.print("TODO: Complete me");
     }
 
