@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climb;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants;
