@@ -233,7 +233,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		// An example command will be run in autonomous
 
-		return new SequentialCommandGroup(
+		/*return new SequentialCommandGroup(
 
 				new PathFindToPose(drivetrain, () -> {
 					return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));
@@ -242,7 +242,8 @@ public class RobotContainer {
 				// drivetrain.applyRequest(() -> lateralMovement.withVelocityX( 25))
 				// ,
 				new WaitCommand(1));
-		// return autoChooser.getSelected();
+		*/
+		return autoChooser.getSelected();
 		// return Commands.print("Auto command selected");
 	}
 }
