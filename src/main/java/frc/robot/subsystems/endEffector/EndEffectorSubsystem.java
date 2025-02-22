@@ -98,4 +98,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         inputs.desiredArmPos = currentState.arm_pos;
         io.setArmPosition(currentState.arm_pos);
     }
+
+    public boolean isCoralInIntake() {
+        return io.isCoralDetected();
+    }
 }
