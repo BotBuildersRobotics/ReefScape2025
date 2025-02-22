@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-public class EndEffectorPivotIntake extends Command
+public class EndEffectorRollerIntake extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorPivotIntake(EndEffectorSubsystem subsystem) {
+  public EndEffectorRollerIntake(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -17,6 +17,11 @@ public class EndEffectorPivotIntake extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
-    effectorSubSystem.SetEndEffectorPivotPos();
+    effectorSubSystem.SetEndEffectorRollers();
+  }
+
+  @Override
+  public boolean isFinished() {
+    return effectorSubSystem.isCoralInIntake();
   }
 }

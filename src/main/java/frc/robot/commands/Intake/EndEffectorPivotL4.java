@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
 public class EndEffectorPivotL4 extends Command
 {
@@ -15,6 +16,7 @@ public class EndEffectorPivotL4 extends Command
 
   @Override
   public void initialize() {
-    effectorSubSystem.SetEndEffectorPivotPos(45);
+    effectorSubSystem.setWantedState(EndEffectorState.L4_DEPOSIT);
+    effectorSubSystem.SetEndEffectorPivotPos();
   }
 }

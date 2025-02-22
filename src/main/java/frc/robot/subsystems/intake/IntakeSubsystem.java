@@ -102,5 +102,9 @@ public class IntakeSubsystem extends SubsystemBase {
         return io.getBeamBreakOneState();
     }
 
+    public boolean isBeamBreakTwoTripped() {
+        return io.getBeamBreakTwoState();
+    }
+
    
 }
