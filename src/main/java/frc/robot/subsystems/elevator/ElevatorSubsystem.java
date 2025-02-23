@@ -14,6 +14,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     //notice the static, this is shared 
     public static ElevatorSubsystem mInstance;
 
+    public ElevatorPosition currentState = ElevatorPosition.STOWED;
+
     //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
     //this is a singleton pattern. yay
 	public static ElevatorSubsystem getInstance() {
@@ -43,6 +45,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         //this actually writes to the log file.
         io.updateInputs(inputs);
 
+        inputs.desiredElevatorPosition = currentState.lowerBound;
+
         //48 tooth pulley = 75mm diameter
         //1 rotation = 75mm lift
         //75 * 13 = 975mm of lift
@@ -50,9 +54,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.processInputs("Elevator", inputs);
     }
 
-    public void setElevatorPosition(double position){
+   
 
-        inputs.elevatorPosition = position;
+    public void setManualElevatorPosition(double position)
+    {
+
+        inputs.desiredElevatorPosition = position;
+    }
+
+    public void setWantedState(ElevatorPosition position){
+       this.currentState = position;
     }
 
     public void setVoltage(double volts){
@@ -60,25 +71,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setElevatorPosition(ElevatorPosition position) {
-        switch (position) {
-            case STOWED:
-                inputs.elevatorPosition = 0;
-                break;
-            case L1:
-                inputs.elevatorPosition = 100;
-                break;
-            case L2:
-                inputs.elevatorPosition = 200;
-                break;
-            case L3:
-                inputs.elevatorPosition = 300;
-                break;
-            case L4:
-                inputs.elevatorPosition = 400;
-                break;
-            default:
-                break;
-        }
+        
+        //could make this the difference between upper and lower
+        
+        inputs.desiredElevatorPosition = position.lowerBound;
+           
+        
     }
 
     @AutoLogOutput
@@ -88,11 +86,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public enum ElevatorPosition {
         //! TODO Change positions
-        STOWED(-20, 20),
-        L1(80, 120),
-        L2(180, 220),
-        L3(280, 320),
-        L4(380, 420);
+        STOWED(-0.3, 0.2),
+        L1(3.5, 3.7),
+        L2(7.3, 7.5),
+        L3(8.5, 9),
+        L4(11, 11.5);
 
         public double lowerBound;
         public double upperBound;
@@ -107,5 +105,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             return over && under;
         }
         
+    }
+
+    public void ResetElevatorZero(){
+        io.resetElevatorZero();
     }
 }

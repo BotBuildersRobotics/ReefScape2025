@@ -51,8 +51,7 @@ public class IntakeOnTillBeamBreakCommand extends Command
       if(!intakeSubSystem.isBeamBreakOneTripped()){
          effectorSubsystem.SetEndEffectorRollers(0);
           effectorSubsystem.setWantedState(EndEffectorState.IDLE);
-          //effectorSubsystem.SetEndEffectorArmPos(0);
-          //effectorSubsystem.SetEndEffectorPivotPos(15);
+         
          hasTrippedSensor = false;
          return true;
       }

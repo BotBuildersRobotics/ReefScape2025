@@ -47,18 +47,21 @@ public class EndEffectorSubsystem extends SubsystemBase {
    
         //this actually writes to the log file.
         io.updateInputs(inputs);
-       
+        inputs.desiredPivotPos = currentState.end_effector_pivot_angle;
+        inputs.desiredArmPos = currentState.end_effector_arm_angle;
+        SetEndEffectorArmPos();
+        SetEndEffectorPivotPos();
         Logger.processInputs("EndEffector", inputs);
 
     }
 
     public enum EndEffectorState 
     {
-        IDLE(10, 0.0),
-		INTAKE(-15,-15),
+        IDLE(10, 5),
+		INTAKE(-20,-13),
         L1_DEPOSIT(0,0),
-        L2_L3_DEPOSIT(0,0),
-        L4_DEPOSIT(105,55),
+        L2_L3_DEPOSIT(20,20),
+        L4_DEPOSIT(115,55),
 		REVERSE(.0,.0);
         
         public double end_effector_pivot_angle;
@@ -91,16 +94,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public void SetEndEffectorPivotPos(){
-        inputs.desiredPivotPos = currentState.end_effector_pivot_angle;
+       
         io.setEndEffectorPivotPosition(currentState.end_effector_pivot_angle);
     }
 
     public void SetEndEffectorArmPos(){
-        inputs.desiredArmPos = currentState.end_effector_arm_angle;
+       
         io.setArmPosition(currentState.end_effector_arm_angle);
     }
 
     public boolean isCoralInIntake() {
         return io.isCoralDetected();
     }
+
+   
 }

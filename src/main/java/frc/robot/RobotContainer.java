@@ -218,42 +218,38 @@ public class RobotContainer {
 		//simplePivotCommands.
 		driverControl.leftTrigger().onTrue(new IntakeReverseCommand(intakeSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		//driverControl.y().onTrue(new ElevatorL1Command(elevatorSubsystem));
+		
 		driverControl.y()
-		.onTrue(Commands.runOnce(() -> elevatorSubsystem.setVoltage(3)))
+		.onTrue(Commands.runOnce(() -> elevatorSubsystem.setVoltage(2)))
 		.onFalse(Commands.runOnce(() -> elevatorSubsystem.setVoltage(0)));
 		
-		driverControl.x().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
+		
 		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
 		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
 
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
+		operatorControl.a().onTrue(
+			superSystem.RunTargetElevator()
+		);
 
-		leds.coralStagedLed();
+		operatorControl.b().onTrue(
+			new ElevatorHomeCommand(elevatorSubsystem)
+		);
 
-		//driverControl.leftBumper()
-		//.onFalse(new EndEffectorPivotIntake(endEffectorSubsystem))
-		//.onTrue(new EndEffectorPivotL4(endEffectorSubsystem));
+		/*operatorControl.leftBumper().onTrue(
+			Commands.runOnce(() -> elevatorSubsystem.ResetElevatorZero())
+		);*/
+
 
 		driverControl.rightBumper()
-		.onTrue(new EndEffectorArmL4(endEffectorSubsystem))
-		.onFalse(new EndEffectorArmIntake(endEffectorSubsystem));
-
-		//driverControl.leftBumper().onTrue(new EndEffectorRollerReverse(endEffectorSubsystem))
-		//.onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
+		.onTrue(new EndEffectorRollerReverse(endEffectorSubsystem)).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
+		
 
 		driverControl.rightTrigger().onTrue(
-			//new SequentialCommandGroup(
-			//	new EndEffectorPivotIntake(endEffectorSubsystem),
-			//new ParallelCommandGroup(
-				//Commands.runOnce( () -> new EndEffectorRollerReverse(endEffectorSubsystem)).withTimeout(1),
-			//	new EndEffectorRollerReverse(endEffectorSubsystem),
-				
+					
 				new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem)
-				//superSystem.IntakeIntoEndEffector()
-
-			//))
+			
 			
 			).onFalse(
 				new ParallelCommandGroup(				

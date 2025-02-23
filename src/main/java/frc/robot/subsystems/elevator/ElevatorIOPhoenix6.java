@@ -21,9 +21,11 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
     private DigitalInput elevatorBeamBreak;
 
-    private double inputRotations = 0;
+ 
 
     private MotionMagicExpoTorqueCurrentFOC moveRequest = new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
+
+    private MotionMagicVoltage mmVoltage = new MotionMagicVoltage(0);
 
     //this is a TalonFX implementation of our elevator
     //we could in theory write one for REV motors but we love krakens so hello TalonFX.
@@ -78,10 +80,10 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
         inputs.elevatorRightPosition = elevatorRight.getPosition().getValueAsDouble();
         inputs.elevatorRightCurrent = elevatorRight.getSupplyCurrent().getValueAsDouble();
 
-        double desiredRotations = inputs.elevatorPosition;
+        double desiredRotations = inputs.desiredElevatorPosition;
 
         SmartDashboard.putNumber("DesiredRotations", desiredRotations);
-        //elevatorRight.setControl(new MotionMagicVoltage(desiredRotations));
+        elevatorRight.setControl(mmVoltage.withPosition(desiredRotations).withSlot(0).withEnableFOC(true));
        
         //elevatorRight.setControl(moveRequest.withPosition(desiredRotations));
        
@@ -89,6 +91,13 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
     public void setVoltage(Voltage volts){
         elevatorRight.setControl(new VoltageOut(volts));
+    }
+
+    @Override
+    public void resetElevatorZero()
+    {
+        elevatorRight.setPosition(0);
+        elevatorLeft.setPosition(0);
     }
 
    

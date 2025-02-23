@@ -34,7 +34,7 @@ public interface ElevatorIO {
 
         public boolean elevatorBeamBreakTripped = false;
 
-        public double elevatorPosition = 0.0;
+        public double desiredElevatorPosition = 0.0;
       
     }
 
@@ -42,5 +42,7 @@ public interface ElevatorIO {
     //as they are driven by a sprocket, but we could do approx.
     default void setElevatorPosition(double position) {}
     default void setVoltage(Voltage volts){}
+
+    default void resetElevatorZero(){}
 
 }

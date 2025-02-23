@@ -20,7 +20,7 @@ public class EndEffectorRollerReverse extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.REVERSE);
-   
+    effectorSubSystem.SetEndEffectorRollers(-2);
   }
 
   @Override

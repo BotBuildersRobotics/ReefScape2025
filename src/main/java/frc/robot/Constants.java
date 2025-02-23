@@ -84,36 +84,28 @@ public final class Constants {
 
       config.Slot0 = new Slot0Configs();
       
-      config.Slot0.kP = 0.5;
-      config.Slot0.kI = 0;
-      config.Slot0.kD = 0;
+      config.Slot0.kP = 9.5;
+      //config.Slot0.kI = 0;
+      config.Slot0.kD = 0.01;
       config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
-      //config.Slot0.kS = 0.3;
-     // config.Slot0.kV = 0.001;
-      config.Slot0.kG = 0.3; //volts to overcome gravity
-      config.Slot0.kS = 1.8; // volts to get over the static friction
-      config.Slot0.kV = 0.001;// volts to get velocity of 1 rps
-      config.Slot0.kA = 0; //volts for accel of 
-      config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+     
+      config.Slot0.kV = 0.004;
+      
+      config.Slot0.kG = 0.35; //volts to overcome gravity
+      
+      config.Slot0.kS = 0.55; // volts to get over the static friction
+    
+      config.Slot0.kA = 0.55; //volts for accel 
+     
 
 
         //motion magic
 
-      config.MotionMagic = new MotionMagicConfigs();
-      config.MotionMagic.MotionMagicAcceleration = 400;
-      config.MotionMagic.MotionMagicCruiseVelocity = 1100;
-      
-      config.MotionMagic.MotionMagicExpo_kV = 0.12;
-      
-      
+        MotionMagicConfigs mm = config.MotionMagic;
+      mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(180)) 
+      .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(180))
      
-      config.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(80)).withPeakReverseTorqueCurrent(Amps.of(-80));
-
-      /*config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
-      config.ClosedLoopRamps .DutyCycleClosedLoopRampPeriod = 0.02;
-      config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
-      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;*/
-
+      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(80));
 
 
       return config;
@@ -162,7 +154,7 @@ public final class Constants {
 
       Slot0Configs slot0 = config.Slot0;
       slot0.kS = 0.99; //  overcome static friction
-      slot0.kA = 0.001;
+     
      // slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
       slot0.kA = 0.02; // An acceleration of 1 rps/s requires 0.02 V output
       slot0.kP = 2.5; // 

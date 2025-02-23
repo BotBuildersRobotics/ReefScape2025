@@ -91,8 +91,9 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
         inputs.armPivotPosition = endEffectorArm.getPosition().getValueAsDouble();
 
-        setEndEffectorPivotPosition(inputs.desiredPivotPos);
         setArmPosition(inputs.desiredArmPos);
+        setEndEffectorPivotPosition(inputs.desiredPivotPos);
+       
 
         inputs.isBeamBreakConnected = BaseStatusSignal.refreshAll(
                         effectorBeamBreak.getDistance()
@@ -112,14 +113,14 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
     public void setEndEffectorPivotPosition(double angle){
         //todo: work out the angle
-        // 12:56 -> 23:29 = 
-        // 4.6 * 1.26 = 5.8  rotations of motor to the full rotation of the pivot.
-        
+        // 12:56 -> 15:55 -> 16:20 = 
+        // 4.6 * 3.6 * 1.25 = 21.3  rotations of motor to the full rotation of the pivot.
+        //0.0575
         //we set this up in the motor config.
         //endEffectorPivot.setControl(new PositionDutyCycle(Angle.ofBaseUnits(angle, Units.Degrees)));
         SmartDashboard.putNumber("Effector Pivot", Angle.ofBaseUnits(angle, Degrees).baseUnitMagnitude());
         //endEffectorPivot.setControl(pivotMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
-        endEffectorPivot.setControl(pivotMotionMagic.withPosition(0.016 * angle).withSlot(0));
+        endEffectorPivot.setControl(pivotMotionMagic.withPosition(0.059 * angle).withSlot(0));
     }
 
     public void setArmPosition(double angle){
@@ -139,4 +140,6 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         //TODO: We could use the Units and Measure classes in WPI to make this nicer.
         return effectorBeamBreak.getDistance(true).getValueAsDouble() <= Constants.EndEffectorConstants.CORAL_DETECT_MIN_DISTANCE_MM;
     }
+
+    
 }

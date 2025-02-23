@@ -49,4 +49,6 @@ public interface EndEffectorIO {
 
     default boolean isCoralDetected(){return false;}
 
+    
+
 }

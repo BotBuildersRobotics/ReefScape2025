@@ -1,17 +1,24 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.elevator.ElevatorL2Command;
 import frc.robot.commands.elevator.ElevatorL3Command;
 import frc.robot.commands.elevator.ElevatorL4Command;
+import frc.robot.commands.intake.EndEffectorArmL2;
+import frc.robot.commands.intake.EndEffectorArmL4;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -40,7 +47,7 @@ public class SuperSystem extends SubsystemBase {
 
     public static SuperSystem mInstance;
 
-    ReefBranchLevel desiredReefLevel = ReefBranchLevel.L4;
+    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L2; //TODO:
 
     LightState desiredLightState = LightState.OFF;
 
@@ -90,21 +97,38 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public Command RunTargetElevator(){
-        if(desiredReefLevel == ReefBranchLevel.L4){
-            return new ElevatorL4Command(elevator);
+
+        return new SelectCommand<>
+        (
+            Map.ofEntries
+            (
+                Map.entry(ReefBranchLevel.L1, new ElevatorL1Command(elevator, effector)),
+                Map.entry(ReefBranchLevel.L2, new ElevatorL2Command(elevator, effector)),
+                Map.entry(ReefBranchLevel.L3, new ElevatorL3Command(elevator, effector)),
+                Map.entry(ReefBranchLevel.L4, new ElevatorL4Command(elevator, effector))),
+            this::getDesiredScoringLevel
+        );
+       
+       /* 
+            SmartDashboard.putString("Actioned Level", SuperSystem.desiredReefLevel.toString());
+        // TODO: Test each one
+        if(SuperSystem.desiredReefLevel == ReefBranchLevel.L4){
+          //  return new ElevatorL4Command(elevator);
+           return new ElevatorL2Command(elevator, effector); //TODO:
         }
-        else if(desiredReefLevel == ReefBranchLevel.L3){
-            return new ElevatorL3Command(elevator);
+        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L3){
+           // return new ElevatorL3Command(elevator);
+            return new ElevatorL2Command(elevator, effector);//TODO:
         }
-        else if(desiredReefLevel == ReefBranchLevel.L2){
-            return new ElevatorL2Command(elevator);
+        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L2){
+            return new ElevatorL2Command(elevator, effector);
         }
-        else if(desiredReefLevel == ReefBranchLevel.L1){
-            return new ElevatorL1Command(elevator);
+        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L1){
+            return new ElevatorL1Command(elevator, effector);
         }
-        else{
-            return new ElevatorHomeCommand(elevator);
-        }
+        
+        return new ElevatorHomeCommand(elevator);
+        */
        
     }
 

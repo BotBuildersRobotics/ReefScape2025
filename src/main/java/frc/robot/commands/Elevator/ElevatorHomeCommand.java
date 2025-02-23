@@ -19,6 +19,6 @@ public class ElevatorHomeCommand extends Command
 
   @Override
   public void initialize() {
-    elevatorSubsystem.setElevatorPosition(ElevatorPosition.STOWED);
+    elevatorSubsystem.setWantedState(ElevatorPosition.STOWED);
   }
 }
