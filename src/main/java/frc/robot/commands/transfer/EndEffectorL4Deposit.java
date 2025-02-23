@@ -17,6 +17,6 @@ public class EndEffectorL4Deposit extends Command
   @Override
   public void initialize() {
     endEffectorSubsystem.setWantedState(EndEffectorState.L4_DEPOSIT);
-    endEffectorSubsystem.SetEndEffectorRollers();
+    
   }
 }

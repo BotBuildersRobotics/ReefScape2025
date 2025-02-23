@@ -18,9 +18,6 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     private DigitalInput intakeBeamBreakOne;
     private DigitalInput intakeBeamBreakTwo;
 
-    private double intakeVoltage = 0;
-    private double transferVoltage = 0;
-    
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public IntakeIOPhoenix6() {
@@ -80,17 +77,14 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
     @Override
     public void setIntakeDutyCycle(double voltage) {
-        //store this for future logging.
-        this.intakeVoltage = voltage;
-        //simple way to set the motor value.
+      
         SmartDashboard.putNumber("Intake Percent", voltage);
         intakeRollersFx.setControl(new VoltageOut(voltage));
     }
 
     @Override
     public void setTransferDutyCycle(double voltage) {
-        //store this for future logging.
-        this.transferVoltage = voltage;
+        
         //simple way to set the motor value.
         transferRollersFx.setControl(new VoltageOut(voltage));
     }

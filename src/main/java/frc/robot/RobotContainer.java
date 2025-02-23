@@ -39,7 +39,6 @@ import frc.robot.commands.intake.EndEffectorArmL4;
 import frc.robot.commands.intake.EndEffectorPivotIntake;
 import frc.robot.commands.intake.EndEffectorPivotL4;
 import frc.robot.commands.intake.EndEffectorRollerOff;
-import frc.robot.commands.intake.EndEffectorRollerOn;
 import frc.robot.commands.intake.EndEffectorRollerReverse;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;

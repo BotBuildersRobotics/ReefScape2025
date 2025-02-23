@@ -17,6 +17,6 @@ public class EndEffectorRollerOff extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.IDLE);
-    effectorSubSystem.SetEndEffectorRollers();
+   
   }
 }

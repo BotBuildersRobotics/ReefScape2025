@@ -3,6 +3,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
@@ -27,28 +28,31 @@ public class IntakeOnTillBeamBreakCommand extends Command
   public void initialize() {
     intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
     //hasTrippedSensor = false;
-    effectorSubsystem.SetEndEffectorArmPos(-15);
-    effectorSubsystem.SetEndEffectorPivotPos(-10);
+    //effectorSubsystem.SetEndEffectorArmPos(-15);
+    //effectorSubsystem.SetEndEffectorPivotPos(-10);
+
+    effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
   }
 
   @Override
   public boolean isFinished() {
     if(intakeSubSystem.isBeamBreakOneTripped()){
       intakeSubSystem.setWantedState(IntakeSystemState.STARS);
-      effectorSubsystem.EndEffectorRollersOn(-5);
+      effectorSubsystem.SetEndEffectorRollers(-5);
       
       hasTrippedSensor = true;
     
     }else{
       
-      effectorSubsystem.EndEffectorRollersOn(0);
+      effectorSubsystem.SetEndEffectorRollers(0);
     }
 
     if(hasTrippedSensor){
       if(!intakeSubSystem.isBeamBreakOneTripped()){
-         effectorSubsystem.EndEffectorRollersOn(0);
-          effectorSubsystem.SetEndEffectorArmPos(0);
-          effectorSubsystem.SetEndEffectorPivotPos(15);
+         effectorSubsystem.SetEndEffectorRollers(0);
+          effectorSubsystem.setWantedState(EndEffectorState.IDLE);
+          //effectorSubsystem.SetEndEffectorArmPos(0);
+          //effectorSubsystem.SetEndEffectorPivotPos(15);
          hasTrippedSensor = false;
          return true;
       }

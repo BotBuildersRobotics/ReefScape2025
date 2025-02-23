@@ -17,7 +17,7 @@ public class EndEffectorRollerIntake extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
-    effectorSubSystem.SetEndEffectorRollers();
+    
   }
 
   @Override

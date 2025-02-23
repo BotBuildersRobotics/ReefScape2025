@@ -54,21 +54,21 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(0.0, 0.0,.0),
-		INTAKE(20,.0,.90),
-        L1_DEPOSIT(0,0,0),
-        L2_L3_DEPOSIT(0,0,0),
-        L4_DEPOSIT(40,45,0),
-		REVERSE(.0,.0,.0);
+        IDLE(10, 0.0),
+		INTAKE(-15,-15),
+        L1_DEPOSIT(0,0),
+        L2_L3_DEPOSIT(0,0),
+        L4_DEPOSIT(105,55),
+		REVERSE(.0,.0);
         
-        public double end_effector_duty_cycle;
-        public double end_effector_angle;
-        public double arm_pos;
-
-		EndEffectorState(double end_effector_duty_cycle, double end_effector_angle, double arm_pos) {
-			this.end_effector_duty_cycle = end_effector_duty_cycle;
-            this.end_effector_angle = end_effector_angle;
-            this.arm_pos = arm_pos;
+        public double end_effector_pivot_angle;
+        public double end_effector_arm_angle;
+       
+        
+		EndEffectorState(double armAngle, double pivotAngle) {
+			this.end_effector_arm_angle = armAngle;
+            this.end_effector_pivot_angle = pivotAngle;
+           
             
 		}
     }
@@ -86,18 +86,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     }
 
-    public void SetEndEffectorRollers(){
-        io.setMotorRollerDutyCycle(currentState.end_effector_duty_cycle);
+    public void SetEndEffectorRollers(double dutycycle){
+        io.setMotorRollerDutyCycle(dutycycle);
     }
 
     public void SetEndEffectorPivotPos(){
-        inputs.desiredArmPivotPos = currentState.end_effector_angle;
-        io.setEndEffectorPivotPosition(currentState.end_effector_angle);
+        inputs.desiredPivotPos = currentState.end_effector_pivot_angle;
+        io.setEndEffectorPivotPosition(currentState.end_effector_pivot_angle);
     }
 
     public void SetEndEffectorArmPos(){
-        inputs.desiredArmPos = currentState.arm_pos;
-        io.setArmPosition(currentState.arm_pos);
+        inputs.desiredArmPos = currentState.end_effector_arm_angle;
+        io.setArmPosition(currentState.end_effector_arm_angle);
     }
 
     public boolean isCoralInIntake() {

@@ -34,8 +34,7 @@ public class SuperSystem extends SubsystemBase {
     private PivotSubsystem pivot = PivotSubsystem.getInstance();
     private LightsSubsystem leds = LightsSubsystem.getInstance();
     private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
-    private EndEffectorSubsystem effector = EndEffectorSubsystem.getInstance();
-    
+   
 
     private CommandSwerveDrivetrain swerveDriveTrain = CommandSwerveDrivetrain.getInstance();
 
@@ -167,41 +166,5 @@ public class SuperSystem extends SubsystemBase {
         return desiredLightState;
     }
 
-
-
-
-    public LightState GetLightState() {
-        if (intake.getCurrentState() == IntakeSystemState.INTAKE || intake.getCurrentState() == IntakeSystemState.HUMAN_PLAYER) {
-            desiredLightState = LightState.ORANGE;
-        } else if (intake.getCurrentState() == IntakeSystemState.IDLE) {
-            if (intake.isBeamBreakOneTripped()) {
-                if (finishedAutoAlignment) {
-                    desiredLightState = LightState.GREEN;
-                } else {
-                    desiredLightState = LightState.BLUE;
-                }
-            } else {
-                desiredLightState = LightState.OFF;
-            }
-        }
-        return desiredLightState;
-    }
-
-
-
-    public Command IntakeIntoEndEffector(){
-
-        return Commands.run( () ->{
-
-            if(intake.isBeamBreakOneTripped()){
-                intake.setWantedState(IntakeSystemState.STARS);
-                effector.EndEffectorRollersOn(80);
-            }else{
-                intake.setWantedState(IntakeSystemState.INTAKE);
-            }
-        });
-    }
-
-    
 
 }

@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(IntakeIO io) {
         //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
         this.io = io;
-        this.pivotSubsystem = PivotSubsystem.getInstance();
+        
 
     }
 
@@ -76,10 +76,10 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setWantedState(IntakeSystemState state) {
-        if(!pivotSubsystem.isAtLocation(PivotSystemState.STOWED)) {
+      /*   if(!pivotSubsystem.isAtLocation(PivotSystemState.STOWED)) {
             currentState = state;
-        }
-
+        }*/
+            currentState = state;
     }
     
     @Override

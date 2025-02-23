@@ -19,9 +19,9 @@ public class IntakePivotCommand  extends Command
     pivotSubSystem.setWantedState(PivotSystemState.INTAKE);
   }
 
-  @Override
+ /* @Override
   public boolean isFinished(){
-    return pivotSubSystem.isAtLocation(PivotSystemState.INTAKE);
-  }
+    return true;//pivotSubSystem.isAtLocation(PivotSystemState.INTAKE);
+  }*/
 
 }

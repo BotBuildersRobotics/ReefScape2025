@@ -20,13 +20,13 @@ public class EndEffectorRollerReverse extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.REVERSE);
-    effectorSubSystem.SetEndEffectorRollers();
+   
   }
 
   @Override
   public void end(boolean interupted)
   {
     effectorSubSystem.setWantedState(EndEffectorState.IDLE);
-    effectorSubSystem.SetEndEffectorRollers();
+   
   }
 }
