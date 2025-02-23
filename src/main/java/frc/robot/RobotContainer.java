@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,6 +33,7 @@ import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
+import frc.robot.commands.drive.ControllerRumbleCommand;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.intake.EndEffectorArmIntake;
@@ -186,6 +188,10 @@ public class RobotContainer {
 		// setup our control scheme here.
 		// Note that X is defined as forward according to WPILib convention,
 		// and Y is defined as to the left according to WPILib convention.
+		
+		//resets the field position
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
 		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -201,34 +207,20 @@ public class RobotContainer {
 						() -> point.withModuleDirection(new Rotation2d(-driverControl.getLeftY(),
 								-driverControl.getLeftX()))));
 
-		driverControl.pov(0)
-				.whileTrue(drivetrain.applyRequest(
-						() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-		driverControl.pov(180)
-				.whileTrue(drivetrain.applyRequest(
-						() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
-
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));*/
-
-		//simple intake controls
-		/*driverControl.rightTrigger()
-				.onTrue(new IntakeOnCommand(intakeSubsystem))
-				.onFalse(new IntakeIdleCommand(intakeSubsystem));*/
-
-		//simplePivotCommands.
-		driverControl.leftTrigger().onTrue(new IntakeReverseCommand(intakeSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
-
+		*/
 		
-		driverControl.y()
-		.onTrue(Commands.runOnce(() -> elevatorSubsystem.setVoltage(2)))
-		.onFalse(Commands.runOnce(() -> elevatorSubsystem.setVoltage(0)));
+		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
 		
-		
-		driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
-		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));
+		//TODO: Ethan - add a toogle for the stow and pivotvon X button.
+
+		//driverControl.x()
+
+		/*driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
+		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));*/
 
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
+		
 		operatorControl.a().onTrue(
 			superSystem.RunTargetElevator()
 		);
@@ -245,11 +237,18 @@ public class RobotContainer {
 		driverControl.rightBumper()
 		.onTrue(new EndEffectorRollerReverse(endEffectorSubsystem)).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
 		
-
+		//outtake
+		driverControl.leftTrigger()
+		.onTrue(new IntakeReverseCommand(intakeSubsystem))
+		.onFalse(new IntakeIdleCommand(intakeSubsystem));
+		
+		//intake
 		driverControl.rightTrigger().onTrue(
 					
-				new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem)
-			
+				new SequentialCommandGroup(
+					new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem),
+					new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
+				)
 			
 			).onFalse(
 				new ParallelCommandGroup(				

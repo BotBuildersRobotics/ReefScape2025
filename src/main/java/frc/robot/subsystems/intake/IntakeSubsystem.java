@@ -21,8 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     //notice the static, this is shared 
     public static IntakeSubsystem mInstance;
-    public PivotSubsystem pivotSubsystem;
-
+    
     //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
     //this is a singleton pattern
 	public static IntakeSubsystem getInstance() {

@@ -109,27 +109,7 @@ public class SuperSystem extends SubsystemBase {
             this::getDesiredScoringLevel
         );
        
-       /* 
-            SmartDashboard.putString("Actioned Level", SuperSystem.desiredReefLevel.toString());
-        // TODO: Test each one
-        if(SuperSystem.desiredReefLevel == ReefBranchLevel.L4){
-          //  return new ElevatorL4Command(elevator);
-           return new ElevatorL2Command(elevator, effector); //TODO:
-        }
-        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L3){
-           // return new ElevatorL3Command(elevator);
-            return new ElevatorL2Command(elevator, effector);//TODO:
-        }
-        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L2){
-            return new ElevatorL2Command(elevator, effector);
-        }
-        else if(SuperSystem.desiredReefLevel == ReefBranchLevel.L1){
-            return new ElevatorL1Command(elevator, effector);
-        }
-        
-        return new ElevatorHomeCommand(elevator);
-        */
-       
+      
     }
 
     public Command ToggleReefHeight(){
@@ -144,7 +124,7 @@ public class SuperSystem extends SubsystemBase {
         
         //TODO: Need to make sure no coral is in the transfer
         //then pivot to a height that is correct for the coral station
-        //then we intake just the front rollers (no stars)
+      //then we intake just the front rollers (no stars)
         //once the sensor triggers in the intake, 
         //then we need to pivot down, so the coral can go through the transfer
         //we then start the transfer stars

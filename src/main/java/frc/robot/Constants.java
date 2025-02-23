@@ -194,7 +194,7 @@ public final class Constants {
     slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
     slot0.kP = 5.2; // 
    // slot0.kI = 0; // No output for integrated error
-    slot0.kD = 0.05; 
+    slot0.kD = 0.15; 
     slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
 
