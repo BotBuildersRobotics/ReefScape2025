@@ -1,0 +1,258 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DepositPreload - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorL4Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Command"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorHomeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CollectTop - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOnCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeIdleCommand"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DepositTop - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorL4Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Command"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorHomeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CollectMid - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOnCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeIdleCommand"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": " DepositMid - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorL4Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Command"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorHomeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CollectLow - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOnCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeIdleCommand"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DepositLow - Field"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorL4Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Command"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevatorHomeCommand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

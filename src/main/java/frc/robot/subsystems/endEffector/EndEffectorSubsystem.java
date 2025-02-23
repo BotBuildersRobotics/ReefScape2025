@@ -1,9 +1,13 @@
 package frc.robot.subsystems.endEffector;
 
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-
+import frc.robot.subsystems.endEffector.EndEffectorIO.EndEffectorIOInputs;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 
 
@@ -48,17 +52,55 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     }
 
-    public void EndEffectorRollersOn(double dutycycle){
-        io.setMotorRollerDutyCycle(dutycycle);
+    public enum EndEffectorState 
+    {
+        IDLE(0.0, 0.0,.0),
+		INTAKE(20,.0,.90),
+        L1_DEPOSIT(0,0,0),
+        L2_L3_DEPOSIT(0,0,0),
+        L4_DEPOSIT(40,45,0),
+		REVERSE(.0,.0,.0);
+        
+        public double end_effector_duty_cycle;
+        public double end_effector_angle;
+        public double arm_pos;
+
+		EndEffectorState(double end_effector_duty_cycle, double end_effector_angle, double arm_pos) {
+			this.end_effector_duty_cycle = end_effector_duty_cycle;
+            this.end_effector_angle = end_effector_angle;
+            this.arm_pos = arm_pos;
+            
+		}
+    }
+    
+    private EndEffectorState currentState = EndEffectorState.IDLE;
+
+    public EndEffectorState getCurrentState()
+    {
+        return currentState;
     }
 
-    public void SetEndEffectorPivotPos(double angle){
-        inputs.desiredPivotPos = angle;
-        io.setEndEffectorPivotPosition(angle);
+    public void setWantedState(EndEffectorState state) {
+
+        currentState = state;
+
     }
 
-    public void SetEndEffectorArmPos(double angle){
-        inputs.desiredArmPos = angle;
-        io.setArmPosition(angle);
+    public void SetEndEffectorRollers(){
+        io.setMotorRollerDutyCycle(currentState.end_effector_duty_cycle);
+    }
+
+    public void SetEndEffectorPivotPos(){
+        inputs.desiredArmPivotPos = currentState.end_effector_angle;
+        io.setEndEffectorPivotPosition(currentState.end_effector_angle);
+    }
+
+    public void SetEndEffectorArmPos(){
+        inputs.desiredArmPos = currentState.arm_pos;
+        io.setArmPosition(currentState.arm_pos);
+    }
+
+    public boolean isCoralInIntake() {
+        return io.isCoralDetected();
     }
 }

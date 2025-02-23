@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import java.security.cert.PKIXBuilderParameters;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -8,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
+import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
 
 
 
@@ -17,6 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     //notice the static, this is shared 
     public static IntakeSubsystem mInstance;
+    public PivotSubsystem pivotSubsystem;
 
     //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
     //this is a singleton pattern
@@ -40,6 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(IntakeIO io) {
         //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
         this.io = io;
+        this.pivotSubsystem = PivotSubsystem.getInstance();
 
     }
 
@@ -70,8 +76,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setWantedState(IntakeSystemState state) {
-
-        currentState = state;
+        if(!pivotSubsystem.isAtLocation(PivotSystemState.STOWED)) {
+            currentState = state;
+        }
 
     }
     
@@ -97,6 +104,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean isBeamBreakOneTripped() {
         return io.getBeamBreakOneState();
     }
+    
+    public boolean isBeamBreakTwoTripped() {
+        return io.getBeamBreakTwoState();
+    }
 
+   
    
 }

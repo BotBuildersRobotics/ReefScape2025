@@ -1,32 +1,27 @@
 package frc.robot.commands.intake;
 
-import java.net.http.HttpClient.Redirect;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-//designed to open the rollers
-public class EndEffectorRollerReverse extends Command
+public class EndEffectorRollerIntake extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorRollerReverse(EndEffectorSubsystem subsystem) {
+  public EndEffectorRollerIntake(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
-      
+      // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
   }
 
   @Override
   public void initialize() {
-    effectorSubSystem.setWantedState(EndEffectorState.REVERSE);
+    effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
     effectorSubSystem.SetEndEffectorRollers();
   }
 
   @Override
-  public void end(boolean interupted)
-  {
-    effectorSubSystem.setWantedState(EndEffectorState.IDLE);
-    effectorSubSystem.SetEndEffectorRollers();
+  public boolean isFinished() {
+    return effectorSubSystem.isCoralInIntake();
   }
 }

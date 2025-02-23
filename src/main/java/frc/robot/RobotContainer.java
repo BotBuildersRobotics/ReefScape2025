@@ -24,6 +24,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.elevator.ElevatorHomeCommand;
+import frc.robot.commands.elevator.ElevatorL1Command;
+import frc.robot.commands.intake.IntakeIdleCommand;
+import frc.robot.commands.intake.IntakeOnCommand;
+import frc.robot.commands.pivot.IntakePivotCommand;
+import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.PathFindToPose;
@@ -41,6 +47,7 @@ import frc.robot.commands.intake.IntakeOnTillBeamBreakCommand;
 import frc.robot.commands.intake.IntakeReverseCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
+import frc.robot.commands.leds.SetLedCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -80,6 +87,8 @@ public class RobotContainer {
 	private LightsSubsystem leds = LightsSubsystem.getInstance();
 
 	private EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
+
+	private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
 
 	private SuperSystem superSystem = SuperSystem.getInstance();
 
@@ -148,6 +157,9 @@ public class RobotContainer {
 		}*/
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
+		if(SmartDashboard.containsKey("Auto Mode")) {
+			SmartDashboard.getEntry("Auto Mode").close();
+		}
 		SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
@@ -279,7 +291,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		// An example command will be run in autonomous
 
-		return new SequentialCommandGroup(
+		/*return new SequentialCommandGroup(
 
 				new PathFindToPose(drivetrain, () -> {
 					return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));
@@ -288,7 +300,8 @@ public class RobotContainer {
 				// drivetrain.applyRequest(() -> lateralMovement.withVelocityX( 25))
 				// ,
 				new WaitCommand(1));
-		// return autoChooser.getSelected();
+		*/
+		return autoChooser.getSelected();
 		// return Commands.print("Auto command selected");
 	}
 }
