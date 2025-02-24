@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,7 +64,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
+import frc.robot.utils.ButtonMapping;
 import frc.robot.utils.JoystickInterruptible;
+import frc.robot.utils.ButtonMapping.MultiFunctionButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -211,9 +214,10 @@ public class RobotContainer {
 
 		*/
 		
-		driverControl.x().onTrue(new IntakePivotCommand(pivotSubsystem));
-
-		//TODO: Ethan - add a toogle for the stow and pivotvon X button.
+		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
+		
+		ButtonMapping driverMap = new ButtonMapping(driverControl);
+		driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
 
 		//driverControl.x()
 

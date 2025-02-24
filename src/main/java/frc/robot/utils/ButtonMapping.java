@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+//TODO: I think this can be made to include single function buttons for consistency in the mappings, but I dont have the time as of writing this
+//Also I'm aware this is overengineered, the goal was for maximum functionality
+
 public class ButtonMapping {
     CommandXboxController controller;
 
@@ -12,48 +15,75 @@ public class ButtonMapping {
         this.controller = controller;
     }
 
-    public class MultiFunctionButton {
-        final Command function1;
-        final Command function2;
+    public class MultiFunctionButton{
+        final Command[] functions;
         final Trigger button;
-        public MultiFunctionButton(Trigger button, Command function1, Command function2) {
+
+        public MultiFunctionButton(Trigger button, Command... functions) {
             this.button = button;
-            this.function1 = function1;
-            this.function2 = function2;
+            this.functions = functions;
         }
 
-        public Command current_function(boolean inverted) {
-            if(inverted) {
-                return function2;
-            }
-            else {
-                return function1;
-            }
+        public Command current_function(int state) {
+            return functions[state];
         }
     }
 
-    public class FunctionSwitchingButton {
+    public class FunctionRotateButton {
         final Trigger button;
         final MultiFunctionButton[] associatedButtons;
-        public boolean isAlternate = false;
+        public int state = 0;
+        final int lastState;
 
-        public FunctionSwitchingButton(Trigger button, MultiFunctionButton[] associatedButtons) {
+        public FunctionRotateButton(Trigger button, MultiFunctionButton... associatedButtons) {
             this.button = button;
             this.associatedButtons = associatedButtons;
-            button.onTrue(new InstantCommand(() -> this.invert()));
+            this.lastState = associatedButtons.length;
+            this.button.onTrue(new InstantCommand(() -> this.swap()));
         }
 
-        public void invert() {
-            isAlternate = !isAlternate;
-            for(MultiFunctionButton multibutton : associatedButtons) {
-                multibutton.button.onTrue(multibutton.current_function(isAlternate));
+        public void swap() {
+            state++;
+            if(state > lastState) {
+                state = 0;
+            }
+            for(MultiFunctionButton multiButton : associatedButtons) {
+                multiButton.button.onTrue(multiButton.current_function(state));
             }
         }
     }
 
-    MultiFunctionButton aButton = new MultiFunctionButton(controller.a(), null, null);
-    MultiFunctionButton bButton = new MultiFunctionButton(controller.b(), null, null);
-    MultiFunctionButton xButton = new MultiFunctionButton(controller.x(), null, null);
-    MultiFunctionButton yButton = new MultiFunctionButton(controller.y(), null, null);
-    FunctionSwitchingButton inverter = new FunctionSwitchingButton(controller.leftTrigger(), new MultiFunctionButton[] {aButton, bButton, xButton, yButton}); //TODO: Change to a dpad button
+    public class SelfSwappingButton {
+        final Trigger button;
+        final Command[] functions;
+        public int state = 0;
+        final int lastState;
+
+        public SelfSwappingButton(Trigger button, Command... functions) {
+            this.button = button;
+            this.functions = functions;
+            this.lastState = functions.length;
+            this.button.onFalse(new InstantCommand(() -> swap()));
+        }
+
+        public void swap() {
+            state++;
+            if(state > lastState) {
+                state = 0;
+            }
+            button.onTrue(functions[state]);
+        }
+    }
+
+    public void createMapping(Trigger swappingButton, MultiFunctionButton... functionalButtons) {
+        new FunctionRotateButton(swappingButton, functionalButtons);
+    }
+
+    public MultiFunctionButton createButton(Trigger button, Command... functions) {
+        return new MultiFunctionButton(button, functions);
+    }
+
+    public void createSelfSwap(Trigger button, Command... functions) {
+        new SelfSwappingButton(button, functions);
+    }
 }
