@@ -36,12 +36,14 @@ import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.ControllerRumbleCommand;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
+import frc.robot.commands.intake.AlgaeIntake;
 import frc.robot.commands.intake.EndEffectorArmIntake;
 import frc.robot.commands.intake.EndEffectorArmL4;
 import frc.robot.commands.intake.EndEffectorPivotIntake;
 import frc.robot.commands.intake.EndEffectorPivotL4;
 import frc.robot.commands.intake.EndEffectorRollerOff;
 import frc.robot.commands.intake.EndEffectorRollerReverse;
+import frc.robot.commands.intake.HumanPlayerIntake;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.intake.IntakeOnTillBeamBreakCommand;
@@ -209,8 +211,8 @@ public class RobotContainer {
 
 		*/
 		
-		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
-		
+		driverControl.x().onTrue(new IntakePivotCommand(pivotSubsystem));
+
 		//TODO: Ethan - add a toogle for the stow and pivotvon X button.
 
 		//driverControl.x()
@@ -218,6 +220,10 @@ public class RobotContainer {
 		/*driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
 		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));*/
 
+		driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
+
+		operatorControl.povRight().onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
+		operatorControl.leftBumper().onTrue(new StowPivotCommand(pivotSubsystem));
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 		

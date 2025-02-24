@@ -89,7 +89,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         STOWED(-0.3, 0.2),
         L1(3.5, 3.7),
         L2(7.3, 7.5),
-        L3(8.5, 9),
+        L3(9, 9.2),
         L4(11, 11.5);
 
         public double lowerBound;
