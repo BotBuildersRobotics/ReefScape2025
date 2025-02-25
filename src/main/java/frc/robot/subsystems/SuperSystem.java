@@ -131,7 +131,9 @@ public class SuperSystem extends SubsystemBase {
             Map.ofEntries
             (
                 Map.entry(PivotSystemState.STOWED, new IntakePivotCommand(pivot)),
-                Map.entry(PivotSystemState.INTAKE, new StowPivotCommand(pivot))),
+                Map.entry(PivotSystemState.INTAKE, new StowPivotCommand(pivot)),
+                Map.entry(PivotSystemState.ALGAE, new StowPivotCommand(pivot)),
+                Map.entry(PivotSystemState.HUMAN_PLAYER, new StowPivotCommand(pivot))),
             this::getCurrentPivotState
         );
     }

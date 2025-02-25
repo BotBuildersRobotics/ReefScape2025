@@ -3,6 +3,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 
 //Interface to log the status of the elevator motors
 
@@ -44,5 +45,9 @@ public interface ElevatorIO {
     default void setVoltage(Voltage volts){}
 
     default void resetElevatorZero(){}
+
+    default void logMotors(SysIdRoutineLog log){}
+
+    default void voltageDrive(Voltage volts){}
 
 }

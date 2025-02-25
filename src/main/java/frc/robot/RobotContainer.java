@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.intake.IntakeIdleCommand;
@@ -206,11 +207,11 @@ public class RobotContainer {
 		
 		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
 		
-		ButtonMapping driverMap = new ButtonMapping(driverControl);
-		driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
+		//ButtonMapping driverMap = new ButtonMapping(driverControl);
+		//driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
 
 		//if the above doesn't work:
-		//driverControl.x().onTrue(superSystem.ToogleIntakePivot());
+		driverControl.x().onTrue(superSystem.ToogleIntakePivot());
 
 		driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
@@ -276,6 +277,15 @@ public class RobotContainer {
 		
 		driverControl.rightBumper().onTrue(new JoystickInterruptible(new TagAutoAlign(drivetrain), driverControl, 0.5));
 		
+
+		//For testing the elevator
+
+		//driverControl.a().onTrue(elevatorSubsystem.sysIdDynamic(Direction.kForward))
+		//.onFalse(elevatorSubsystem.sysIdDynamic(Direction.kReverse));
+
+		//driverControl.b().onTrue(elevatorSubsystem.sysIdQuasistatic(Direction.kForward))
+		//.onFalse(elevatorSubsystem.sysIdQuasistatic(Direction.kReverse));
+
 		drivetrain.registerTelemetry(logger::telemeterize);
 
 		

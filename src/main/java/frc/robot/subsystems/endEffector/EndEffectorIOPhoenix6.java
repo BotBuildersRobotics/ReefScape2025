@@ -68,7 +68,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         .disableBehavior(BehaviorWhenDisabled.kSupplyPower);
 
         //use our helpers to write config over the CAN Bus
-       // endEffectorRoller = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ROLLER);
+        endEffectorRoller = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ROLLER);
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
 
         //we store all of the current limits in the constants file

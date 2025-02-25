@@ -77,6 +77,11 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimitEnable = true;
       config.CurrentLimits.StatorCurrentLimit = 80;
 
+      config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 12;
+      config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.05;
+
       //want the motors to stop.
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -97,15 +102,19 @@ public final class Constants {
     
       config.Slot0.kA = 0.55; //volts for accel 
      
-
-
         //motion magic
 
-        MotionMagicConfigs mm = config.MotionMagic;
+      MotionMagicConfigs mm = config.MotionMagic;
       mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(180)) 
       .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(180))
      
       .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(80));
+
+      /*
+       *  config.MotionMagic.MotionMagicCruiseVelocity = 80;
+          config.MotionMagic.MotionMagicAcceleration = 187;
+          config.MotionMagic.MotionMagicJerk = 468;
+       */
 
 
       return config;

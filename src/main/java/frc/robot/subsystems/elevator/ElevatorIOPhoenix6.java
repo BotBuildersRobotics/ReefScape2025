@@ -7,9 +7,14 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -26,6 +31,9 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
     private MotionMagicExpoTorqueCurrentFOC moveRequest = new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
 
     private MotionMagicVoltage mmVoltage = new MotionMagicVoltage(0);
+
+  
+    private final MutVoltage m_appliedVoltage = Units.Volts.mutable(0);
 
     //this is a TalonFX implementation of our elevator
     //we could in theory write one for REV motors but we love krakens so hello TalonFX.
@@ -93,6 +101,11 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
         elevatorRight.setControl(new VoltageOut(volts));
     }
 
+    public void voltageDrive(Voltage drive) {
+        elevatorRight.setVoltage(drive.in(Units.Volts));
+       
+    }
+
     @Override
     public void resetElevatorZero()
     {
@@ -100,5 +113,19 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
         elevatorLeft.setPosition(0);
     }
 
+    public void logMotors(SysIdRoutineLog log) { 
+        log.motor("left-elevator")
+            .voltage(
+                m_appliedVoltage.mut_replace(
+                    elevatorLeft.get() * RobotController.getBatteryVoltage(), Units.Volts))
+            .angularPosition(elevatorLeft.getPosition().getValue())
+            .angularVelocity(elevatorLeft.getVelocity().getValue());
+        log.motor("right-elevator")
+            .voltage(
+                m_appliedVoltage.mut_replace(
+                    elevatorRight.get() * RobotController.getBatteryVoltage(), Units.Volts))
+            .angularPosition(elevatorRight.getPosition().getValue())
+            .angularVelocity(elevatorRight.getVelocity().getValue());
+  }
    
 }

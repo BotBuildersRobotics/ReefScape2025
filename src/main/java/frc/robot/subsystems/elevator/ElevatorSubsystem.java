@@ -4,7 +4,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 
 
@@ -110,4 +114,29 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void ResetElevatorZero(){
         io.resetElevatorZero();
     }
+
+       // Creates a SysIdRoutine
+    SysIdRoutine routine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(),
+          new SysIdRoutine.Mechanism(this::voltageDrive, this::logMotors, this));
+    
+    public void logMotors(SysIdRoutineLog log){
+        io.logMotors(log);
+    }
+
+    public void voltageDrive(Voltage volts){
+        io.voltageDrive(volts);
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) 
+    {
+        return routine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) 
+    {
+        return routine.dynamic(direction);
+    }
+
 }
