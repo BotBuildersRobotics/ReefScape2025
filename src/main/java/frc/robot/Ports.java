@@ -32,6 +32,9 @@ public class Ports {
   
     public static final CanDeviceId LEDS = new CanDeviceId(25, "canivore");
 
+
+    public static final CanDeviceId SERVO_HUB = new CanDeviceId(3, "rio");
+
 	public static final int PIGEON = 13;
 
 	public static final int INTAKE_BEAMBREAK_ONE = 0;

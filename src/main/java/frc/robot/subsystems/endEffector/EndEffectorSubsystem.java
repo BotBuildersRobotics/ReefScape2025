@@ -63,14 +63,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
         L1_DEPOSIT(0,0,1),
         L2_L3_DEPOSIT(20,20,1),
         L4_DEPOSIT(115,55,1),
-		REVERSE(.0,.0, 0);
+		REVERSE(.0,0, 0);
         
-        public double end_effector_pivot_angle;
+        public int end_effector_pivot_angle;
         public double end_effector_arm_angle;
         public double claw_position;
        
         
-		EndEffectorState(double armAngle, double pivotAngle, double claw_position) {
+		EndEffectorState(double armAngle, int pivotAngle, double claw_position) {
 			this.end_effector_arm_angle = armAngle;
             this.end_effector_pivot_angle = pivotAngle;
             this.claw_position = claw_position;
@@ -89,6 +89,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
         currentState = state;
 
+        if(currentState == EndEffectorState.INTAKE){
+            io.depowerPivotServos();
+        }
+
     }
 
     public void SetEndEffectorRollers(double dutycycle){
@@ -105,6 +109,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
         io.setArmPosition(currentState.end_effector_arm_angle);
     }
 
+    public void closeClaw(){
+        io.closeClaw();
+    }
+
+    public void openClaw(){
+        io.openClaw();
+    }
+
+    public boolean isArmInIntakePosition(){
+        //TODO: check to see if our arm is in position
+        return io.getArmAngle() <= EndEffectorState.INTAKE.end_effector_arm_angle + 5;
+    }
 
    
 }

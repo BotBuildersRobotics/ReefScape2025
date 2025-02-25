@@ -6,9 +6,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
 
@@ -50,8 +55,18 @@ public class AutoAlignPID extends Command {
    * @param targetPose The target pose for the robot to align to
    */
   public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, TagVisionSubsystem visionSubsystem, Pose2d targetPose) {
-   
-    this.Pose = targetPose;
+    
+
+    LimelightResults results =  LimelightHelpers.getLatestResults("limelight-back");
+
+     if (results.targets_Fiducials.length > 0) {
+        LimelightTarget_Fiducial tag = results.targets_Fiducials[0];
+         Pose3d robotPoseTag = tag.getRobotPose_TargetSpace();     // Robot's pose relative to tag
+       
+        this.Pose = new Pose2d(robotPoseTag.getX(), robotPoseTag.getY(), new Rotation2d( robotPoseTag.getRotation().getAngle()));
+        
+     }
+    
     this.swerveDrive = swerveDrive;
     this.visionSubsystem = visionSubsystem;
    

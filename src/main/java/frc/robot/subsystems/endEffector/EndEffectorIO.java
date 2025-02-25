@@ -17,7 +17,7 @@ public interface EndEffectorIO {
 
         public double armPivotPosition = 0.0;
         
-        public double desiredPivotPosition = 0;
+        public int desiredPivotPosition = 0;
 
         public double desiredClawPosition = 0;
 
@@ -32,9 +32,13 @@ public interface EndEffectorIO {
     
     default void closeClaw(){}
 
-    default void pivotEffector(double angle){}
+    default void pivotEffector(int angle){}
     
     default void setArmPosition(double angle){}
+
+    default void depowerPivotServos(){}
+
+    default double getArmAngle(){return 0;}
     
 
 }

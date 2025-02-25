@@ -40,6 +40,7 @@ import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.ControllerRumbleCommand;
 import frc.robot.commands.drive.PathFindToPose;
+import frc.robot.commands.drive.TagAutoAlign;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.intake.AlgaeIntake;
 import frc.robot.commands.intake.EndEffectorArmIntake;
@@ -131,7 +132,9 @@ public class RobotContainer {
 	public final CommandSwerveDrivetrain drivetrain =  TunerConstants.createDrivetrain();
 
 	private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
-			new VisionIOLimelight("limelight-back", drivetrain::getRotation)
+			new VisionIOLimelight("limelight-back", drivetrain::getRotation),
+			//new VisionIOLimelight("limelight-front", drivetrain::getRotation)
+
 		});
 	
 
@@ -203,13 +206,11 @@ public class RobotContainer {
 		
 		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
 		
-		//ButtonMapping driverMap = new ButtonMapping(driverControl);
-		//driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
+		ButtonMapping driverMap = new ButtonMapping(driverControl);
+		driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
 
-		//driverControl.x()
-
-		/*driverControl.a().onTrue(new IntakePivotCommand(pivotSubsystem));
-		driverControl.b().onTrue(new StowPivotCommand(pivotSubsystem));*/
+		//if the above doesn't work:
+		//driverControl.x().onTrue(superSystem.ToogleIntakePivot());
 
 		driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
@@ -218,10 +219,12 @@ public class RobotContainer {
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 		
+		//runs the elevator to the set position
 		operatorControl.a().onTrue(
 			superSystem.RunTargetElevator()
 		);
 
+		//brings the elevator back to the home position
 		operatorControl.b().onTrue(
 			new ElevatorHomeCommand(elevatorSubsystem)
 		);
@@ -230,9 +233,9 @@ public class RobotContainer {
 			Commands.runOnce(() -> elevatorSubsystem.ResetElevatorZero())
 		);*/
 
-
-		//driverControl.rightBumper()
-		//.onTrue(new EndEffectorRollerReverse(endEffectorSubsystem)).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
+		//shoot the coral off the transfer
+		driverControl.a()
+		.onTrue(superSystem.shootCoral()).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
 		
 		//outtake
 		driverControl.leftTrigger()
@@ -254,6 +257,7 @@ public class RobotContainer {
 				new EndEffectorRollerOff(endEffectorSubsystem)
 				
 				));
+		
 		//Test way to show how to set reef target and get the pose
 
 		final ReefTargeting target = new ReefTargeting();
@@ -269,6 +273,9 @@ public class RobotContainer {
         //driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
 
 		//driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, aprilTagVisionSubsystem))
+		
+		driverControl.rightBumper().onTrue(new JoystickInterruptible(new TagAutoAlign(drivetrain), driverControl, 0.5));
+		
 		drivetrain.registerTelemetry(logger::telemeterize);
 
 		

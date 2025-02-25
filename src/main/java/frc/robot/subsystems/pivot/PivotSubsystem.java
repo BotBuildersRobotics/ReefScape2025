@@ -71,6 +71,10 @@ public class PivotSubsystem extends SubsystemBase {
         this.currentState = wantedState;
     }
 
+    public PivotSystemState getCurrentState(){
+        return this.currentState;
+    }
+
     public double getCurrentPosition(){
         return currentState.angle;
     }
