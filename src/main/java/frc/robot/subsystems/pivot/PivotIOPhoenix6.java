@@ -71,11 +71,10 @@ public class PivotIOPhoenix6 implements PivotIO{
 
 
         //2.1 * 125 = 262
+        //2.1 * 64 = 134.4
 
-        //360 degrees of pivot movement would be roughly 50 motor rotations
-        //90 degrees of pivot movement is around 12.5 rotations or 0.13 rotations per degree
         
-        double desiredRotations = inputs.pivotPosition * 0.71;
+        double desiredRotations = inputs.pivotPosition * 0.373;
         SmartDashboard.putNumber("DesiredRotations", desiredRotations);
         pivotRightMotor.setControl(new MotionMagicVoltage(desiredRotations));
         

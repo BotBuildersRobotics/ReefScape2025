@@ -40,10 +40,10 @@ public class SuperSystem extends SubsystemBase {
     private EndEffectorSubsystem effector = EndEffectorSubsystem.getInstance();
     private PivotSubsystem pivot = PivotSubsystem.getInstance();
     private LightsSubsystem leds = LightsSubsystem.getInstance();
-    private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
+    //private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
    
 
-    private CommandSwerveDrivetrain swerveDriveTrain = CommandSwerveDrivetrain.getInstance();
+    //private CommandSwerveDrivetrain swerveDriveTrain = CommandSwerveDrivetrain.getInstance();
 
     public static SuperSystem mInstance;
 
@@ -120,34 +120,7 @@ public class SuperSystem extends SubsystemBase {
         if(intake.isBeamBreakOneTripped()) {
             intake.setWantedState(IntakeSystemState.HUMAN_PLAYER);
         }
-        
-        
-        //TODO: Need to make sure no coral is in the transfer
-        //then pivot to a height that is correct for the coral station
-      //then we intake just the front rollers (no stars)
-        //once the sensor triggers in the intake, 
-        //then we need to pivot down, so the coral can go through the transfer
-        //we then start the transfer stars
-        //kick the end effector in reverse for a brief second to open the arms up
-        //then when we trigger the transfer beam break, we start the intake of the end effector
-        //we then stop once the end effector detects the coral.
-
-        if(effector.isCoralInIntake()) {
-            pivot.setWantedState(PivotSystemState.HUMAN_PLAYER);
-            intake.setWantedState(IntakeSystemState.HUMAN_PLAYER);
-            if(intake.isBeamBreakOneTripped()) {
-                pivot.setWantedState(PivotSystemState.INTAKE);
-                intake.setWantedState(IntakeSystemState.INTAKE);
-                if(!effector.isCoralInIntake()) {
-                    effector.setWantedState(EndEffectorState.REVERSE);
-                    if(intake.isBeamBreakTwoTripped()) {
-                        effector.setWantedState(EndEffectorState.INTAKE);
-                    }
-                } else {
-                    effector.setWantedState(EndEffectorState.IDLE);
-                }
-            }
-        }
+        //TODO:
 
         return Commands.print("TODO: Complete me");
     }

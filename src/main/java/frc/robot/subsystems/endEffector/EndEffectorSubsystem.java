@@ -47,8 +47,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
    
         //this actually writes to the log file.
         io.updateInputs(inputs);
-        inputs.desiredPivotPos = currentState.end_effector_pivot_angle;
-        inputs.desiredArmPos = currentState.end_effector_arm_angle;
+        inputs.desiredPivotPosition = currentState.end_effector_pivot_angle;
+        inputs.desiredArmPosition = currentState.end_effector_arm_angle;
+        inputs.desiredClawPosition = currentState.claw_position;
         SetEndEffectorArmPos();
         SetEndEffectorPivotPos();
         Logger.processInputs("EndEffector", inputs);
@@ -57,21 +58,22 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(10, 5),
-		INTAKE(-20,-13),
-        L1_DEPOSIT(0,0),
-        L2_L3_DEPOSIT(20,20),
-        L4_DEPOSIT(115,55),
-		REVERSE(.0,.0);
+        IDLE(10, 5,0),
+		INTAKE(-20,-13,0),
+        L1_DEPOSIT(0,0,1),
+        L2_L3_DEPOSIT(20,20,1),
+        L4_DEPOSIT(115,55,1),
+		REVERSE(.0,.0, 0);
         
         public double end_effector_pivot_angle;
         public double end_effector_arm_angle;
+        public double claw_position;
        
         
-		EndEffectorState(double armAngle, double pivotAngle) {
+		EndEffectorState(double armAngle, double pivotAngle, double claw_position) {
 			this.end_effector_arm_angle = armAngle;
             this.end_effector_pivot_angle = pivotAngle;
-           
+            this.claw_position = claw_position;
             
 		}
     }
@@ -95,7 +97,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public void SetEndEffectorPivotPos(){
        
-        io.setEndEffectorPivotPosition(currentState.end_effector_pivot_angle);
+        io.pivotEffector(currentState.end_effector_pivot_angle);
     }
 
     public void SetEndEffectorArmPos(){
@@ -103,9 +105,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
         io.setArmPosition(currentState.end_effector_arm_angle);
     }
 
-    public boolean isCoralInIntake() {
-        return io.isCoralDetected();
-    }
 
    
 }

@@ -5,6 +5,9 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
+import java.util.List;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -32,6 +35,7 @@ import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
+import frc.robot.commands.drive.AutoAlignPID;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.ControllerRumbleCommand;
@@ -64,6 +68,13 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.apriltags.AprilTagVision;
+import frc.robot.subsystems.vision.apriltags.AprilTagVisionIO;
+import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
+import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
+import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 import frc.robot.utils.ButtonMapping;
 import frc.robot.utils.JoystickInterruptible;
 import frc.robot.utils.ButtonMapping.MultiFunctionButton;
@@ -88,8 +99,6 @@ public class RobotContainer {
 
 	private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
-	private TagVisionSubsystem visionSubsystem = TagVisionSubsystem.getInstance();
-
 	private LightsSubsystem leds = LightsSubsystem.getInstance();
 
 	private EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
@@ -99,16 +108,15 @@ public class RobotContainer {
 	private SuperSystem superSystem = SuperSystem.getInstance();
 
 
-	//public final AprilTagVision aprilTagVision;
-
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+	
+	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1; // kSpeedAt12Volts desired top speed
 	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
 																						// max angular velocity
 
 	/* Setting up bindings for necessary control of the swerve drive platform */
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-			.withDeadband(MaxSpeed * 0.1)
-			.withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+			.withDeadband(MaxSpeed )
+			.withRotationalDeadband(MaxAngularRate) // Add a 10% deadband
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
 																		// motors
 	private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -120,8 +128,12 @@ public class RobotContainer {
 	private final CommandXboxController driverControl = new CommandXboxController(0);
 	private final CommandXboxController operatorControl = new CommandXboxController(1);
 
-	public final CommandSwerveDrivetrain drivetrain = CommandSwerveDrivetrain.getInstance();// TunerConstants.createDrivetrain();
+	public final CommandSwerveDrivetrain drivetrain =  TunerConstants.createDrivetrain();
 
+	private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
+			new VisionIOLimelight("limelight-back", drivetrain::getRotation)
+		});
+	
 
 	private final Command leftCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 0), driverControl, 0.5);
     private final Command rightCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 1), driverControl, 0.5);
@@ -134,33 +146,8 @@ public class RobotContainer {
 	private final SendableChooser<Command> autoChooser;
 
 	public RobotContainer() {
-		//the below is for simulation / Photon Vision testing
-		//Limelight is integrated into the CommandSwerveDrivetrain
-		//final List<PhotonCameraProperties> camerasProperties =
-				// PhotonCameraProperties.loadCamerasPropertiesFromConfig("5516-2024-OffSeason-Vision");
-				// //
-				// loads camera properties from
-				// deploy/PhotonCamerasProperties/5516-2024-OffSeason-Vision.xml
-			//	VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
-
-		/*if (Robot.isReal()) {
-
-			aprilTagVision = new AprilTagVision(
-					new AprilTagVisionIOReal(camerasProperties),
-					camerasProperties,
-					drivetrain);
-		} else {
-
-			aprilTagVision = new AprilTagVision(
-					new ApriltagVisionIOSim(
-							camerasProperties,
-							VisionConstants.fieldLayout,
-							() -> {
-								return drivetrain.getState().Pose;
-							}),
-					camerasProperties,
-					drivetrain);
-		}*/
+		
+		
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
 		if(SmartDashboard.containsKey("Auto Mode")) {
@@ -171,7 +158,7 @@ public class RobotContainer {
 		configureBindings();
 		
 
-		drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
+		//drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 	}
 
 	/**
@@ -195,16 +182,16 @@ public class RobotContainer {
 		// and Y is defined as to the left according to WPILib convention.
 		
 		//resets the field position
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		//driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-		/*drivetrain.setDefaultCommand(
+		drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverControl.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverControl.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withVelocityY(-driverControl.getLeftX() * MaxSpeed ) // Drive left with negative X (left)
                     .withRotationalRate(-driverControl.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
-        );*/
+        );
 
 		/*driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
 		driverControl.b()
@@ -216,8 +203,8 @@ public class RobotContainer {
 		
 		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
 		
-		ButtonMapping driverMap = new ButtonMapping(driverControl);
-		driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
+		//ButtonMapping driverMap = new ButtonMapping(driverControl);
+		//driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
 
 		//driverControl.x()
 
@@ -244,8 +231,8 @@ public class RobotContainer {
 		);*/
 
 
-		driverControl.rightBumper()
-		.onTrue(new EndEffectorRollerReverse(endEffectorSubsystem)).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
+		//driverControl.rightBumper()
+		//.onTrue(new EndEffectorRollerReverse(endEffectorSubsystem)).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
 		
 		//outtake
 		driverControl.leftTrigger()
@@ -281,6 +268,7 @@ public class RobotContainer {
 		//driverControl.leftBumper().whileTrue(leftCoralAutoDrive);
         //driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
 
+		//driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, aprilTagVisionSubsystem))
 		drivetrain.registerTelemetry(logger::telemeterize);
 
 		

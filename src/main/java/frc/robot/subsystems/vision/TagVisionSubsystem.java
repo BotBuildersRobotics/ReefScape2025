@@ -43,23 +43,8 @@ public class TagVisionSubsystem extends SubsystemBase {
 		}
 	}
 
-	public static TagVisionSubsystem mInstance = null;
 
-	public static TagVisionSubsystem getInstance() {
-		if (mInstance == null) {
-
-			if (Robot.isReal()) {
-
-				mInstance = new TagVisionSubsystem(
-						CommandSwerveDrivetrain.getInstance(),
-						new VisionIOLimelight("limelight", CommandSwerveDrivetrain.getInstance().getRotation()));
-			} else {
-
-			}
-		}
-		return mInstance;
-	}
-
+	
 	/**
 	 * Returns the X angle to the best target, which can be used for simple servoing
 	 * with vision.

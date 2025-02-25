@@ -15,6 +15,7 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -22,14 +23,13 @@ import frc.robot.lib.TalonFXFactory;
 import frc.robot.lib.TalonUtil;
 
 public class EndEffectorIOPhoenix6 implements EndEffectorIO{
-    private TalonFXS endEffectorRoller;
-    private TalonFXS endEffectorPivot;
+    private TalonFX endEffectorRoller;
     private TalonFX endEffectorArm;
 
+    private Servo pivotServo;
+    private Servo clawServo;
 
     private double dutyCycleRoller = 0;
-
-    private CANrange effectorBeamBreak;
 
     private MotionMagicVoltage armMotionMagic = new MotionMagicVoltage(0);
 
@@ -39,48 +39,35 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public EndEffectorIOPhoenix6() {
 
-        effectorBeamBreak = new CANrange(Ports.END_EFFECTOR_BEAM_BREAK.getDeviceNumber());
-
         //use our helpers to write config over the CAN Bus
-        endEffectorRoller = TalonFXFactory.createDefaultTalonFXS(Ports.END_EFFECTOR_ROLLER);
-        endEffectorPivot = TalonFXFactory.createDefaultTalonFXS(Ports.END_EFFECTOR_PIVOT);
-
+       // endEffectorRoller = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ROLLER);
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
 
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
-        TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
-        TalonUtil.applyAndCheckConfiguration(endEffectorPivot, Constants.EndEffectorConstants.EndEffectorFXPivotConfig());
+       // TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
         TalonUtil.applyAndCheckConfiguration(endEffectorArm, Constants.EndEffectorConstants.EndEffectorArmPivot());
 
-        
+       // pivotServo = new Servo(0);
+        //clawServo = new Servo(0); //TODO: add constants and port numbers
     }
 
     @Override
     public void updateInputs(EndEffectorIOInputs inputs){
        
-        inputs.endEffectorBeamBreakTripped = isCoralDetected();
+      
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
-        inputs.motorRollerConnected = BaseStatusSignal.refreshAll(
+       /*  inputs.motorRollerConnected = BaseStatusSignal.refreshAll(
                         endEffectorRoller.getDeviceTemp(),
                         endEffectorRoller.getVelocity())
-                        .isOK();
+                        .isOK();*/
 
         //the motor knows we want info from it, so the following requests should be cool
-        inputs.motorRollerTemperature = endEffectorRoller.getDeviceTemp().getValueAsDouble();
-        inputs.motorRollerRPS = endEffectorRoller.getRotorVelocity().getValueAsDouble();
+      //  inputs.motorRollerTemperature = endEffectorRoller.getDeviceTemp().getValueAsDouble();
+       // inputs.motorRollerRPS = endEffectorRoller.getRotorVelocity().getValueAsDouble();
 
-    
-        inputs.motorPivotConnected = BaseStatusSignal.refreshAll(
-                        endEffectorPivot.getSupplyCurrent(),
-                        endEffectorPivot.getDeviceTemp(),
-                        endEffectorPivot.getVelocity())
-                        .isOK();
-        inputs.motorPivotTemperature = endEffectorPivot.getDeviceTemp().getValueAsDouble();
-        inputs.motorPivotPosition = endEffectorPivot.getPosition().getValueAsDouble();
-        inputs.motorPivotCurrent = endEffectorPivot.getSupplyCurrent().getValueAsDouble();
 
 
         inputs.motorArmConnected = BaseStatusSignal.refreshAll(
@@ -91,16 +78,10 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
         inputs.armPivotPosition = endEffectorArm.getPosition().getValueAsDouble();
 
-        setArmPosition(inputs.desiredArmPos);
-        setEndEffectorPivotPosition(inputs.desiredPivotPos);
+        setArmPosition(inputs.desiredArmPosition);
+        pivotEffector(inputs.desiredPivotPosition);
        
-
-        inputs.isBeamBreakConnected = BaseStatusSignal.refreshAll(
-                        effectorBeamBreak.getDistance()
-        ).isOK();
        
-
-        inputs.isCoralDetected = effectorBeamBreak.getDistance(true).getValueAsDouble() <= Constants.EndEffectorConstants.CORAL_DETECT_MIN_DISTANCE_MM;
     }
 
     @Override
@@ -108,21 +89,11 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         //store this for future logging.
         this.dutyCycleRoller = percent;
         //simple way to set the motor value.
-        endEffectorRoller.setControl(new DutyCycleOut(dutyCycleRoller));
+       // endEffectorRoller.setControl(new DutyCycleOut(dutyCycleRoller));
     }
 
-    public void setEndEffectorPivotPosition(double angle){
-        //todo: work out the angle
-        // 12:56 -> 15:55 -> 16:20 = 
-        // 4.6 * 3.6 * 1.25 = 21.3  rotations of motor to the full rotation of the pivot.
-        //0.0575
-        //we set this up in the motor config.
-        //endEffectorPivot.setControl(new PositionDutyCycle(Angle.ofBaseUnits(angle, Units.Degrees)));
-        SmartDashboard.putNumber("Effector Pivot", Angle.ofBaseUnits(angle, Degrees).baseUnitMagnitude());
-        //endEffectorPivot.setControl(pivotMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
-        endEffectorPivot.setControl(pivotMotionMagic.withPosition(0.059 * angle).withSlot(0));
-    }
 
+    @Override
     public void setArmPosition(double angle){
         // 45:1
         //0.125 rotations per degree
@@ -135,10 +106,8 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     }
 
     @Override
-    public boolean isCoralDetected()
-    {
-        //TODO: We could use the Units and Measure classes in WPI to make this nicer.
-        return effectorBeamBreak.getDistance(true).getValueAsDouble() <= Constants.EndEffectorConstants.CORAL_DETECT_MIN_DISTANCE_MM;
+    public void pivotEffector(double angle){
+
     }
 
     

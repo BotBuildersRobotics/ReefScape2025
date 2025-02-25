@@ -91,9 +91,9 @@ public final class Constants {
      
       config.Slot0.kV = 0.004;
       
-      config.Slot0.kG = 0.35; //volts to overcome gravity
+      config.Slot0.kG = 0;//0.35; //volts to overcome gravity
       
-      config.Slot0.kS = 0.55; // volts to get over the static friction
+      config.Slot0.kS = 0;//0.55; // volts to get over the static friction
     
       config.Slot0.kA = 0.55; //volts for accel 
      
@@ -116,8 +116,8 @@ public final class Constants {
   public static final class EndEffectorConstants {
 
     // copying more constans
-    public static TalonFXSConfiguration EndEffectorFXRollerConfig() {
-      TalonFXSConfiguration config = new TalonFXSConfiguration();
+    public static TalonFXConfiguration EndEffectorFXRollerConfig() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
 
       config.CurrentLimits.SupplyCurrentLimit = 20.0;
       config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -126,7 +126,7 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimit = 80;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-      config.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+     
       return config;
     }
 

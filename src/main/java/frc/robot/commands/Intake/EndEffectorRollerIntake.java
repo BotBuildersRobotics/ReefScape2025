@@ -20,8 +20,4 @@ public class EndEffectorRollerIntake extends Command
     
   }
 
-  @Override
-  public boolean isFinished() {
-    return effectorSubSystem.isCoralInIntake();
-  }
 }

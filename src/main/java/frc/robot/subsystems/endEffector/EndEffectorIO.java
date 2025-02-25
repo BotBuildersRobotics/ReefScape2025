@@ -12,43 +12,29 @@ public interface EndEffectorIO {
         public double motorRollerTemperature = 0.0;
         // we want to log the revolutions per second of the motor (output)
         public double motorRollerRPS = 0.0;
-        
-       
-        public double motorPivotCurrent = 0;
-        public boolean motorPivotConnected = true;
-        public double motorPivotTemperature = 0.0;
-        
-        public double motorPivotPosition = 0;
-
-        public boolean endEffectorBeamBreakTripped = false;
-
-        public double armPivotPosition = 0;
-
-        public double desiredPivotPos = 10;
-
-        public double desiredArmPos = -12;
 
         public boolean motorArmConnected = false;
 
-        public double motorArmCurrent = 0;
+        public double armPivotPosition = 0.0;
+        
+        public double desiredPivotPosition = 0;
 
-        public double motorArmPosition = 0;
+        public double desiredClawPosition = 0;
 
-        public boolean isCoralDetected = false;
-
-        public boolean isBeamBreakConnected = false;
+        public double desiredArmPosition = 0;
       
     }
 
     //we can create methods that our concrete implementations can perform.
     default void setMotorRollerDutyCycle(double percent) {}
 
-    default void setEndEffectorPivotPosition(double angle){}
+    default void openClaw(){}
+    
+    default void closeClaw(){}
 
+    default void pivotEffector(double angle){}
+    
     default void setArmPosition(double angle){}
-
-    default boolean isCoralDetected(){return false;}
-
     
 
 }
