@@ -1,7 +1,6 @@
 package frc.robot.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 
