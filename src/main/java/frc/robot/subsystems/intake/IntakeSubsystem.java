@@ -76,9 +76,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setWantedState(IntakeSystemState state) {
-      /*   if(!pivotSubsystem.isAtLocation(PivotSystemState.STOWED)) {
-            currentState = state;
-        }*/
             currentState = state;
     }
     
@@ -106,7 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     
     public boolean isBeamBreakTwoTripped() {
-        return io.getBeamBreakTwoState();
+        return io.getFrontBeamBreak();
     }
 
    

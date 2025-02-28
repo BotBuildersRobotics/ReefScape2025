@@ -18,9 +18,9 @@ public class StowPivotCommand  extends Command
   public void initialize() {
     pivotSubSystem.setWantedState(PivotSystemState.STOWED);
   }
-
+/*
     @Override
   public boolean isFinished(){
     return pivotSubSystem.isAtLocation(PivotSystemState.STOWED);
-  }
+  }*/
 }

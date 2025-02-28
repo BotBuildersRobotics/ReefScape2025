@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -14,6 +15,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.units.TimeUnit;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -32,6 +36,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
+import frc.robot.commands.endEffector.EndEffectorArmIntake;
+import frc.robot.commands.endEffector.EndEffectorArmL4;
+import frc.robot.commands.endEffector.EndEffectorClawClose;
+import frc.robot.commands.endEffector.EndEffectorClawOpen;
+import frc.robot.commands.endEffector.EndEffectorPivotIntake;
+import frc.robot.commands.endEffector.EndEffectorPivotL4;
+import frc.robot.commands.endEffector.EndEffectorPreClamp;
+import frc.robot.commands.endEffector.EndEffectorRollerOff;
+import frc.robot.commands.endEffector.EndEffectorRollerReverse;
+import frc.robot.commands.endEffector.IntakeClampCommand;
+import frc.robot.commands.endEffector.EndEffectorIntake;
+import frc.robot.commands.endEffector.EndEffectorPivotEndStop1;
+import frc.robot.commands.endEffector.EndEffectorPivotEndStop2;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
@@ -44,12 +61,6 @@ import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.drive.TagAutoAlign;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.intake.AlgaeIntake;
-import frc.robot.commands.intake.EndEffectorArmIntake;
-import frc.robot.commands.intake.EndEffectorArmL4;
-import frc.robot.commands.intake.EndEffectorPivotIntake;
-import frc.robot.commands.intake.EndEffectorPivotL4;
-import frc.robot.commands.intake.EndEffectorRollerOff;
-import frc.robot.commands.intake.EndEffectorRollerReverse;
 import frc.robot.commands.intake.HumanPlayerIntake;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
@@ -69,6 +80,7 @@ import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -112,7 +124,7 @@ public class RobotContainer {
 
 	
 	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1; // kSpeedAt12Volts desired top speed
-	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.1; // 3/4 of a rotation per second
 																						// max angular velocity
 
 	/* Setting up bindings for necessary control of the swerve drive platform */
@@ -132,11 +144,11 @@ public class RobotContainer {
 
 	public final CommandSwerveDrivetrain drivetrain =  TunerConstants.createDrivetrain();
 
-	private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
+	/*private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
 			new VisionIOLimelight("limelight-back", drivetrain::getRotation),
 			//new VisionIOLimelight("limelight-front", drivetrain::getRotation)
 
-		});
+		});*/
 	
 
 	private final Command leftCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 0), driverControl, 0.5);
@@ -211,11 +223,33 @@ public class RobotContainer {
 		//driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
 
 		//if the above doesn't work:
-		driverControl.x().onTrue(superSystem.ToogleIntakePivot());
+		driverControl.x().onChange(new IntakePivotCommand(pivotSubsystem));
+		driverControl.a().onTrue(
+			new SequentialCommandGroup(
+				new EndEffectorPreClamp(endEffectorSubsystem),
+				new WaitCommand(0.2),
+				new IntakeClampCommand(endEffectorSubsystem)
+			)
+			);
+		
+		//	driverControl.a().onTrue(new EndEffectorPivotEndStop1(endEffectorSubsystem))
+		//	.onFalse(new EndEffectorPivotEndStop2(endEffectorSubsystem));
+
+		driverControl.b()
+		.onTrue(
+			new EndEffectorClawClose(endEffectorSubsystem)
+		).onFalse(
+			new EndEffectorClawOpen(endEffectorSubsystem)
+		);
+
+		
 
 		driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
-		operatorControl.povRight().onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem)).onFalse(new IntakeIdleCommand(intakeSubsystem));
+		operatorControl.povRight()
+		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
+		.onFalse(new IntakeIdleCommand(intakeSubsystem));
+
 		operatorControl.leftBumper().onTrue(new StowPivotCommand(pivotSubsystem));
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
@@ -227,7 +261,9 @@ public class RobotContainer {
 
 		//brings the elevator back to the home position
 		operatorControl.b().onTrue(
-			new ElevatorHomeCommand(elevatorSubsystem)
+		new EndEffectorIntake(endEffectorSubsystem)
+		
+		
 		);
 
 		/*operatorControl.leftBumper().onTrue(
@@ -235,14 +271,22 @@ public class RobotContainer {
 		);*/
 
 		//shoot the coral off the transfer
-		driverControl.a()
-		.onTrue(superSystem.shootCoral()).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
+		//driverControl.a()
+		//.onTrue(superSystem.shootCoral()).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
 		
 		//outtake
 		driverControl.leftTrigger()
 		.onTrue(new IntakeReverseCommand(intakeSubsystem))
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 		
+		/*driverControl.a()
+		.onTrue(
+			new EndEffectorPivotL4(endEffectorSubsystem)
+		).onFalse(
+			new EndEffectorArmIntake(endEffectorSubsystem)
+		);*/
+
+	
 		//intake
 		driverControl.rightTrigger().onTrue(
 					
@@ -254,8 +298,8 @@ public class RobotContainer {
 			).onFalse(
 				new ParallelCommandGroup(				
 					
-				new IntakeIdleCommand(intakeSubsystem),
-				new EndEffectorRollerOff(endEffectorSubsystem)
+					new IntakeIdleCommand(intakeSubsystem),
+					new EndEffectorRollerOff(endEffectorSubsystem)
 				
 				));
 		
@@ -275,7 +319,9 @@ public class RobotContainer {
 
 		//driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, aprilTagVisionSubsystem))
 		
-		driverControl.rightBumper().onTrue(new JoystickInterruptible(new TagAutoAlign(drivetrain), driverControl, 0.5));
+		//driverControl.rightBumper().onTrue(new JoystickInterruptible(new TagAutoAlign(drivetrain), driverControl, 0.5));
+		
+		//driverControl.rightBumper().onTrue(new TagAutoAlign(drivetrain));
 		
 
 		//For testing the elevator

@@ -19,9 +19,9 @@ import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.elevator.ElevatorL2Command;
 import frc.robot.commands.elevator.ElevatorL3Command;
 import frc.robot.commands.elevator.ElevatorL4Command;
-import frc.robot.commands.intake.EndEffectorArmL2;
-import frc.robot.commands.intake.EndEffectorArmL4;
-import frc.robot.commands.intake.EndEffectorRollerReverse;
+import frc.robot.commands.endEffector.EndEffectorArmL2;
+import frc.robot.commands.endEffector.EndEffectorArmL4;
+import frc.robot.commands.endEffector.EndEffectorRollerReverse;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -121,11 +121,18 @@ public class SuperSystem extends SubsystemBase {
         return pivot.getCurrentState();
     }
 
+    public Supplier<PivotSystemState> getPivotState(){
+        return () -> pivot.getCurrentState();
+    }
+
     public Command ToggleReefHeight(){
         return Commands.runOnce(() -> this.toggleScoringHeight());
     }
 
     public Command ToogleIntakePivot(){
+        
+      
+        SmartDashboard.putString("Current Pivot", getPivotState().get().toString());
         return new SelectCommand<>
         (
             Map.ofEntries
@@ -134,7 +141,7 @@ public class SuperSystem extends SubsystemBase {
                 Map.entry(PivotSystemState.INTAKE, new StowPivotCommand(pivot)),
                 Map.entry(PivotSystemState.ALGAE, new StowPivotCommand(pivot)),
                 Map.entry(PivotSystemState.HUMAN_PLAYER, new StowPivotCommand(pivot))),
-            this::getCurrentPivotState
+            this.getPivotState()
         );
     }
 

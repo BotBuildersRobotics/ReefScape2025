@@ -16,14 +16,15 @@ public class Ports {
     public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(14, "canivore");
 
     //End Effector Subsystem Motors
-    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(53, "canivore");
-    public static final CanDeviceId END_EFFECTOR_PIVOT = new CanDeviceId(55, "canivore");
+    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(31, "canivore");
+    
     public static final CanDeviceId END_EFFECTOR_ARM = new CanDeviceId(19, "canivore");
-    public static final CanDeviceId END_EFFECTOR_BEAM_BREAK = new CanDeviceId(101, "canivore"); //TODO: find ID
     
     //Intake Subsystem Motors
     public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
     public static final CanDeviceId TRANSFER = new CanDeviceId(16, "canivore");
+    public static final CanDeviceId INTAKE_1_CANRANGE = new CanDeviceId(26, "canivore"); 
+   
     
     //Pivot Subsystem Motors
     public static final CanDeviceId PIVOT_LEFT = new CanDeviceId(17,"canivore");

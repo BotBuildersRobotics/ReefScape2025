@@ -1,14 +1,14 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.endEffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-public class EndEffectorArmIntake extends Command
+public class EndEffectorPreClamp extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorArmIntake(EndEffectorSubsystem subsystem) {
+  public EndEffectorPreClamp(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -16,7 +16,7 @@ public class EndEffectorArmIntake extends Command
 
   @Override
   public void initialize() {
-  
-    effectorSubSystem.setWantedState(EndEffectorState.IDLE);
+    effectorSubSystem.setWantedState(EndEffectorState.CLAMP);
+    
   }
 }

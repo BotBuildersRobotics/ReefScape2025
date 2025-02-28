@@ -40,6 +40,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
         this.io = io;
 
+        io.openClaw();
+
     }
 
     @Override
@@ -58,12 +60,16 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(10, 5,0),
-		INTAKE(-20,-13,0),
-        L1_DEPOSIT(0,0,1),
-        L2_L3_DEPOSIT(20,20,1),
-        L4_DEPOSIT(115,55,1),
-		REVERSE(.0,0, 0);
+        IDLE(5, 1000,0),
+		INTAKE(120,2500,0),
+        PRE_CLAMP(140, 500,0),
+        CLAMP(140, 1000,0),
+        L1_DEPOSIT(0,2000,1),
+        L2_L3_DEPOSIT(0,2000,1),
+        L4_DEPOSIT(0,500,1),
+		REVERSE(.0,1000, 0),
+        END_STOP1(5, 500, 0),
+        END_STOP2(5, 2500,0);
         
         public int end_effector_pivot_angle;
         public double end_effector_arm_angle;
@@ -100,7 +106,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public void SetEndEffectorPivotPos(){
-       
         io.pivotEffector(currentState.end_effector_pivot_angle);
     }
 

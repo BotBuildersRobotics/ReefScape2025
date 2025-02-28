@@ -259,6 +259,7 @@ public final class Constants {
       config.CurrentLimits.StatorCurrentLimit = 80;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
      /*   config.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs();
       config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;

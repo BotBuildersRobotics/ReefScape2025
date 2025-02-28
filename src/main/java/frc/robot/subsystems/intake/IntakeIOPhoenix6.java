@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,7 +17,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     private TalonFX transferRollersFx;
 
     private DigitalInput intakeBeamBreakOne;
-    private DigitalInput intakeBeamBreakTwo;
+    private CANrange intakeCanRange;
 
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
@@ -33,7 +34,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeTransferConstants.IntakeFXConfig());
 
         intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
-        intakeBeamBreakTwo = new DigitalInput(Ports.INTAKE_BEAMBREAK_TWO);
+        intakeCanRange = new CANrange(Ports.INTAKE_1_CANRANGE.getDeviceNumber());
        
     }
 
@@ -41,7 +42,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     public void updateInputs(IntakeIOInputs inputs){
        
         inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
-        inputs.intakeBeamBreakTwoTripped = intakeBeamBreakTwo.get();
+        inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();;
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
@@ -95,8 +96,8 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     }
 
     @Override
-    public boolean getBeamBreakTwoState() {
-        return !intakeBeamBreakTwo.get();
+    public boolean getFrontBeamBreak() {
+        return intakeCanRange.getIsDetected().getValue();
     }
 
 }

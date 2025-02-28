@@ -1,5 +1,7 @@
 package frc.robot.subsystems.pivot;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,7 +18,7 @@ public class PivotSubsystem extends SubsystemBase {
     public static PivotSubsystem mInstance;
    // public IntakeSubsystem intakeSubsystem;
 
-    private PivotSystemState currentState = PivotSystemState.STOWED;
+    public static PivotSystemState currentState = PivotSystemState.STOWED;
 
     //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
     //this is a singleton pattern
@@ -68,11 +70,15 @@ public class PivotSubsystem extends SubsystemBase {
             this.currentState = wantedState;
         }*/
 
-        this.currentState = wantedState;
+        PivotSubsystem.currentState = wantedState;
     }
 
     public PivotSystemState getCurrentState(){
-        return this.currentState;
+        return PivotSubsystem.currentState;
+    }
+
+     public Supplier<PivotSystemState> getCurrentStateSupplier(){
+        return () -> PivotSubsystem.currentState;
     }
 
     public double getCurrentPosition(){

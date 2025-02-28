@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
 import frc.robot.lib.TalonUtil;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
 public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     private TalonFX endEffectorRoller;
@@ -70,6 +71,10 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         //use our helpers to write config over the CAN Bus
         endEffectorRoller = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ROLLER);
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
+
+        clawServo.setEnabled(true);
+        clawServo.setEnabled(true);
+        clawServo.setPulseWidth(1500); //TODO: use constants
 
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
@@ -136,8 +141,14 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     public void pivotEffector(int angle){
         pivotServo.setEnabled(true);
         pivotServo2.setEnabled(true);
-        pivotServo.setPulseWidth(angle * 250); //TODO: calc angle vs pulse width
-        pivotServo2.setPulseWidth(angle * 250);
+       
+
+        pivotServo.setPowered(true);
+        pivotServo2.setPowered(true);
+       
+
+        pivotServo.setPulseWidth(angle);
+        pivotServo2.setPulseWidth(angle);
     }
 
     @Override
@@ -148,12 +159,17 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
     @Override
     public void closeClaw(){
-        clawServo.setPulseWidth(2500);
+        clawServo.setEnabled(true);
+        clawServo.setPowered(true);
+        clawServo.setPulseWidth(2500);//TODO: use constants
     }
 
     @Override
     public void openClaw(){
-        clawServo.setPulseWidth(0);
+        clawServo.setEnabled(true);
+        clawServo.setPowered(true);
+        clawServo.setPulseWidth(1500);//TODO: use constants
+        
     }
 
     @Override
@@ -162,5 +178,4 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         return currentArmAngle;
 
     }
-    
 }

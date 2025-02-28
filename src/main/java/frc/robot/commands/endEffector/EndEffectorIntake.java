@@ -1,14 +1,15 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.endEffector;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-public class EndEffectorPivotIntake extends Command
+public class EndEffectorIntake extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorPivotIntake(EndEffectorSubsystem subsystem) {
+  public EndEffectorIntake(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -17,6 +18,6 @@ public class EndEffectorPivotIntake extends Command
   @Override
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
-    
+   
   }
 }

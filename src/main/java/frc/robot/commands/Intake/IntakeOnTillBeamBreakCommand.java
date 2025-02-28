@@ -30,7 +30,6 @@ public class IntakeOnTillBeamBreakCommand extends Command
   @Override
   public void initialize() {
     intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
-   
     effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
   }
 

@@ -1,14 +1,14 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.endEffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-public class EndEffectorRollerOff extends Command
+public class EndEffectorPivotL4 extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorRollerOff(EndEffectorSubsystem subsystem) {
+  public EndEffectorPivotL4(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
       // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
@@ -16,8 +16,7 @@ public class EndEffectorRollerOff extends Command
 
   @Override
   public void initialize() {
-   // effectorSubSystem.setWantedState(EndEffectorState.IDLE);
-    effectorSubSystem.SetEndEffectorRollers(0);
-   
+    effectorSubSystem.setWantedState(EndEffectorState.L4_DEPOSIT);
+    
   }
 }

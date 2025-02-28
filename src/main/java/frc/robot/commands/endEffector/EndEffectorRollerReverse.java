@@ -1,4 +1,4 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.endEffector;
 
 import java.net.http.HttpClient.Redirect;
 
