@@ -224,16 +224,16 @@ public class RobotContainer {
 
 		//if the above doesn't work:
 		driverControl.x().onChange(new IntakePivotCommand(pivotSubsystem));
-		driverControl.a().onTrue(
+		/*driverControl.a().onTrue(
 			new SequentialCommandGroup(
 				new EndEffectorPreClamp(endEffectorSubsystem),
 				new WaitCommand(0.2),
 				new IntakeClampCommand(endEffectorSubsystem)
 			)
-			);
+			);*/
 		
-		//	driverControl.a().onTrue(new EndEffectorPivotEndStop1(endEffectorSubsystem))
-		//	.onFalse(new EndEffectorPivotEndStop2(endEffectorSubsystem));
+			driverControl.a().onTrue(new EndEffectorPivotEndStop1(endEffectorSubsystem))
+			.onFalse(new EndEffectorPivotEndStop2(endEffectorSubsystem));
 
 		driverControl.b()
 		.onTrue(

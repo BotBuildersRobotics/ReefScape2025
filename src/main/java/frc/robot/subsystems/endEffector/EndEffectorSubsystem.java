@@ -46,7 +46,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         inputs.desiredPivotPosition = currentState.end_effector_pivot_angle;
         inputs.desiredArmPosition = currentState.end_effector_arm_angle;
-        inputs.desiredClawPosition = currentState.claw_position;
+       // inputs.desiredClawPosition = currentState.claw_position;
         SetEndEffectorArmPos();
         SetEndEffectorPivotPos();
         Logger.processInputs("EndEffector", inputs);
@@ -55,26 +55,26 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(5, 1000,0),
-		INTAKE(120,2500,0),
-        PRE_CLAMP(140, 500,0),
-        CLAMP(140, 1000,0),
-        L1_DEPOSIT(0,2000,1),
-        L2_L3_DEPOSIT(0,2000,1),
-        L4_DEPOSIT(0,500,1),
-		REVERSE(.0,1000, 0),
-        END_STOP1(5, 500, 0),
-        END_STOP2(5, 2500,0);
+        IDLE(5, 500),
+		INTAKE(5,1800),
+        PRE_CLAMP(5, 1500),
+        CLAMP(5, 1000),
+        L1_DEPOSIT(0,2000),
+        L2_L3_DEPOSIT(0,2000),
+        L4_DEPOSIT(0,500),
+		REVERSE(.0,1000),
+        END_STOP1(5, 500),
+        END_STOP2(5, 2500);
         
         public int end_effector_pivot_angle;
         public double end_effector_arm_angle;
-        public double claw_position;
+      
        
         
-		EndEffectorState(double armAngle, int pivotAngle, double claw_position) {
+		EndEffectorState(double armAngle, int pivotAngle) {
 			this.end_effector_arm_angle = armAngle;
             this.end_effector_pivot_angle = pivotAngle;
-            this.claw_position = claw_position;
+           
             
 		}
     }
