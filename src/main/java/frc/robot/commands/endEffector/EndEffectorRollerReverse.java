@@ -1,7 +1,5 @@
 package frc.robot.commands.endEffector;
 
-import java.net.http.HttpClient.Redirect;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;

@@ -1,11 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.AutoLog;
-
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -14,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.elevator.ElevatorL2Command;
 import frc.robot.commands.elevator.ElevatorL3Command;
@@ -24,19 +18,15 @@ import frc.robot.commands.endEffector.EndEffectorArmL4;
 import frc.robot.commands.endEffector.EndEffectorRollerReverse;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
-import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
-import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.led.LightsSubsystem.LightState;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
-import frc.robot.subsystems.vision.TagVisionSubsystem;
 
 public class SuperSystem extends SubsystemBase {
     

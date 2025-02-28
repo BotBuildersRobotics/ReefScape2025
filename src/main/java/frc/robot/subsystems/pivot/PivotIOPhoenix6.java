@@ -1,7 +1,6 @@
 package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 

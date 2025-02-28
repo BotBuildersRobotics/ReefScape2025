@@ -22,21 +22,26 @@ public class ReefTargeting {
   public double getTargetBranchHeightMeters()
   {
     switch (targetBranchLevel)
-    {
-      case L2 ->
-      {
-        return ReefHeight.L2.height;
-      }
-      case L3 ->
-      {
-        return ReefHeight.L3.height;
-      }
-      case L4 ->
-      {
-        return ReefHeight.L4.height;
-      }
+        {
+          case L2 ->
+          {
+            return ReefHeight.L2.height;
+          }
+          case L3 ->
+          {
+            return ReefHeight.L3.height;
+          }
+          case L4 ->
+          {
+            return ReefHeight.L4.height;
+          }
+          case L1 -> {
+            return ReefHeight.L1.height;
+          }
+          default -> {
+            return 0;
+          }
     }
-    return 0;
   }
 
   public double getTargetBranchAlgaeArmAngle()
