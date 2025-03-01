@@ -12,6 +12,8 @@ import java.util.Map;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -58,6 +60,7 @@ import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.drive.TagAutoAlign;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.intake.AlgaeIntake;
+import frc.robot.commands.intake.AutoL1Delivery;
 import frc.robot.commands.intake.HumanPlayerIntake;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
@@ -343,6 +346,9 @@ public class RobotContainer {
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
+		NamedCommands.registerCommand("L1AutoDelivery", 
+				new AutoL1Delivery(intakeSubsystem, pivotSubsystem)
+			);
 		
 	}
 
