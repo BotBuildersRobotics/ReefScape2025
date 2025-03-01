@@ -29,6 +29,10 @@ public class LightsSubsystem extends SubsystemBase {
         led = new CANdle(Ports.LEDS.getDeviceNumber(), Ports.LEDS.getBus());
     }
 
+
+    public void clear(){
+        led.clearAnimation(0);
+    }
     public void setStrobeState(LightState state) {
 
         led.configBrightnessScalar(0.6);

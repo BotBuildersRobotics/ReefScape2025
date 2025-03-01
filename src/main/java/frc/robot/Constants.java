@@ -107,7 +107,7 @@ public final class Constants {
       mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(180)) 
       .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(180))
      
-      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(80));
+      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(380));
 
       /*
        *  config.MotionMagic.MotionMagicCruiseVelocity = 80;

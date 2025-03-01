@@ -63,11 +63,18 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setWantedState(PivotSystemState wantedState){
-       /*  if(!intakeSubsystem.isBeamBreakTwoTripped()) {
-            this.currentState = wantedState;
-        }*/
+      
 
         PivotSubsystem.currentState = wantedState;
+    }
+
+    public void togglePivot(){
+
+        if(PivotSubsystem.currentState == PivotSystemState.STOWED){
+            setWantedState(PivotSystemState.INTAKE);
+        }else{
+             setWantedState(PivotSystemState.STOWED);
+        }
     }
 
     public PivotSystemState getCurrentState(){
@@ -95,6 +102,7 @@ public class PivotSubsystem extends SubsystemBase {
         SmartDashboard.putString("Pivot State",currentState.toString());
         Logger.processInputs("Pivot", inputs);
 
+        //check to see that angle of the arm is clear of the intake.
         inputs.pivotPosition = currentState.angle;
 
 

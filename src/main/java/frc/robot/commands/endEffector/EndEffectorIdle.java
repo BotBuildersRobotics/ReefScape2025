@@ -1,29 +1,22 @@
 package frc.robot.commands.endEffector;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
-//designed to open the rollers
-public class EndEffectorRollerReverse extends Command
+public class EndEffectorIdle extends Command
 {
   private final EndEffectorSubsystem effectorSubSystem;
 
-  public EndEffectorRollerReverse(EndEffectorSubsystem subsystem) {
+  public EndEffectorIdle(EndEffectorSubsystem subsystem) {
       effectorSubSystem = subsystem;
-      
+      // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(subsystem);
   }
 
   @Override
   public void initialize() {
-    effectorSubSystem.setWantedState(EndEffectorState.REVERSE);
-    effectorSubSystem.SetEndEffectorRollers(-2);
-  }
-
-  @Override
-  public void end(boolean interupted)
-  {
     effectorSubSystem.setWantedState(EndEffectorState.IDLE);
    
   }

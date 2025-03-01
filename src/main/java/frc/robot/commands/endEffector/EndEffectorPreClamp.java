@@ -16,7 +16,7 @@ public class EndEffectorPreClamp extends Command
 
   @Override
   public void initialize() {
-    effectorSubSystem.setWantedState(EndEffectorState.CLAMP);
+    effectorSubSystem.setWantedState(EndEffectorState.PRE_CLAMP);
     
   }
 }

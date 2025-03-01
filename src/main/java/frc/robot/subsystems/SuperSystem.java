@@ -6,18 +6,12 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.elevator.ElevatorL2Command;
 import frc.robot.commands.elevator.ElevatorL3Command;
 import frc.robot.commands.elevator.ElevatorL4Command;
-import frc.robot.commands.endEffector.EndEffectorArmL2;
-import frc.robot.commands.endEffector.EndEffectorArmL4;
-import frc.robot.commands.endEffector.EndEffectorRollerReverse;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
@@ -146,13 +140,7 @@ public class SuperSystem extends SubsystemBase {
         return Commands.print("TODO: Complete me");
     }
 
-    public Command shootCoral(){
-        return new SequentialCommandGroup(
-            new InstantCommand( () -> effector.openClaw()),
-            new WaitCommand(0.1),
-            new EndEffectorRollerReverse(effector)
-        );
-    }
+   
 
 
     public LightState GetLightState() {

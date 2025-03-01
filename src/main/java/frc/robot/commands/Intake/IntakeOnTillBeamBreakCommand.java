@@ -17,7 +17,6 @@ public class IntakeOnTillBeamBreakCommand extends Command
   private final EndEffectorSubsystem effectorSubsystem;
   private final LightsSubsystem lightsSubsystem;
 
-  public boolean hasTrippedSensor = false;
 
   public IntakeOnTillBeamBreakCommand(IntakeSubsystem subsystem, EndEffectorSubsystem effector, LightsSubsystem lights) {
       intakeSubSystem = subsystem;
@@ -31,6 +30,7 @@ public class IntakeOnTillBeamBreakCommand extends Command
   public void initialize() {
     intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
     effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
+     lightsSubsystem.clear();
   }
 
   @Override
@@ -38,26 +38,10 @@ public class IntakeOnTillBeamBreakCommand extends Command
     if(intakeSubSystem.isBeamBreakOneTripped()){
       intakeSubSystem.setWantedState(IntakeSystemState.STARS);
      
+      lightsSubsystem.coralStagedLed();
       
-      hasTrippedSensor = true;
+      return true;
     
-    }else{
-      
-      effectorSubsystem.SetEndEffectorRollers(0);
-    }
-
-    if(hasTrippedSensor){
-      if(!intakeSubSystem.isBeamBreakOneTripped()){
-        
-          effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
-          if(effectorSubsystem.isArmInIntakePosition())
-          {
-            lightsSubsystem.coralStagedLed();
-            effectorSubsystem.closeClaw();
-          }
-         hasTrippedSensor = false;
-         return true;
-      }
     }
     return false;
   }

@@ -44,37 +44,32 @@ public class EndEffectorSubsystem extends SubsystemBase {
    
         //this actually writes to the log file.
         io.updateInputs(inputs);
-        inputs.desiredPivotPosition = currentState.end_effector_pivot_angle;
+       
         inputs.desiredArmPosition = currentState.end_effector_arm_angle;
-       // inputs.desiredClawPosition = currentState.claw_position;
+       
         SetEndEffectorArmPos();
-        SetEndEffectorPivotPos();
+      
         Logger.processInputs("EndEffector", inputs);
 
     }
 
     public enum EndEffectorState 
     {
-        IDLE(5, 500),
-		INTAKE(5,1800),
-        PRE_CLAMP(5, 1500),
-        CLAMP(5, 1000),
-        L1_DEPOSIT(0,2000),
-        L2_L3_DEPOSIT(0,2000),
-        L4_DEPOSIT(0,500),
-		REVERSE(.0,1000),
-        END_STOP1(5, 500),
-        END_STOP2(5, 2500);
-        
-        public int end_effector_pivot_angle;
+        IDLE(5),
+		INTAKE(120),
+        PRE_CLAMP(140),
+        CLAMP(145),
+        L1_DEPOSIT(0),
+        L2_L3_DEPOSIT(0),
+        L4_DEPOSIT(0),
+		REVERSE(.0);
+       
         public double end_effector_arm_angle;
       
        
         
-		EndEffectorState(double armAngle, int pivotAngle) {
+		EndEffectorState(double armAngle) {
 			this.end_effector_arm_angle = armAngle;
-            this.end_effector_pivot_angle = pivotAngle;
-           
             
 		}
     }
@@ -90,19 +85,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
         currentState = state;
 
-        if(currentState == EndEffectorState.INTAKE){
-            io.depowerPivotServos();
-        }
+      
 
     }
 
-    public void SetEndEffectorRollers(double dutycycle){
-        io.setMotorRollerDutyCycle(dutycycle);
-    }
-
-    public void SetEndEffectorPivotPos(){
-        io.pivotEffector(currentState.end_effector_pivot_angle);
-    }
 
     public void SetEndEffectorArmPos(){
        

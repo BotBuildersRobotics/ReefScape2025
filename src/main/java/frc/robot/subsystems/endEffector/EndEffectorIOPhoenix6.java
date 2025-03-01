@@ -21,7 +21,7 @@ import frc.robot.lib.TalonUtil;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 
 public class EndEffectorIOPhoenix6 implements EndEffectorIO{
-    private TalonFX endEffectorRoller;
+   
     private TalonFX endEffectorArm;
 
    
@@ -61,7 +61,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         .disableBehavior(BehaviorWhenDisabled.kSupplyPower);
 
         //use our helpers to write config over the CAN Bus
-        endEffectorRoller = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ROLLER);
+      
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
 
         clawServo.setEnabled(true);
@@ -80,19 +80,6 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
        
       
 
-        //check that the motor is connected and tell it that we are interested in knowing the following bits of information
-        //device temp and speed.
-         inputs.motorRollerConnected = BaseStatusSignal.refreshAll(
-                        endEffectorRoller.getDeviceTemp(),
-                        endEffectorRoller.getVelocity())
-                        .isOK();
-
-        //the motor knows we want info from it, so the following requests should be cool
-        inputs.motorRollerTemperature = endEffectorRoller.getDeviceTemp().getValueAsDouble();
-        inputs.motorRollerRPS = endEffectorRoller.getRotorVelocity().getValueAsDouble();
-
-
-
         inputs.motorArmConnected = BaseStatusSignal.refreshAll(
                         endEffectorArm.getSupplyCurrent(),
                         endEffectorArm.getDeviceTemp(),
@@ -105,16 +92,8 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         currentArmAngle = inputs.armPivotPosition;
 
         setArmPosition(inputs.desiredArmPosition);
-        pivotEffector(inputs.desiredPivotPosition);
+       
         
-    }
-
-    @Override
-    public void setMotorRollerDutyCycle(double percent) {
-        //store this for future logging.
-        this.dutyCycleRoller = percent;
-        //simple way to set the motor value.
-        endEffectorRoller.setControl(new DutyCycleOut(dutyCycleRoller));
     }
 
 
@@ -129,26 +108,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
     }
 
-    @Override
-    public void pivotEffector(int angle){
-        pivotServo.setEnabled(true);
-        pivotServo2.setEnabled(true);
-       
-
-        pivotServo.setPowered(true);
-        pivotServo2.setPowered(true);
-       
-
-        pivotServo.setPulseWidth(angle);
-        pivotServo2.setPulseWidth(angle);
-    }
-
-    @Override
-    public void depowerPivotServos(){
-        pivotServo.setEnabled(false);
-        pivotServo2.setEnabled(false);
-    }
-
+    
     @Override
     public void closeClaw(){
         clawServo.setEnabled(true);

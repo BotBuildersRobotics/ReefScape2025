@@ -40,15 +40,12 @@ import frc.robot.commands.endEffector.EndEffectorArmIntake;
 import frc.robot.commands.endEffector.EndEffectorArmL4;
 import frc.robot.commands.endEffector.EndEffectorClawClose;
 import frc.robot.commands.endEffector.EndEffectorClawOpen;
+import frc.robot.commands.endEffector.EndEffectorIdle;
 import frc.robot.commands.endEffector.EndEffectorPivotIntake;
 import frc.robot.commands.endEffector.EndEffectorPivotL4;
 import frc.robot.commands.endEffector.EndEffectorPreClamp;
-import frc.robot.commands.endEffector.EndEffectorRollerOff;
-import frc.robot.commands.endEffector.EndEffectorRollerReverse;
 import frc.robot.commands.endEffector.IntakeClampCommand;
 import frc.robot.commands.endEffector.EndEffectorIntake;
-import frc.robot.commands.endEffector.EndEffectorPivotEndStop1;
-import frc.robot.commands.endEffector.EndEffectorPivotEndStop2;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
@@ -77,7 +74,9 @@ import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
@@ -217,40 +216,50 @@ public class RobotContainer {
 
 		*/
 		
-		//driverControl.x()..toggleOnTrue(new IntakePivotCommand(pivotSubsystem)).toggleOnFalse(new StowPivotCommand(pivotSubsystem));
+		driverControl.x().onTrue(new InstantCommand( ()->
+		{ 
+			pivotSubsystem.togglePivot();
+			
+		}));
+			
 		
-		//ButtonMapping driverMap = new ButtonMapping(driverControl);
-		//driverMap.createSelfSwap(driverControl.x(), new StowPivotCommand(pivotSubsystem), new IntakePivotCommand(pivotSubsystem));
-
-		//if the above doesn't work:
-		driverControl.x().onChange(new IntakePivotCommand(pivotSubsystem));
-		/*driverControl.a().onTrue(
+		driverControl.a().onTrue(
 			new SequentialCommandGroup(
-				new EndEffectorPreClamp(endEffectorSubsystem),
-				new WaitCommand(0.2),
-				new IntakeClampCommand(endEffectorSubsystem)
+				//new EndEffectorPreClamp(endEffectorSubsystem),
+				//new WaitCommand(0.2),
+				
+				new IntakeClampCommand(endEffectorSubsystem),
+				//new WaitCommand(0.2),
+				new EndEffectorClawClose(endEffectorSubsystem)//,
+				//new InstantCommand(() -> intakeSubsystem.setWantedState(IntakeSystemState.LIFT_HELP)),
+				//new InstantCommand(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE))
 			)
-			);*/
-		
-			driverControl.a().onTrue(new EndEffectorPivotEndStop1(endEffectorSubsystem))
-			.onFalse(new EndEffectorPivotEndStop2(endEffectorSubsystem));
-
-		driverControl.b()
-		.onTrue(
-			new EndEffectorClawClose(endEffectorSubsystem)
-		).onFalse(
-			new EndEffectorClawOpen(endEffectorSubsystem)
 		);
 
+		driverControl.y().onTrue(new InstantCommand(
+			()->{
+				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+				intakeSubsystem.setWantedState(IntakeSystemState.LIFT_HELP);
+			}
+
+		));
+		
+		driverControl.b()
+		.onTrue(
+			new InstantCommand(() -> endEffectorSubsystem.closeClaw())
+		);/* .onFalse(
+			new EndEffectorClawOpen(endEffectorSubsystem)
+		);*/
+
 		
 
-		driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
+		//driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
 		operatorControl.povRight()
 		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		operatorControl.leftBumper().onTrue(new StowPivotCommand(pivotSubsystem));
+		//operatorControl.leftBumper().onTrue(new StowPivotCommand(pivotSubsystem));
 
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 		
@@ -261,10 +270,12 @@ public class RobotContainer {
 
 		//brings the elevator back to the home position
 		operatorControl.b().onTrue(
-		new EndEffectorIntake(endEffectorSubsystem)
+		new EndEffectorIdle(endEffectorSubsystem)
 		
 		
 		);
+
+		operatorControl.y().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
 
 		/*operatorControl.leftBumper().onTrue(
 			Commands.runOnce(() -> elevatorSubsystem.ResetElevatorZero())
@@ -291,17 +302,15 @@ public class RobotContainer {
 		driverControl.rightTrigger().onTrue(
 					
 				new SequentialCommandGroup(
+					new InstantCommand(() -> endEffectorSubsystem.openClaw()),
 					new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem),
 					new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
 				)
 			
 			).onFalse(
-				new ParallelCommandGroup(				
-					
-					new IntakeIdleCommand(intakeSubsystem),
-					new EndEffectorRollerOff(endEffectorSubsystem)
 				
-				));
+					new IntakeIdleCommand(intakeSubsystem)
+					);
 		
 		//Test way to show how to set reef target and get the pose
 
