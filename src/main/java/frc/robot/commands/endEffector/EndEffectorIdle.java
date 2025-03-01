@@ -1,5 +1,6 @@
 package frc.robot.commands.endEffector;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
@@ -19,5 +20,11 @@ public class EndEffectorIdle extends Command
   public void initialize() {
     effectorSubSystem.setWantedState(EndEffectorState.IDLE);
    
+  }
+
+  @Override
+  public boolean isFinished(){
+   
+    return (effectorSubSystem.getArmAngle()) >= 0.2 ;
   }
 }

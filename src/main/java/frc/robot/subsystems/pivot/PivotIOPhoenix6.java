@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.lib.TalonFXFactory;
@@ -19,21 +18,10 @@ public class PivotIOPhoenix6 implements PivotIO{
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public PivotIOPhoenix6() {
 
-        //use our helpers to write config over the CAN Bus
-      //  pivotLeftMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_LEFT);
-        pivotRightMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_RIGHT);
+      pivotRightMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_RIGHT);
         
-        //we store all of the current limits in the constants file
-        //only need to look in one place to change all motor configs.
-     //   TalonUtil.applyAndCheckConfiguration(pivotLeftMotor, Constants.PivotConstants.PivotFXConfig());
-        TalonUtil.applyAndCheckConfiguration(pivotRightMotor, Constants.PivotConstants.PivotFXConfig());
+      TalonUtil.applyAndCheckConfiguration(pivotRightMotor, Constants.PivotConstants.PivotFXConfig());
        
-       // pivotMotor.optimizeBusUtilization();
-
-       
-
-       //Set up for pivot leader/follower
-     //  pivotLeftMotor.setControl(new Follower(Ports.PIVOT_RIGHT.getDeviceNumber(), false));
        
     }
 
@@ -42,19 +30,7 @@ public class PivotIOPhoenix6 implements PivotIO{
        
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
-      /*   inputs.pivotLeftConnected = BaseStatusSignal.refreshAll(
-                        pivotLeftMotor.getStatorCurrent(),
-                        pivotLeftMotor.getDeviceTemp(),
-                        pivotLeftMotor.getPosition(),
-                        pivotLeftMotor.getVelocity())
-                        .isOK(); */
-
-        //the motor knows we want info from it, so the following requests should be cool
-       /*  inputs.pivotLeftTemperature = pivotLeftMotor.getDeviceTemp().getValueAsDouble();
-        inputs.pivotLeftRPS = pivotLeftMotor.getRotorVelocity().getValueAsDouble();
-        inputs.pivotLeftCurrent = pivotLeftMotor.getStatorCurrent().getValueAsDouble();
-        inputs.pivotLeftMotorPos = pivotLeftMotor.getPosition().getValueAsDouble(); */
-
+     
         //repeat for right motor
         inputs.pivotRightConnected = BaseStatusSignal.refreshAll(
                         pivotRightMotor.getStatorCurrent(),
@@ -74,7 +50,7 @@ public class PivotIOPhoenix6 implements PivotIO{
 
         
         double desiredRotations = inputs.pivotPosition * 0.373;
-        SmartDashboard.putNumber("DesiredRotations", desiredRotations);
+        
         pivotRightMotor.setControl(new MotionMagicVoltage(desiredRotations));
         
     }   

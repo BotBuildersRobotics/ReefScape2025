@@ -38,7 +38,7 @@ public class SuperSystem extends SubsystemBase {
 
     public static SuperSystem mInstance;
 
-    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L2; //TODO:
+    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L3; //TODO:
 
     LightState desiredLightState = LightState.OFF;
 
@@ -56,7 +56,6 @@ public class SuperSystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
     }
 
     //toggle the scoring position around around
@@ -74,6 +73,8 @@ public class SuperSystem extends SubsystemBase {
         else if(desiredReefLevel == ReefBranchLevel.L3){
             desiredReefLevel = ReefBranchLevel.L4;
         }
+
+        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
     
         return desiredReefLevel;
     }

@@ -91,10 +91,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public enum ElevatorPosition {
         //! TODO Change positions
         STOWED(-0.3, 0.2),
-        L1(3.5, 3.7),
-        L2(7.3, 7.5),
-        L3(9, 9.2),
-        L4(11, 11.5);
+        L1(3, 3.1),
+        L2(2.8, 3),
+        L3(5, 5.2),
+        L4(10.3, 10.5);
 
         public double lowerBound;
         public double upperBound;

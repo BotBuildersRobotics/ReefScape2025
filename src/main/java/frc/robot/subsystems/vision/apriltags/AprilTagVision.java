@@ -59,7 +59,7 @@ public class AprilTagVision extends SubsystemBase {
 
         Logger.recordOutput(
                 APRIL_TAGS_VISION_PATH + "Results/Estimated Pose", displayVisionPointEstimateResult(result));
-        SmartDashboard.putBoolean("Vision Result Trustable", result.isPresent());
+        
       
         double[] m_poseArray = new double[3];
         //send this
@@ -68,7 +68,7 @@ public class AprilTagVision extends SubsystemBase {
         m_poseArray[1] = estimatedP.getY();
         m_poseArray[2] = estimatedP.getRotation().getDegrees();
        
-        SmartDashboard.putNumberArray("VisionPose", m_poseArray);
+       
         Logger.recordOutput(APRIL_TAGS_VISION_PATH + "Results/Presented", result.isPresent());
     }
 

@@ -73,7 +73,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
         //also log the duty cycle we are asking for.
        // inputs.transferMotorDutyCycle = transferDutyCycle;
-        //inputs.intakeMotorDutyCycle = intakeDutyCycle;
+       // inputs.intakeMotorDutyCycle = intakeDutyCycle;
     }
 
     @Override

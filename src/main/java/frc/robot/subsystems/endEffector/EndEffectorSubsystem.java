@@ -55,13 +55,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(5),
+        IDLE(15),
 		INTAKE(120),
         PRE_CLAMP(140),
         CLAMP(145),
-        L1_DEPOSIT(0),
-        L2_L3_DEPOSIT(0),
-        L4_DEPOSIT(0),
+        L1_DEPOSIT(-20),
+        L2_L3_DEPOSIT(-20),
+        L4_DEPOSIT(-15),
 		REVERSE(.0);
        
         public double end_effector_arm_angle;
@@ -106,6 +106,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public boolean isArmInIntakePosition(){
         //TODO: check to see if our arm is in position
         return io.getArmAngle() <= EndEffectorState.INTAKE.end_effector_arm_angle + 5;
+    }
+
+    public double getArmAngle()
+    {
+        return io.getArmAngle();
     }
 
    

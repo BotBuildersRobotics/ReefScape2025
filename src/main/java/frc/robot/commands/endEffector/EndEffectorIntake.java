@@ -1,6 +1,5 @@
 package frc.robot.commands.endEffector;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
@@ -20,4 +19,6 @@ public class EndEffectorIntake extends Command
     effectorSubSystem.setWantedState(EndEffectorState.INTAKE);
    
   }
+
+  
 }

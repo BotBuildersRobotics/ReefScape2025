@@ -6,7 +6,7 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.hal.HALUtil;
@@ -41,7 +41,7 @@ public class Robot extends LoggedRobot {
 		Logger.recordMetadata("BotBuilders", "ReefScape25");
 
 		if (isReal()) {
-			//Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+			Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
 			Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
 			power = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
 		} else {

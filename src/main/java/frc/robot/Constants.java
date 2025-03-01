@@ -78,7 +78,7 @@ public final class Constants {
 
       config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
       config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 12;
+      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.5;
       config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.05;
 
       //want the motors to stop.
@@ -88,32 +88,27 @@ public final class Constants {
 
       config.Slot0 = new Slot0Configs();
       
-      config.Slot0.kP = 9.5;
-      //config.Slot0.kI = 0;
-      config.Slot0.kD = 0.01;
+      config.Slot0.kP = 9.6;
+     
+      config.Slot0.kD = 0;
       config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
      
-      config.Slot0.kV = 0.004;
+      config.Slot0.kV = 0.3;//1.09;
       
-      config.Slot0.kG = 0;//0.35; //volts to overcome gravity
+      config.Slot0.kG = 0.55;//0.35; //volts to overcome gravity
       
-      config.Slot0.kS = 0;//0.55; // volts to get over the static friction
+      config.Slot0.kS = 0.34;//0.55; // volts to get over the static friction
     
-      config.Slot0.kA = 0.55; //volts for accel 
+      config.Slot0.kA = 0.02; //volts for accel 
      
         //motion magic
 
       MotionMagicConfigs mm = config.MotionMagic;
-      mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(180)) 
-      .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(180))
+      mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(60)) 
+      .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(80))
      
-      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(380));
+      .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(220));
 
-      /*
-       *  config.MotionMagic.MotionMagicCruiseVelocity = 80;
-          config.MotionMagic.MotionMagicAcceleration = 187;
-          config.MotionMagic.MotionMagicJerk = 468;
-       */
 
 
       return config;

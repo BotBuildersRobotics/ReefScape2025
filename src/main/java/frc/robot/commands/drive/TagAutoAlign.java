@@ -36,7 +36,7 @@ public class TagAutoAlign extends Command {
         if (results.targets_Fiducials.length > 0) {
             LimelightTarget_Fiducial tag = results.targets_Fiducials[0];
 
-            SmartDashboard.putNumber("Tracking", tag.fiducialID);
+           // SmartDashboard.putNumber("Tracking", tag.fiducialID);
             Pose3d tagPoseRobot = tag.getTargetPose_RobotSpace();
         
             double yaw = tagPoseRobot.getX(); // Horizontal offset to the AprilTag
@@ -54,7 +54,7 @@ public class TagAutoAlign extends Command {
                     .withRotationalRate(yawAdjustment)
             );
         } else {
-            SmartDashboard.putNumber("Tracking", 0);
+           // SmartDashboard.putNumber("Tracking", 0);
             // Stop the robot if no targets are found
             drivetrain.applyRequest(() -> 
                 new SwerveRequest.FieldCentric()

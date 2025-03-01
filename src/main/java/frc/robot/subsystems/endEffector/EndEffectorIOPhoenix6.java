@@ -6,11 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.servohub.config.ServoHubConfig;
-import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoChannel.ChannelId;
-import com.revrobotics.servohub.ServoHub;
-import com.revrobotics.servohub.config.ServoChannelConfig.BehaviorWhenDisabled;
+
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,16 +23,6 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
    
     private double dutyCycleRoller = 0;
 
-    ServoHubConfig config = new ServoHubConfig();
-
-    ServoHub servoHub = new ServoHub(Ports.SERVO_HUB.getDeviceNumber());
-
-    // Obtain a servo channel controller
-    ServoChannel pivotServo = servoHub.getServoChannel(ChannelId.kChannelId0);
-    ServoChannel pivotServo2 = servoHub.getServoChannel(ChannelId.kChannelId1);
-
-    //claw servo
-    ServoChannel clawServo = servoHub.getServoChannel(ChannelId.kChannelId2);
 
    
     private double currentArmAngle = 0;
@@ -49,25 +35,10 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public EndEffectorIOPhoenix6() {
 
-        //pivot is on channel 0 - don't supply power when disabled
-         config.channel0.pulseRange(500, 1500, 2500)
-        .disableBehavior(BehaviorWhenDisabled.kDoNotSupplyPower);
-
-        config.channel1.pulseRange(500, 1500, 2500)
-        .disableBehavior(BehaviorWhenDisabled.kDoNotSupplyPower);
-
-        //claw is on channel 2 - supply power always
-        config.channel2.pulseRange(500, 1500, 2500)
-        .disableBehavior(BehaviorWhenDisabled.kSupplyPower);
-
-        //use our helpers to write config over the CAN Bus
       
         endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
 
-        clawServo.setEnabled(true);
-        clawServo.setEnabled(true);
-        clawServo.setPulseWidth(1500); //TODO: use constants
-
+       
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
        // TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
@@ -101,8 +72,6 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     public void setArmPosition(double angle){
         // 45:1
         //0.125 rotations per degree
-        SmartDashboard.putNumber("Effector Arm", Angle.ofBaseUnits(angle, Degrees).baseUnitMagnitude());
-       
         
 
         endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
@@ -111,23 +80,20 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     
     @Override
     public void closeClaw(){
-        clawServo.setEnabled(true);
-        clawServo.setPowered(true);
-        clawServo.setPulseWidth(2500);//TODO: use constants
+       
     }
 
     @Override
     public void openClaw(){
-        clawServo.setEnabled(true);
-        clawServo.setPowered(true);
-        clawServo.setPulseWidth(1500);//TODO: use constants
+       
         
     }
 
     @Override
     public double getArmAngle(){
 
-        return currentArmAngle;
+        return endEffectorArm.getPosition(true).getValueAsDouble();
 
     }
+
 }

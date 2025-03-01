@@ -86,7 +86,7 @@ public class IntakeSubsystem extends SubsystemBase {
         //this actually writes to the log file.
         io.updateInputs(inputs);
 
-        SmartDashboard.putString("Intake State",currentState.toString());
+       
         Logger.processInputs("intake", inputs);
 
         // Stop moving when disabled

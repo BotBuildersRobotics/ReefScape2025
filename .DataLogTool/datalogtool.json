@@ -1,1 +1,10 @@
-{}
+{
+  "download": {
+    "localDir": "C:\\FRC\\logs",
+    "remoteDir": "/home/lvuser/logs/logs",
+    "serverTeam": "10002"
+  },
+  "output": {
+    "outputFolder": "C:\\FRC\\logs"
+  }
+}

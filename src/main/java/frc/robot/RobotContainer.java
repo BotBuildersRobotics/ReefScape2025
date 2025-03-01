@@ -125,8 +125,8 @@ public class RobotContainer {
 
 
 	
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.1; // kSpeedAt12Volts desired top speed
-	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.1; // 3/4 of a rotation per second
+	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.5; // kSpeedAt12Volts desired top speed
+	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5; // 3/4 of a rotation per second
 																						// max angular velocity
 
 	/* Setting up bindings for necessary control of the swerve drive platform */
@@ -153,9 +153,6 @@ public class RobotContainer {
 		});*/
 	
 
-	private final Command leftCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 0), driverControl, 0.5);
-    private final Command rightCoralAutoDrive = new JoystickInterruptible(new AutoLineUpReef(drivetrain, 1), driverControl, 0.5);
-   
 
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -165,7 +162,19 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		
+		NamedCommands.registerCommand("L1AutoDelivery", 
+				
+				Commands.runOnce( () -> {
+					pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
+					intakeSubsystem.setWantedState(IntakeSystemState.REVERSE);
+				}
+				)
+			);
+
 		
+		NamedCommands.registerCommand("LightShow", 
+			Commands.runOnce( () -> leds.coralStagedLed())
+		);
 
 		autoChooser = AutoBuilder.buildAutoChooser("Tests");
 		if(SmartDashboard.containsKey("Auto Mode")) {
@@ -200,7 +209,7 @@ public class RobotContainer {
 		// and Y is defined as to the left according to WPILib convention.
 		
 		//resets the field position
-		//driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 		drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -239,22 +248,38 @@ public class RobotContainer {
 			)
 		);
 
-		driverControl.y().onTrue(new InstantCommand(
+		/*driverControl.y().onTrue(new InstantCommand(
 			()->{
 				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
 				intakeSubsystem.setWantedState(IntakeSystemState.LIFT_HELP);
 			}
 
-		));
-		
-		driverControl.b()
-		.onTrue(
-			new InstantCommand(() -> endEffectorSubsystem.closeClaw())
-		);/* .onFalse(
-			new EndEffectorClawOpen(endEffectorSubsystem)
-		);*/
+		));*/
+
+		/*driverControl.y().onTrue(elevatorSubsystem.sysIdQuasistatic(Direction.kForward))
+		.onFalse(elevatorSubsystem.sysIdQuasistatic(Direction.kReverse));
+
+		driverControl.b().onTrue(elevatorSubsystem.sysIdDynamic(Direction.kForward))
+		.onFalse(elevatorSubsystem.sysIdDynamic(Direction.kReverse));*/
+
+		driverControl.y().onTrue(
+			superSystem.RunTargetElevator()
+		);
+
+		driverControl.b().onTrue(
+			new SequentialCommandGroup(
+							new EndEffectorIdle(endEffectorSubsystem),
+							new ElevatorHomeCommand(elevatorSubsystem)
+			)
+		);
 
 		
+		//driverControl.b()
+		//.onTrue(
+	//		new InstantCommand(() -> endEffectorSubsystem.closeClaw())
+	//	);/* .onFalse(
+	//		new EndEffectorClawOpen(endEffectorSubsystem)
+	//	);*/
 
 		//driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
@@ -262,8 +287,7 @@ public class RobotContainer {
 		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		//operatorControl.leftBumper().onTrue(new StowPivotCommand(pivotSubsystem));
-
+		
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 		
 		//runs the elevator to the set position
@@ -271,12 +295,7 @@ public class RobotContainer {
 			superSystem.RunTargetElevator()
 		);
 
-		//brings the elevator back to the home position
-		operatorControl.b().onTrue(
-		new EndEffectorIdle(endEffectorSubsystem)
 		
-		
-		);
 
 		operatorControl.y().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
 
@@ -284,14 +303,12 @@ public class RobotContainer {
 			Commands.runOnce(() -> elevatorSubsystem.ResetElevatorZero())
 		);*/
 
-		//shoot the coral off the transfer
-		//driverControl.a()
-		//.onTrue(superSystem.shootCoral()).onFalse(new EndEffectorRollerOff(endEffectorSubsystem));
-		
 		//outtake
 		driverControl.leftTrigger()
-		.onTrue(new IntakeReverseCommand(intakeSubsystem))
-		.onFalse(new IntakeIdleCommand(intakeSubsystem));
+		//.onTrue(new IntakeReverseCommand(intakeSubsystem))
+		.onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.REVERSE)))
+		.onFalse(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE)));
+		//.onFalse(new IntakeIdleCommand(intakeSubsystem));
 		
 		/*driverControl.a()
 		.onTrue(
@@ -303,39 +320,21 @@ public class RobotContainer {
 	
 		//intake
 		driverControl.rightTrigger().onTrue(
-					
-				new SequentialCommandGroup(
-					new InstantCommand(() -> endEffectorSubsystem.openClaw()),
-					new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem),
-					new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
-				)
+					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.INTAKE))
+				/*new SequentialCommandGroup(
+					Commands.runOnce(() -> endEffectorSubsystem.openClaw()),
+					new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem)//,
+					//new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
+				)*/
 			
 			).onFalse(
-				
-					new IntakeIdleCommand(intakeSubsystem)
+					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
+					//new IntakeIdleCommand(intakeSubsystem)
 					);
 		
 		//Test way to show how to set reef target and get the pose
 
-		final ReefTargeting target = new ReefTargeting();
-		target.setTarget(ReefBranch.A, ReefBranchLevel.L4 );
-
-		final AutoAlignment exampleAutoAlignment = new AutoAlignment(
-				drivetrain,
-				() -> target.getTargetPose().plus(new Transform2d(0,-1, Rotation2d.k180deg)));
-		//driverControl.y().onTrue(exampleAutoAlignment);
-
-
-		//driverControl.leftBumper().whileTrue(leftCoralAutoDrive);
-        //driverControl.rightBumper().whileTrue(rightCoralAutoDrive);
-
-		//driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, aprilTagVisionSubsystem))
 		
-		//driverControl.rightBumper().onTrue(new JoystickInterruptible(new TagAutoAlign(drivetrain), driverControl, 0.5));
-		
-		//driverControl.rightBumper().onTrue(new TagAutoAlign(drivetrain));
-		
-
 		//For testing the elevator
 
 		//driverControl.a().onTrue(elevatorSubsystem.sysIdDynamic(Direction.kForward))
@@ -346,9 +345,6 @@ public class RobotContainer {
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 
-		NamedCommands.registerCommand("L1AutoDelivery", 
-				new AutoL1Delivery(intakeSubsystem, pivotSubsystem)
-			);
 		
 	}
 
@@ -359,18 +355,7 @@ public class RobotContainer {
 	 * 
 	 */
 	public Command getAutonomousCommand() {
-		// An example command will be run in autonomous
-
-		/*return new SequentialCommandGroup(
-
-				new PathFindToPose(drivetrain, () -> {
-					return new Pose2d(1.82, 7.30, Rotation2d.fromDegrees(91.50136));
-				}, 100, 0),
-				// new AutoAlignment(drivetrain, () -> new Pose2d()),
-				// drivetrain.applyRequest(() -> lateralMovement.withVelocityX( 25))
-				// ,
-				new WaitCommand(1));
-		*/
+		
 		return autoChooser.getSelected();
 		// return Commands.print("Auto command selected");
 	}

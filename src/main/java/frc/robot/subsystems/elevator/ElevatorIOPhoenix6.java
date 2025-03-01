@@ -89,7 +89,7 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
 
         double desiredRotations = inputs.desiredElevatorPosition;
 
-        SmartDashboard.putNumber("DesiredRotations", desiredRotations);
+       
         elevatorRight.setControl(mmVoltage.withPosition(desiredRotations).withSlot(0).withEnableFOC(true));
        
       
