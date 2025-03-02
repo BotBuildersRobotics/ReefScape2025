@@ -247,7 +247,7 @@ public class RobotContainer {
 				endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.GREEN);
 			}).andThen(
-				Commands.waitSeconds(0.5).andThen(
+				Commands.waitSeconds(1).andThen(
 					Commands.runOnce(
 						() -> {
 							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
@@ -299,11 +299,12 @@ public class RobotContainer {
 
 		//driver deliver coral
 		driverControl.a().onTrue(
-			Commands.runOnce(() -> {
+			new InstantCommand(() -> {
 				endEffectorSubsystem.openClaw();
 				leds.setStrobeState(LightState.FIRE);
 			}
-			).andThen(Commands.waitSeconds(0.2))
+			).andThen(Commands.waitSeconds(0.8))
+			.andThen(new EndEffectorIdle(endEffectorSubsystem))
 			.andThen(new ElevatorHomeCommand(elevatorSubsystem)).andThen(
 				() ->
 				leds.clear()
@@ -334,6 +335,23 @@ public class RobotContainer {
 			);
 		
 		//Test way to show how to set reef target and get the pose
+
+		driverControl.rightBumper().onTrue(
+			Commands.runOnce(() ->
+				{
+					endEffectorSubsystem.openClaw();
+					leds.setStrobeState(LightState.ORANGE);
+				}
+			)
+		);
+		driverControl.leftBumper().onTrue(
+			Commands.runOnce(() ->
+			{
+				endEffectorSubsystem.closeClaw();
+				leds.setStrobeState(LightState.FIRE);
+			}
+			)
+		);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

@@ -57,9 +57,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public enum EndEffectorState 
     {
         IDLE(15),
-		INTAKE(120),
-        PRE_CLAMP(140),
-        CLAMP(145),
+		INTAKE(108),
+        PRE_CLAMP(120),
+        CLAMP(128),
         L1_DEPOSIT(-20),
         L2_L3_DEPOSIT(-20),
         L4_DEPOSIT(-15),

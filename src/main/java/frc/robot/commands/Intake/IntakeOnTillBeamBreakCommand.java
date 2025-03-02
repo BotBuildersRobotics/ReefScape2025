@@ -21,7 +21,6 @@ public class IntakeOnTillBeamBreakCommand extends Command
   private final PivotSubsystem pivotSubsystem;
   private final LightsSubsystem lightsSubsystem;
 
-  private boolean isPreclamped = false;
 
   public IntakeOnTillBeamBreakCommand(IntakeSubsystem subsystem, EndEffectorSubsystem effector, LightsSubsystem lights, PivotSubsystem pivot) {
       intakeSubSystem = subsystem;
@@ -37,7 +36,8 @@ public class IntakeOnTillBeamBreakCommand extends Command
    // intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
     if(effectorSubsystem.getCurrentState() != EndEffectorState.INTAKE){
       effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
-      isPreclamped = false;
+      effectorSubsystem.openClaw();
+      
     }
     lightsSubsystem.clear();
   }
@@ -66,7 +66,7 @@ public class IntakeOnTillBeamBreakCommand extends Command
           intakeSubSystem.setWantedState(IntakeSystemState.STARS);
           effectorSubsystem.setWantedState(EndEffectorState.PRE_CLAMP);
           lightsSubsystem.coralStagedLed();
-          isPreclamped = true;
+         
         }else{
           intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
         }

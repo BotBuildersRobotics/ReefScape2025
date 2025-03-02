@@ -12,6 +12,18 @@ public interface EndEffectorIO {
         public double armPivotPosition = 0.0;
         
         public double desiredArmPosition = 0;
+
+        public boolean motorClawConnected = false;
+
+        public double clawPosition = 0.0;
+        
+        public double desiredClawPosition = 0;
+
+        public double clawSupplyCurrent = 0;
+
+        public double clawVelocity = 0;
+
+        public double clawTemp = 0;
       
     }
 

@@ -16,7 +16,9 @@ public class Ports {
     public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(14, "canivore");
 
     //End Effector Subsystem Motors
-    public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(31, "canivore");
+    public static final CanDeviceId END_EFFECTOR_CLAW = new CanDeviceId(27, "canivore");
+   // public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(31, "canivore");
+    
     
     public static final CanDeviceId END_EFFECTOR_ARM = new CanDeviceId(19, "canivore");
     

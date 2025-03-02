@@ -133,7 +133,7 @@ public final class Constants {
       return config;
     }
 
-    public static TalonFXSConfiguration EndEffectorFXPivotConfig() {
+    public static TalonFXSConfiguration endEffectorClaw() {
       TalonFXSConfiguration config = new TalonFXSConfiguration();
   
         config.CurrentLimits.SupplyCurrentLimit = 20.0;
@@ -143,23 +143,22 @@ public final class Constants {
         config.CurrentLimits.StatorCurrentLimit = 80;
   
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        config.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         //config.ExternalFeedback.RotorToSensorRatio = 5.8;
 
             /* Configure Motion Magic */
         MotionMagicConfigs mm = config.MotionMagic;
-        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(50)) 
-          .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(80))
-          // Take approximately 0.1 seconds to reach max accel 
-          .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
+        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(1150)) 
+          .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(800));
+          
 
       Slot0Configs slot0 = config.Slot0;
-      slot0.kS = 0.99; //  overcome static friction
+     // slot0.kS = 0.99; //  overcome static friction
      
      // slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-      slot0.kA = 0.02; // An acceleration of 1 rps/s requires 0.02 V output
+      //slot0.kA = 0.02; // An acceleration of 1 rps/s requires 0.02 V output
       slot0.kP = 2.5; // 
     // slot0.kI = 0; // No output for integrated error
      // slot0.kD = 0.05; 
@@ -167,6 +166,30 @@ public final class Constants {
 
         return config;
     }
+
+    public static TalonFXConfiguration endEffectorClaw2() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
+
+      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+      config.CurrentLimits.StatorCurrentLimitEnable = true;
+      config.CurrentLimits.StatorCurrentLimit = 80;
+
+      //config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+      config.Slot0.kP = 2;
+      config.Slot0.kD = 0;
+      config.Slot0.kS = 0.1;
+      config.Slot0.kG = 0.1;
+      config.Voltage.withPeakForwardVoltage(Volts.of(8)).withPeakReverseVoltage(Volts.of(-8));
+     
+      return config;
+    }
+
+   
 
     public static TalonFXConfiguration EndEffectorArmPivot(){
       TalonFXConfiguration config = new TalonFXConfiguration();
