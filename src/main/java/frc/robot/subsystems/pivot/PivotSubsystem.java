@@ -7,13 +7,17 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+
 
 
 public class PivotSubsystem extends SubsystemBase {
 
     //notice the static, this is shared 
     public static PivotSubsystem mInstance;
-   // public IntakeSubsystem intakeSubsystem;
+    public EndEffectorSubsystem endEffectorSubsystem;
+    private IntakeSubsystem intakeSubsystem;
 
     public static PivotSystemState currentState = PivotSystemState.STOWED;
 
@@ -58,7 +62,23 @@ public class PivotSubsystem extends SubsystemBase {
     public PivotSubsystem(PivotIO io) {
         //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
         this.io = io;
-       // this.intakeSubsystem = IntakeSubsystem.getInstance();
+        this.endEffectorSubsystem = EndEffectorSubsystem.getInstance();
+        this.intakeSubsystem = IntakeSubsystem.getInstance();
+
+        //we need to check the arm position, if it's in the intake position, we want to swap the state
+        //to keep the pivot in the intake position
+
+        if(io.getPivotAngle() > 5){
+            //we are currently in the intake position
+            if(this.endEffectorSubsystem.getArmAngle() > 15){
+                //reset the state to reflect
+                PivotSubsystem.currentState = PivotSystemState.INTAKE;
+            }
+        }
+        if(this.intakeSubsystem.isBeamBreakOneTripped()){
+            //overwrite this as well
+            PivotSubsystem.currentState = PivotSystemState.INTAKE;
+        }
 
     }
 
@@ -96,7 +116,11 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
    
-       
+        if(this.intakeSubsystem.isBeamBreakOneTripped() && PivotSubsystem.currentState == PivotSystemState.STOWED){
+            //overwrite this as well
+            PivotSubsystem.currentState = PivotSystemState.INTAKE;
+        }
+
         //this actually writes to the log file.
         io.updateInputs(inputs);
         SmartDashboard.putString("Pivot State",currentState.toString());

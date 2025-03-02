@@ -2,6 +2,7 @@ package frc.robot.subsystems.endEffector;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
@@ -45,7 +46,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         //this actually writes to the log file.
         io.updateInputs(inputs);
        
-        inputs.desiredArmPosition = currentState.end_effector_arm_angle;
+        inputs.desiredArmPosition = EndEffectorSubsystem.currentState.end_effector_arm_angle;
        
         SetEndEffectorArmPos();
       
@@ -74,16 +75,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
 		}
     }
     
-    private EndEffectorState currentState = EndEffectorState.IDLE;
+    public static EndEffectorState currentState = EndEffectorState.IDLE;
 
     public EndEffectorState getCurrentState()
     {
-        return currentState;
+        return EndEffectorSubsystem.currentState;
     }
 
     public void setWantedState(EndEffectorState state) {
 
-        currentState = state;
+        SmartDashboard.putString("End Effector State", state.toString());
+        EndEffectorSubsystem.currentState = state;
 
       
 
@@ -105,7 +107,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public boolean isArmInIntakePosition(){
         //TODO: check to see if our arm is in position
-        return io.getArmAngle() <= EndEffectorState.INTAKE.end_effector_arm_angle + 5;
+        return io.getArmAngle() >= 15;
     }
 
     public double getArmAngle()

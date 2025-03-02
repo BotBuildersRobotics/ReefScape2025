@@ -88,6 +88,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         return target.isNear(inputs.elevatorLeftRPS) && target.isNear(inputs.elevatorRightPosition);
     }
 
+    public boolean isElevatorUp(){
+        if(currentState == ElevatorPosition.STOWED){
+            return false;
+        }
+        return true;
+    }
+
     public enum ElevatorPosition {
         //! TODO Change positions
         STOWED(-0.3, 0.2),

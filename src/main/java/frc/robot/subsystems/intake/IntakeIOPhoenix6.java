@@ -42,7 +42,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     public void updateInputs(IntakeIOInputs inputs){
        
         inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
-        inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();;
+        inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
@@ -79,7 +79,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     @Override
     public void setIntakeDutyCycle(double voltage) {
       
-        SmartDashboard.putNumber("Intake Percent", voltage);
+       // SmartDashboard.putNumber("Intake Percent", voltage);
         intakeRollersFx.setControl(new VoltageOut(voltage));
     }
 
@@ -97,7 +97,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
     @Override
     public boolean getFrontBeamBreak() {
-        return intakeCanRange.getIsDetected().getValue();
+        return intakeCanRange.getIsDetected(true).getValue();
     }
 
 }

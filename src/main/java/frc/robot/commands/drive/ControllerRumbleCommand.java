@@ -29,7 +29,7 @@ public class ControllerRumbleCommand extends Command {
     public void execute() {
         //SmartDashboard.putBoolean("Rumble", condition.getAsBoolean());
         if (condition.getAsBoolean()) {
-            controller.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.4);
+            controller.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0.8);
         }
     }
 

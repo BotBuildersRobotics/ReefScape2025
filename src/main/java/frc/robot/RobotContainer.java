@@ -45,7 +45,6 @@ import frc.robot.commands.endEffector.EndEffectorClawOpen;
 import frc.robot.commands.endEffector.EndEffectorIdle;
 import frc.robot.commands.endEffector.EndEffectorPivotIntake;
 import frc.robot.commands.endEffector.EndEffectorPivotL4;
-import frc.robot.commands.endEffector.EndEffectorPreClamp;
 import frc.robot.commands.endEffector.IntakeClampCommand;
 import frc.robot.commands.endEffector.EndEffectorIntake;
 import frc.robot.commands.intake.IntakeIdleCommand;
@@ -81,6 +80,7 @@ import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem.LightState;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
 import frc.robot.subsystems.vision.TagVisionSubsystem;
@@ -209,60 +209,58 @@ public class RobotContainer {
 		// and Y is defined as to the left according to WPILib convention.
 		
 		//resets the field position
-		driverControl.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		driverControl.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+		
+		
 
 		drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverControl.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverControl.getLeftX() * MaxSpeed ) // Drive left with negative X (left)
-                    .withRotationalRate(-driverControl.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1)) // Drive forward with negative Y (forward)
+                    .withVelocityY((-driverControl.getLeftX() * MaxSpeed) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1) ) // Drive left with negative X (left)
+                    .withRotationalRate((-driverControl.getRightX() * MaxAngularRate) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1) ) // Drive counterclockwise with negative X (left)
             )
         );
 
-		/*driverControl.a().whileTrue(drivetrain.applyRequest(() -> brake));
-		driverControl.b()
-				.whileTrue(drivetrain.applyRequest(
-						() -> point.withModuleDirection(new Rotation2d(-driverControl.getLeftY(),
-								-driverControl.getLeftX()))));
-
-		*/
 		
+		//toggle the intake, but do it safely
 		driverControl.x().onTrue(new InstantCommand( ()->
 		{ 
-			pivotSubsystem.togglePivot();
+			superSystem.ToogleIntakePivot();
+			//pivotSubsystem.togglePivot();
 			
 		}));
-			
-		
-		driverControl.a().onTrue(
-			new SequentialCommandGroup(
-				//new EndEffectorPreClamp(endEffectorSubsystem),
-				//new WaitCommand(0.2),
-				
-				new IntakeClampCommand(endEffectorSubsystem),
-				//new WaitCommand(0.2),
-				new EndEffectorClawClose(endEffectorSubsystem)//,
-				//new InstantCommand(() -> intakeSubsystem.setWantedState(IntakeSystemState.LIFT_HELP)),
-				//new InstantCommand(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE))
-			)
-		);
 
-		/*driverControl.y().onTrue(new InstantCommand(
-			()->{
-				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
-				intakeSubsystem.setWantedState(IntakeSystemState.LIFT_HELP);
+		Trigger intakeClampTrigger = new Trigger(() ->{
+
+			if(intakeSubsystem.isBeamBreakOneTripped() && endEffectorSubsystem.getCurrentState() == EndEffectorState.CLAMP){
+					return true;
 			}
 
-		));*/
+			return false;
+		});
 
-		/*driverControl.y().onTrue(elevatorSubsystem.sysIdQuasistatic(Direction.kForward))
-		.onFalse(elevatorSubsystem.sysIdQuasistatic(Direction.kReverse));
+		//automatic clamp the coral
+		intakeClampTrigger.onTrue(
+			Commands.runOnce(() -> {
+				endEffectorSubsystem.closeClaw();
+				leds.setStrobeState(LightState.GREEN);
+			}).andThen(
+				Commands.waitSeconds(0.5).andThen(
+					Commands.runOnce(
+						() -> {
+							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+							intakeSubsystem.setWantedState(IntakeSystemState.IDLE);
+						}
 
-		driverControl.b().onTrue(elevatorSubsystem.sysIdDynamic(Direction.kForward))
-		.onFalse(elevatorSubsystem.sysIdDynamic(Direction.kReverse));*/
-
-		driverControl.y().onTrue(
+					)
+				)
+			)
+		);
+			
+		
+		/*driverControl.y().onTrue(
 			superSystem.RunTargetElevator()
 		);
 
@@ -271,23 +269,27 @@ public class RobotContainer {
 							new EndEffectorIdle(endEffectorSubsystem),
 							new ElevatorHomeCommand(elevatorSubsystem)
 			)
-		);
+		);*/
 
-		
-		//driverControl.b()
-		//.onTrue(
-	//		new InstantCommand(() -> endEffectorSubsystem.closeClaw())
-	//	);/* .onFalse(
-	//		new EndEffectorClawOpen(endEffectorSubsystem)
-	//	);*/
-
-		//driverControl.y().onTrue(new HumanPlayerIntake(intakeSubsystem, pivotSubsystem));
 
 		operatorControl.povRight()
 		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		
+		operatorControl.povLeft()
+		.onTrue(
+			Commands.runOnce(()-> {
+				//move the pivot to human player range
+				//but hide the end effector
+				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+				pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
+
+			})
+
+		)
+		.onFalse(new IntakeIdleCommand(intakeSubsystem));
+
+		//toggle reef heights
 		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
 		
 		//runs the elevator to the set position
@@ -295,53 +297,43 @@ public class RobotContainer {
 			superSystem.RunTargetElevator()
 		);
 
+		//driver deliver coral
+		driverControl.a().onTrue(
+			Commands.runOnce(() -> {
+				endEffectorSubsystem.openClaw();
+				leds.setStrobeState(LightState.FIRE);
+			}
+			).andThen(Commands.waitSeconds(0.2))
+			.andThen(new ElevatorHomeCommand(elevatorSubsystem)).andThen(
+				() ->
+				leds.clear()
+			)
+		);
+
+		//operator can bring elevator home
+		operatorControl.y().onTrue(new ElevatorHomeCommand(elevatorSubsystem).andThen(
+			() -> leds.clear()
+		));
+
 		
-
-		operatorControl.y().onTrue(new ElevatorHomeCommand(elevatorSubsystem));
-
-		/*operatorControl.leftBumper().onTrue(
-			Commands.runOnce(() -> elevatorSubsystem.ResetElevatorZero())
-		);*/
-
 		//outtake
 		driverControl.leftTrigger()
-		//.onTrue(new IntakeReverseCommand(intakeSubsystem))
 		.onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.REVERSE)))
 		.onFalse(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE)));
-		//.onFalse(new IntakeIdleCommand(intakeSubsystem));
 		
-		/*driverControl.a()
-		.onTrue(
-			new EndEffectorPivotL4(endEffectorSubsystem)
-		).onFalse(
-			new EndEffectorArmIntake(endEffectorSubsystem)
-		);*/
-
-	
 		//intake
-		driverControl.rightTrigger().onTrue(
-					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.INTAKE))
-				/*new SequentialCommandGroup(
-					Commands.runOnce(() -> endEffectorSubsystem.openClaw()),
-					new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem)//,
-					//new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
-				)*/
-			
+		driverControl.rightTrigger().whileTrue(
+			new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem, pivotSubsystem)
+					.alongWith(
+						new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
+					)	
+		
 			).onFalse(
 					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
-					//new IntakeIdleCommand(intakeSubsystem)
-					);
+					
+			);
 		
 		//Test way to show how to set reef target and get the pose
-
-		
-		//For testing the elevator
-
-		//driverControl.a().onTrue(elevatorSubsystem.sysIdDynamic(Direction.kForward))
-		//.onFalse(elevatorSubsystem.sysIdDynamic(Direction.kReverse));
-
-		//driverControl.b().onTrue(elevatorSubsystem.sysIdQuasistatic(Direction.kForward))
-		//.onFalse(elevatorSubsystem.sysIdQuasistatic(Direction.kReverse));
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

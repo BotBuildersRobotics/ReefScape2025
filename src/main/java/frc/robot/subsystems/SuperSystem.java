@@ -61,7 +61,9 @@ public class SuperSystem extends SubsystemBase {
     //toggle the scoring position around around
     public ReefBranchLevel toggleScoringHeight(){
 
+        //show the green flow when the L4 is set
         if(desiredReefLevel == ReefBranchLevel.L4){
+            leds.clear();
             desiredReefLevel = ReefBranchLevel.L1;
         }
         else if(desiredReefLevel == ReefBranchLevel.L1){
@@ -71,6 +73,7 @@ public class SuperSystem extends SubsystemBase {
             desiredReefLevel = ReefBranchLevel.L3;
         }
         else if(desiredReefLevel == ReefBranchLevel.L3){
+            leds.setStrobeState(LightState.COLOR_FLOW_GREEN);
             desiredReefLevel = ReefBranchLevel.L4;
         }
 
@@ -116,20 +119,26 @@ public class SuperSystem extends SubsystemBase {
         return Commands.runOnce(() -> this.toggleScoringHeight());
     }
 
-    public Command ToogleIntakePivot(){
-        
+    public void ToogleIntakePivot(){
       
-        SmartDashboard.putString("Current Pivot", getPivotState().get().toString());
-        return new SelectCommand<>
-        (
-            Map.ofEntries
-            (
-                Map.entry(PivotSystemState.STOWED, new IntakePivotCommand(pivot)),
-                Map.entry(PivotSystemState.INTAKE, new StowPivotCommand(pivot)),
-                Map.entry(PivotSystemState.ALGAE, new StowPivotCommand(pivot)),
-                Map.entry(PivotSystemState.HUMAN_PLAYER, new StowPivotCommand(pivot))),
-            this.getPivotState()
-        );
+        if(pivot.getCurrentState() == PivotSystemState.STOWED){
+            pivot.setWantedState(PivotSystemState.INTAKE);
+        }else{
+            if(intake.isBeamBreakOneTripped()){
+                //don't allow the pivot to go back while coral is in the intake
+                pivot.setWantedState(PivotSystemState.INTAKE);
+            }else{
+                //check the arm position
+                if(!effector.isArmInIntakePosition()){
+                    pivot.setWantedState(PivotSystemState.STOWED);
+                }
+            }
+        }
+      
+    }
+
+    public boolean isElevatorUp(){
+        return elevator.isElevatorUp();
     }
 
     public Command HumanPlayerIntake() {
