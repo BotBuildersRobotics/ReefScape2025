@@ -129,12 +129,20 @@ public class RobotContainer {
 	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5; // 3/4 of a rotation per second
 																						// max angular velocity
 
-	/* Setting up bindings for necessary control of the swerve drive platform */
+	private double SlowSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.08; // kSpeedAt12Volts desired top speed
+	private double SlowAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.3; // 3/4 of a rotation per second
+																						
+																						/* Setting up bindings for necessary control of the swerve drive platform */
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
 			.withDeadband(MaxSpeed )
 			.withRotationalDeadband(MaxAngularRate) // Add a 10% deadband
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
-																		// motors
+	
+	
+	private final SwerveRequest.RobotCentric alignDrive = new SwerveRequest.RobotCentric()
+			.withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
+			
+
 	private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 	private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -217,11 +225,55 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1)) // Drive forward with negative Y (forward)
-                    .withVelocityY((-driverControl.getLeftX() * MaxSpeed) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1) ) // Drive left with negative X (left)
-                    .withRotationalRate((-driverControl.getRightX() * MaxAngularRate) * (elevatorSubsystem.isElevatorUp() ? 0.5 : 1) ) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) ) // Drive forward with negative Y (forward)
+                    .withVelocityY((-driverControl.getLeftX() * MaxSpeed) ) // Drive left with negative X (left)
+                    .withRotationalRate((-driverControl.getRightX() * MaxAngularRate)  ) // Drive counterclockwise with negative X (left)
             )
         );
+
+		driverControl.povLeft()
+		.whileTrue(
+			drivetrain.applyRequest(() -> 
+				alignDrive.withVelocityX(( 0) ) 
+				.withVelocityY((SlowSpeed) ) 
+				
+
+			));
+
+		driverControl.povRight()
+		.whileTrue(
+				drivetrain.applyRequest(() -> 
+				alignDrive.withVelocityX(( 0) ) 
+				.withVelocityY((-SlowSpeed) ) 
+				
+
+			));
+		
+
+		driverControl.povUp()
+		.whileTrue(
+			drivetrain.applyRequest(() -> 
+			alignDrive.withVelocityX(( SlowSpeed) ) 
+			.withVelocityY((0) ) 
+			
+
+			));
+
+		driverControl.povDown()
+		.whileTrue(
+			drivetrain.applyRequest(() -> 
+			alignDrive.withVelocityX(( -SlowSpeed) ) 
+			.withVelocityY((0) ) 
+			
+
+			));
+
+
+		driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, false))
+		.onFalse(drivetrain.applyRequest(() -> brake));
+
+		driverControl.rightBumper().whileTrue(new AutoAlignPID(drivetrain, true))
+		.onFalse(drivetrain.applyRequest(() -> brake));
 
 		
 		//toggle the intake, but do it safely

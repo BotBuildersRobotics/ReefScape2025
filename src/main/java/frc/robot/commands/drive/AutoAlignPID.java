@@ -15,14 +15,13 @@ import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.vision.TagVisionSubsystem;
+
 
 
 public class AutoAlignPID extends Command {
 
   private final CommandSwerveDrivetrain swerveDrive;
-  @SuppressWarnings("unused")
-  private final TagVisionSubsystem visionSubsystem;
+
 
   private Pose2d Pose;
 
@@ -50,11 +49,9 @@ public class AutoAlignPID extends Command {
   /**
    * Creates a new AutoAlign.
    *
-   * @param visionSubsystem The subsystem for vision
    * @param swerveDrive The subsystem for the swerve drive
-   * @param targetPose The target pose for the robot to align to
    */
-  public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, TagVisionSubsystem visionSubsystem, Pose2d targetPose) {
+  public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, boolean rightSide) {
     
 
     LimelightResults results =  LimelightHelpers.getLatestResults("limelight-back");
@@ -68,7 +65,7 @@ public class AutoAlignPID extends Command {
      }
     
     this.swerveDrive = swerveDrive;
-    this.visionSubsystem = visionSubsystem;
+   
    
   }
 
