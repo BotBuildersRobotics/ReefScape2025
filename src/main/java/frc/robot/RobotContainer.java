@@ -272,11 +272,11 @@ public class RobotContainer {
 		);*/
 
 
-		operatorControl.povRight()
+		operatorControl.povUp()
 		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		operatorControl.povLeft()
+		operatorControl.a()
 		.onTrue(
 			Commands.runOnce(()-> {
 				//move the pivot to human player range
@@ -290,10 +290,11 @@ public class RobotContainer {
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
 		//toggle reef heights
-		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeight());
+		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeightUp());
+		operatorControl.leftBumper().onTrue(superSystem.ToggleReefHeightDown());
 		
 		//runs the elevator to the set position
-		operatorControl.a().onTrue(
+		operatorControl.rightTrigger().onTrue(
 			superSystem.RunTargetElevator()
 		);
 
@@ -312,10 +313,11 @@ public class RobotContainer {
 		);
 
 		//operator can bring elevator home
-		operatorControl.y().onTrue(new ElevatorHomeCommand(elevatorSubsystem).andThen(
+		operatorControl.leftTrigger().onTrue(new ElevatorHomeCommand(elevatorSubsystem).andThen(
 			() -> leds.clear()
 		));
 
+		
 		
 		//outtake
 		driverControl.leftTrigger()

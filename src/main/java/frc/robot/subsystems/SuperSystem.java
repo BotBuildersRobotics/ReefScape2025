@@ -59,7 +59,7 @@ public class SuperSystem extends SubsystemBase {
     }
 
     //toggle the scoring position around around
-    public ReefBranchLevel toggleScoringHeight(){
+    public ReefBranchLevel toggleScoringHeightUp(){
 
         //show the green flow when the L4 is set
         if(desiredReefLevel == ReefBranchLevel.L4){
@@ -82,6 +82,28 @@ public class SuperSystem extends SubsystemBase {
         return desiredReefLevel;
     }
 
+    public ReefBranchLevel toggleScoringHeightDown(){
+
+        //show the green flow when the L4 is set
+        if(desiredReefLevel == ReefBranchLevel.L2){
+            leds.clear();
+            desiredReefLevel = ReefBranchLevel.L1;
+        }
+        else if(desiredReefLevel == ReefBranchLevel.L3){
+            desiredReefLevel = ReefBranchLevel.L2;
+        }
+        else if(desiredReefLevel == ReefBranchLevel.L4){
+            desiredReefLevel = ReefBranchLevel.L3;
+        }
+        else if(desiredReefLevel == ReefBranchLevel.L1){
+            leds.setStrobeState(LightState.COLOR_FLOW_GREEN);
+            desiredReefLevel = ReefBranchLevel.L4;
+        }
+
+        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
+    
+        return desiredReefLevel;
+    }
     
     public ReefBranchLevel getDesiredScoringLevel(){
         return desiredReefLevel;
@@ -115,8 +137,12 @@ public class SuperSystem extends SubsystemBase {
         return () -> pivot.getCurrentState();
     }
 
-    public Command ToggleReefHeight(){
-        return Commands.runOnce(() -> this.toggleScoringHeight());
+    public Command ToggleReefHeightUp() {
+        return Commands.runOnce(()-> this.toggleScoringHeightUp());
+    }
+
+    public Command ToggleReefHeightDown(){
+        return Commands.runOnce(() -> this.toggleScoringHeightDown());
     }
 
     public void ToogleIntakePivot(){
