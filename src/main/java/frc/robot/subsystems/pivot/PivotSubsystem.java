@@ -90,10 +90,23 @@ public class PivotSubsystem extends SubsystemBase {
 
     public void togglePivot(){
 
+        
         if(PivotSubsystem.currentState == PivotSystemState.STOWED){
             setWantedState(PivotSystemState.INTAKE);
         }else{
              setWantedState(PivotSystemState.STOWED);
+        }
+
+        
+        //we are currently in the intake position
+        if(this.endEffectorSubsystem.getArmAngle() > 15){
+            //reset the state to reflect
+            PivotSubsystem.currentState = PivotSystemState.INTAKE;
+        }
+        
+        if(this.intakeSubsystem.isBeamBreakOneTripped()){
+            //overwrite this as well
+            PivotSubsystem.currentState = PivotSystemState.INTAKE;
         }
     }
 

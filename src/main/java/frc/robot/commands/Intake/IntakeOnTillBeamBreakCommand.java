@@ -35,7 +35,12 @@ public class IntakeOnTillBeamBreakCommand extends Command
   public void initialize() {
    // intakeSubSystem.setWantedState(IntakeSystemState.INTAKE);
     if(effectorSubsystem.getCurrentState() != EndEffectorState.INTAKE){
-      effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
+      if(pivotSubsystem.getCurrentState() == PivotSystemState.INTAKE){
+        //only move the end effector down when intaking
+        effectorSubsystem.setWantedState(EndEffectorState.INTAKE);
+      }else{
+        effectorSubsystem.setWantedState(EndEffectorState.IDLE);
+      }
       effectorSubsystem.openClaw();
       
     }
@@ -56,8 +61,10 @@ public class IntakeOnTillBeamBreakCommand extends Command
 
       if(pivotSubsystem.getCurrentState() == PivotSystemState.ALGAE){
         intakeSubSystem.setWantedState(IntakeSystemState.ALGAE);
+        effectorSubsystem.setWantedState(EndEffectorState.IDLE);
       }else if(pivotSubsystem.getCurrentState() == PivotSystemState.HUMAN_PLAYER){
         intakeSubSystem.setWantedState(IntakeSystemState.HUMAN_PLAYER);
+        effectorSubsystem.setWantedState(EndEffectorState.IDLE);
       }else{
         //deploy the pivot and the intake
         pivotSubsystem.setWantedState(PivotSystemState.INTAKE);

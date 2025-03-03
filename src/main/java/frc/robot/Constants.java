@@ -390,17 +390,22 @@ public final class Constants {
 
   public static class TrajectoryConstants {
 
-    public static final double AUTO_LINEUP_ROTATION_P = 5;
+    public static final double AUTO_LINEUP_ROTATION_P = 0.058;
     public static final double AUTO_LINEUP_ROTATION_I = 0;
     public static final double AUTO_LINEUP_ROTATION_D = 0;
     public static final Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS =
-        new Constraints(4 * Math.PI, 6 * Math.PI);
+        new Constraints(0.1 * Math.PI, 6 * Math.PI);
 
     public static final double AUTO_LINEUP_TRANSLATION_P = 4.0;
     public static final double AUTO_LINEUP_TRANSLATION_I = 0;
     public static final double AUTO_LINEUP_TRANSLATION_D = 0;
-    public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(3, 4);
+    public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(0.3, 0.3);
   }
+
+  public static final double AUTO_ALIGN_MAX_SPEED = 0.7; //meters per second
+  public static final double ALIGN_RIGHT_OFFSET = -0.25;
+  public static final double ALIGN_LEFT_OFFSET = 0.25; //meters from center
+  public static final double ALIGN_DIS_REEF = 0.8; //meters - distance to reef
 
   public static class SwerveConstants {
 

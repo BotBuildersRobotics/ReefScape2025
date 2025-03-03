@@ -99,8 +99,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         //! TODO Change positions
         STOWED(-0.3, 0.2),
         L1(3, 3.1),
-        L2(2.8, 3),
-        L3(5, 5.2),
+        L2(2.5, 2.7),
+        L3(4.9, 5.1),
         L4(11.8, 11.9);
 
         public double lowerBound;

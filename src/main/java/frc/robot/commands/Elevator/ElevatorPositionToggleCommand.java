@@ -18,6 +18,6 @@ public class ElevatorPositionToggleCommand extends Command
 
   @Override
   public void initialize() {
-    superSystem.toggleScoringHeight();
+   // superSystem.toggleScoringHeight();
   }
 }

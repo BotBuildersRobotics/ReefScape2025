@@ -59,9 +59,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         IDLE(15),
 		INTAKE(108),
         PRE_CLAMP(120),
-        CLAMP(128),
+        CLAMP(135),
         L1_DEPOSIT(-20),
-        L2_L3_DEPOSIT(-20),
+        L2_L3_DEPOSIT(-18),
         L4_DEPOSIT(-15),
 		REVERSE(.0);
        

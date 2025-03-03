@@ -64,9 +64,6 @@ public class SuperSystem extends SubsystemBase {
         //show the green flow when the L4 is set
         if(desiredReefLevel == ReefBranchLevel.L4){
             leds.clear();
-            desiredReefLevel = ReefBranchLevel.L1;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L1){
             desiredReefLevel = ReefBranchLevel.L2;
         }
         else if(desiredReefLevel == ReefBranchLevel.L2){
@@ -85,17 +82,14 @@ public class SuperSystem extends SubsystemBase {
     public ReefBranchLevel toggleScoringHeightDown(){
 
         //show the green flow when the L4 is set
-        if(desiredReefLevel == ReefBranchLevel.L2){
+        if(desiredReefLevel == ReefBranchLevel.L3){
             leds.clear();
-            desiredReefLevel = ReefBranchLevel.L1;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L3){
             desiredReefLevel = ReefBranchLevel.L2;
         }
         else if(desiredReefLevel == ReefBranchLevel.L4){
             desiredReefLevel = ReefBranchLevel.L3;
         }
-        else if(desiredReefLevel == ReefBranchLevel.L1){
+        else if(desiredReefLevel == ReefBranchLevel.L2){
             leds.setStrobeState(LightState.COLOR_FLOW_GREEN);
             desiredReefLevel = ReefBranchLevel.L4;
         }
@@ -150,7 +144,11 @@ public class SuperSystem extends SubsystemBase {
         if(pivot.getCurrentState() == PivotSystemState.STOWED){
             pivot.setWantedState(PivotSystemState.INTAKE);
         }else{
-            if(intake.isBeamBreakOneTripped()){
+            if(intake.isBeamBreakTwoTripped()){
+                //don't allow the pivot to go back while coral is in the intake
+                pivot.setWantedState(PivotSystemState.INTAKE);
+            }
+            else if(intake.isBeamBreakOneTripped()){
                 //don't allow the pivot to go back while coral is in the intake
                 pivot.setWantedState(PivotSystemState.INTAKE);
             }else{

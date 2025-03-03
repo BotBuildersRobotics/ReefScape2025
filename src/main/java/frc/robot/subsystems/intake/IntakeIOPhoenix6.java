@@ -34,7 +34,7 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeTransferConstants.IntakeFXConfig());
 
         intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
-        intakeCanRange = new CANrange(Ports.INTAKE_1_CANRANGE.getDeviceNumber());
+        intakeCanRange = new CANrange(Ports.INTAKE_1_CANRANGE.getDeviceNumber(), Ports.INTAKE_1_CANRANGE.getBus());
        
     }
 
@@ -43,6 +43,8 @@ public class IntakeIOPhoenix6 implements IntakeIO{
        
         inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
         inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();
+
+        inputs.canRangeConnected = BaseStatusSignal.refreshAll(intakeCanRange.getIsDetected()).isOK();
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.

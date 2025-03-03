@@ -52,6 +52,7 @@ import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.commands.drive.AutoAlignPID;
+import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.AutoLineUpReef;
 import frc.robot.commands.drive.ControllerRumbleCommand;
@@ -269,10 +270,10 @@ public class RobotContainer {
 			));
 
 
-		driverControl.leftBumper().whileTrue(new AutoAlignPID(drivetrain, false))
+		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, false))
 		.onFalse(drivetrain.applyRequest(() -> brake));
 
-		driverControl.rightBumper().whileTrue(new AutoAlignPID(drivetrain, true))
+		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, true))
 		.onFalse(drivetrain.applyRequest(() -> brake));
 
 		
@@ -280,13 +281,13 @@ public class RobotContainer {
 		driverControl.x().onTrue(new InstantCommand( ()->
 		{ 
 			superSystem.ToogleIntakePivot();
-			//pivotSubsystem.togglePivot();
+			
 			
 		}));
 
 		Trigger intakeClampTrigger = new Trigger(() ->{
 
-			if(intakeSubsystem.isBeamBreakOneTripped() && endEffectorSubsystem.getCurrentState() == EndEffectorState.CLAMP){
+			if(intakeSubsystem.isBeamBreakTwoTripped() && endEffectorSubsystem.getCurrentState() == EndEffectorState.CLAMP){
 					return true;
 			}
 
@@ -299,30 +300,25 @@ public class RobotContainer {
 				endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.GREEN);
 			}).andThen(
-				Commands.waitSeconds(1).andThen(
+				Commands.waitSeconds(0.5).andThen(
 					Commands.runOnce(
 						() -> {
 							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
 							intakeSubsystem.setWantedState(IntakeSystemState.IDLE);
 						}
 
+					).andThen(
+						Commands.waitSeconds(0.3).andThen(
+							//auto close up the pivot once the system is ready
+							//this is software protected and shouldn't close
+							//if coral is mis picked.
+							Commands.runOnce( () ->superSystem.ToogleIntakePivot())
+						)
 					)
 				)
 			)
 		);
-			
 		
-		/*driverControl.y().onTrue(
-			superSystem.RunTargetElevator()
-		);
-
-		driverControl.b().onTrue(
-			new SequentialCommandGroup(
-							new EndEffectorIdle(endEffectorSubsystem),
-							new ElevatorHomeCommand(elevatorSubsystem)
-			)
-		);*/
-
 
 		operatorControl.povUp()
 		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
@@ -365,7 +361,9 @@ public class RobotContainer {
 		);
 
 		//operator can bring elevator home
-		operatorControl.leftTrigger().onTrue(new ElevatorHomeCommand(elevatorSubsystem).andThen(
+		operatorControl.leftTrigger().onTrue(
+			new EndEffectorIdle(endEffectorSubsystem).andThen(
+			new ElevatorHomeCommand(elevatorSubsystem)).andThen(
 			() -> leds.clear()
 		));
 
@@ -390,7 +388,7 @@ public class RobotContainer {
 		
 		//Test way to show how to set reef target and get the pose
 
-		driverControl.rightBumper().onTrue(
+		/*driverControl.rightBumper().onTrue(
 			Commands.runOnce(() ->
 				{
 					endEffectorSubsystem.openClaw();
@@ -405,7 +403,7 @@ public class RobotContainer {
 				leds.setStrobeState(LightState.FIRE);
 			}
 			)
-		);
+		);*/
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

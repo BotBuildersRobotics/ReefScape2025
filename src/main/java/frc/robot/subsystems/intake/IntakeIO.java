@@ -9,7 +9,8 @@ public interface IntakeIO {
     public class IntakeIOInputs {
        
         //this is an output, it will be set to either true or false
-        public boolean intakeConnected = true;
+        public boolean intakeConnected = false;
+        public boolean canRangeConnected = false;
         //we want to log the temp of the motor (output)
         public double intakeTemperature = 0.0;
         // we want to log the revolutions per second of the motor (output)

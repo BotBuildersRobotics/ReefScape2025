@@ -4,11 +4,13 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -18,7 +20,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
 
 
-public class AutoAlignPID extends Command {
+public class AutoAlignPID2 extends Command {
 
   private final CommandSwerveDrivetrain swerveDrive;
 
@@ -37,34 +39,39 @@ public class AutoAlignPID extends Command {
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_P,
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_I,
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_D,
-        Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
+        Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
+       );
 
   private final ProfiledPIDController yTranslationController =
       new ProfiledPIDController(
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_P,
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_I,
         Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_D,
-        Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
+        Constants.TrajectoryConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
+        );
+
+  private boolean isRightTargetted = false;
 
   /**
    * Creates a new AutoAlign.
    *
    * @param swerveDrive The subsystem for the swerve drive
    */
-  public AutoAlignPID(CommandSwerveDrivetrain swerveDrive, boolean rightSide) {
+  public AutoAlignPID2(CommandSwerveDrivetrain swerveDrive, boolean rightSide) {
     
 
-    LimelightResults results =  LimelightHelpers.getLatestResults("limelight-back");
+   // xTranslationController.setSetpoint(-0.5);
+    xTranslationController.setTolerance(0.005);
+    
+    
 
-     if (results != null && results.targets_Fiducials.length > 0) {
-        LimelightTarget_Fiducial tag = results.targets_Fiducials[0];
-         Pose3d robotPoseTag = tag.getRobotPose_TargetSpace();     // Robot's pose relative to tag
-       
-        this.Pose = new Pose2d(robotPoseTag.getX(), robotPoseTag.getY(), new Rotation2d( robotPoseTag.getRotation().getAngle()));
-        
-     }
+    yTranslationController.setTolerance(0.005);
+    
+    
+    rotationController.setTolerance(0.5);
     
     this.swerveDrive = swerveDrive;
+    this.isRightTargetted = rightSide;
    
    
   }
@@ -72,36 +79,30 @@ public class AutoAlignPID extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
-    // Gets the error between the desired pos (the target) and the current pos of the robot
-    Pose2d drivePose = swerveDrive.getState().Pose; //current robot estimate
-    double xPoseError = Pose.getX() - drivePose.getX();
-    double yPoseError = Pose.getY() - drivePose.getY();
-    double thetaPoseError = Pose.getRotation().getRadians() - drivePose.getRotation().getRadians();
+    
+    //check to see if we have a target
+    if(LimelightHelpers.getTV("limelight-back")){
+        double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-back");
+        
 
-    // Uses the PID controllers to calculate the drive output
-    double xOutput = MathUtil.applyDeadband(xTranslationController.calculate(xPoseError, 0), 0.05);
-    double yOutput = MathUtil.applyDeadband(yTranslationController.calculate(yPoseError, 0), 0.05);
-    double turnOutput =
-        MathUtil.applyDeadband(rotationController.calculate(thetaPoseError, 0), 0.05);
+        double ySpeed = MathUtil.clamp( MathUtil.applyDeadband(yTranslationController.calculate(positions[0], this.isRightTargetted ? Constants.ALIGN_RIGHT_OFFSET : Constants.ALIGN_LEFT_OFFSET), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED); //TODO
+        double xSpeed =   MathUtil.clamp(MathUtil.applyDeadband(-xTranslationController.calculate(positions[2], Constants.ALIGN_DIS_REEF), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
+        double rotation =   MathUtil.clamp(MathUtil.applyDeadband(-rotationController.calculate(positions[4], 0), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
 
-    // Enables continuous input for the rotation controller
-    rotationController.enableContinuousInput(0, 2 * Math.PI);
+       
 
-    // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
-    ChassisSpeeds chassisSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xOutput, yOutput, turnOutput, swerveDrive.getState().Pose.getRotation()); 
-
-
-    final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
+        final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
       
-
-    robotSpeed
-            .withSpeeds(new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond))
+        robotSpeed
+            .withSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotation))
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-           
-    //swerveDrive.setControl(robotSpeed);
+      
+        swerveDrive.setControl(robotSpeed);
+    }
+    
+
+         
+    
     
   }
 
