@@ -319,10 +319,27 @@ public class RobotContainer {
 			)
 		);
 		
+		operatorControl.povDown()
+		.onTrue(
+				Commands.runOnce(
+						() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)
+						).andThen(
+							new HumanPlayerIntake(intakeSubsystem, pivotSubsystem)
+						)
+						
+
+				).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
 		operatorControl.povUp()
-		.onTrue(new AlgaeIntake(intakeSubsystem, pivotSubsystem))
-		.onFalse(new IntakeIdleCommand(intakeSubsystem));
+		.onTrue(
+				Commands.runOnce(
+						() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)
+						).andThen(
+							new AlgaeIntake(intakeSubsystem, pivotSubsystem
+						)
+						)
+
+				).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
 		operatorControl.a()
 		.onTrue(

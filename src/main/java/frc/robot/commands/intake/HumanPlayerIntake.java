@@ -25,11 +25,11 @@ public class HumanPlayerIntake extends Command {
   @Override
   public boolean isFinished() {
 
-    if(intakeSubsystem.isBeamBreakOneTripped()){
+    if(intakeSubsystem.isBeamBreakTwoTripped()){
         intakeSubsystem.setWantedState(IntakeSystemState.IDLE);
     }
 
-    return intakeSubsystem.isBeamBreakOneTripped();
+    return intakeSubsystem.isBeamBreakTwoTripped();
   }
 }
 

@@ -101,14 +101,14 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     @Override
     public void closeClaw(){
       
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(125));
+        endEffectorClaw.setControl(clawMotionMagic.withPosition(45));
      // endEffectorClaw.setControl(new VoltageOut(-2));
     }
 
     @Override
     public void openClaw(){
        
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(50));
+        endEffectorClaw.setControl(clawMotionMagic.withPosition(15));
       // endEffectorClaw.setControl(new VoltageOut(2));
       
         
