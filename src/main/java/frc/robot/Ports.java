@@ -17,11 +17,14 @@ public class Ports {
 
     //End Effector Subsystem Motors
     public static final CanDeviceId END_EFFECTOR_CLAW = new CanDeviceId(27, "canivore");
-   // public static final CanDeviceId END_EFFECTOR_ROLLER = new CanDeviceId(31, "canivore");
+    public static final CanDeviceId END_EFFECTOR_SPINNER = new CanDeviceId(31, "canivore");
     
     
     public static final CanDeviceId END_EFFECTOR_ARM = new CanDeviceId(19, "canivore");
     
+    public static final CanDeviceId FUSED_END_EFFECTOR_ARM = new CanDeviceId(21, "canivore");
+    
+
     //Intake Subsystem Motors
     public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
     public static final CanDeviceId TRANSFER = new CanDeviceId(16, "canivore");

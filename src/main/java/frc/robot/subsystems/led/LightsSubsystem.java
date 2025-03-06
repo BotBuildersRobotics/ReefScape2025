@@ -6,6 +6,7 @@ import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
@@ -27,6 +28,7 @@ public class LightsSubsystem extends SubsystemBase {
 
         // set up the CANdle
         led = new CANdle(Ports.LEDS.getDeviceNumber(), Ports.LEDS.getBus());
+        led.configLEDType(LEDStripType.GRB);
     }
 
 

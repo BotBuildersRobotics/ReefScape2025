@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -76,6 +77,7 @@ import frc.robot.subsystems.drive.ReefTargeting;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranch;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -126,8 +128,8 @@ public class RobotContainer {
 
 
 	
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.5; // kSpeedAt12Volts desired top speed
-	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5; // 3/4 of a rotation per second
+	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.3; // kSpeedAt12Volts desired top speed
+	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.3; // 3/4 of a rotation per second
 																						// max angular velocity
 
 	private double SlowSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.08; // kSpeedAt12Volts desired top speed
@@ -155,14 +157,11 @@ public class RobotContainer {
 
 	public final CommandSwerveDrivetrain drivetrain =  TunerConstants.createDrivetrain();
 
-	/*private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
-			new VisionIOLimelight("limelight-back", drivetrain::getRotation),
+	//private TagVisionSubsystem aprilTagVisionSubsystem = new TagVisionSubsystem(drivetrain, new VisionIOLimelight[]{
+	//		new VisionIOLimelight("limelight-back", drivetrain::getRotation),
 			//new VisionIOLimelight("limelight-front", drivetrain::getRotation)
 
-		});*/
-	
-
-
+	//	});
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -171,24 +170,68 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		
-		NamedCommands.registerCommand("L1AutoDelivery", 
+		
+
+		NamedCommands.registerCommand("DeliverL4", 
+		
 				
+			Commands.runOnce(()-> leds.setStrobeState(LightState.COLOR_FLOW_RED)).andThen(
+					superSystem.RunTargetElevator().withTimeout(2).andThen(
+							Commands.runOnce( ()-> {
+								endEffectorSubsystem.openClaw();
+								leds.setStrobeState(LightState.FIRE);
+							}
+						).andThen(Commands.waitSeconds(0.8))
+						.andThen(new EndEffectorIdle(endEffectorSubsystem))
+						.andThen(new ElevatorHomeCommand(elevatorSubsystem)).andThen(
+							() ->
+							leds.clear()
+						)
+			))
+				
+			 
+		);
+
+		NamedCommands.registerCommand("AutoTagAlign", 
+				new AutoAlignPID2(drivetrain, false)
+		);
+
+		NamedCommands.registerCommand("StageCoral", 
+		
 				Commands.runOnce( () -> {
-					pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
-					intakeSubsystem.setWantedState(IntakeSystemState.REVERSE);
-				}
-				)
-			);
+					endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+				} )
+			 
+		);
+
+		NamedCommands.registerCommand("CloseClaw", 
+		
+				Commands.runOnce( () -> {
+					endEffectorSubsystem.closeClaw();
+				} )
+			 
+		);
 
 		
 		NamedCommands.registerCommand("LightShow", 
 			Commands.runOnce( () -> leds.coralStagedLed())
+			
 		);
 
-		autoChooser = AutoBuilder.buildAutoChooser("Tests");
-		if(SmartDashboard.containsKey("Auto Mode")) {
+		NamedCommands.registerCommand("DeliverL1", 
+			Commands.runOnce( () -> leds.coralStagedLed()).andThen(
+				Commands.runOnce( () -> intakeSubsystem.setWantedState(IntakeSystemState.AUTO_L1))
+				.andThen(
+					Commands.waitSeconds(3).andThen(
+						Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))))
+			)
+			
+		);
+
+		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
+		/*if(SmartDashboard.containsKey("Auto Mode")) {
 			SmartDashboard.getEntry("Auto Mode").close();
-		}
+		}*/
 		SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
@@ -223,12 +266,21 @@ public class RobotContainer {
 		
 		
 
-		drivetrain.setDefaultCommand(
+		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) ) // Drive forward with negative Y (forward)
                     .withVelocityY((-driverControl.getLeftX() * MaxSpeed) ) // Drive left with negative X (left)
                     .withRotationalRate((-driverControl.getRightX() * MaxAngularRate)  ) // Drive counterclockwise with negative X (left)
+            )
+        );*/
+
+		drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getLeftY(),0.1),3) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getLeftX(), 0.1),3) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getRightX(), 0.1),3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -270,11 +322,11 @@ public class RobotContainer {
 			));
 
 
-		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, false))
-		.onFalse(drivetrain.applyRequest(() -> brake));
+		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, false));
+		//.onFalse(drivetrain.applyRequest(() -> brake));
 
-		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, true))
-		.onFalse(drivetrain.applyRequest(() -> brake));
+		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
+		//.onFalse(drivetrain.applyRequest(() -> brake));
 
 		
 		//toggle the intake, but do it safely
@@ -300,7 +352,7 @@ public class RobotContainer {
 				endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.GREEN);
 			}).andThen(
-				Commands.waitSeconds(0.5).andThen(
+				Commands.waitUntil(() -> endEffectorSubsystem.isClawClosed()).andThen(
 					Commands.runOnce(
 						() -> {
 							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
@@ -308,12 +360,12 @@ public class RobotContainer {
 						}
 
 					).andThen(
-						Commands.waitSeconds(0.3).andThen(
+						//Commands.waitSeconds(0.3).andThen(
 							//auto close up the pivot once the system is ready
 							//this is software protected and shouldn't close
 							//if coral is mis picked.
 							Commands.runOnce( () ->superSystem.ToogleIntakePivot())
-						)
+						//)
 					)
 				)
 			)
@@ -402,8 +454,27 @@ public class RobotContainer {
 					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
 					
 			);
+
+
+		//lift the elevator up a little so we can run the spinner and remove the algae
+		operatorControl.y().onTrue(Commands.runOnce( () -> {
+			elevatorSubsystem.setWantedState(ElevatorPosition.ALGAE);
+			endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
+			endEffectorSubsystem.setSpinnerSpeed(20);
+
+		}
 		
-		//Test way to show how to set reef target and get the pose
+		))
+		.onFalse(
+			Commands.runOnce(() -> {endEffectorSubsystem.setSpinnerSpeed(0);}).andThen(
+			new EndEffectorIdle(endEffectorSubsystem)
+			.andThen(new ElevatorHomeCommand(elevatorSubsystem)))
+		);
+		
+
+		operatorControl.start().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)));
+		
+		//Test the claw positions
 
 		/*driverControl.rightBumper().onTrue(
 			Commands.runOnce(() ->

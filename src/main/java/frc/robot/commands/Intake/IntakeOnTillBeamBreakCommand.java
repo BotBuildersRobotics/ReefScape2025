@@ -84,12 +84,12 @@ public class IntakeOnTillBeamBreakCommand extends Command
 
   @Override
   public boolean isFinished() {
-    if(effectorSubsystem.getCurrentState() == EndEffectorState.PRE_CLAMP && intakeSubSystem.isBeamBreakOneTripped())
+    if(effectorSubsystem.getCurrentState() == EndEffectorState.PRE_CLAMP && intakeSubSystem.isBeamBreakTwoTripped())
     {
       effectorSubsystem.setWantedState(EndEffectorState.CLAMP);
      // intakeSubSystem.setWantedState(IntakeSystemState.IDLE);
     }
       
-    return intakeSubSystem.isBeamBreakOneTripped();
+    return intakeSubSystem.isBeamBreakTwoTripped();
   }
 }

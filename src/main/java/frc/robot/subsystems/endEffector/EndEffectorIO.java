@@ -34,6 +34,9 @@ public interface EndEffectorIO {
     default void setArmPosition(double angle){}
 
     default double getArmAngle(){return 0;}
+
+    default void setSpinnerSpeed(double percent){return;}
     
+    default boolean isClawClosed(){return false;}
 
 }

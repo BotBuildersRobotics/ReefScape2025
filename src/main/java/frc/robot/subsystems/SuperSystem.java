@@ -17,6 +17,7 @@ import frc.robot.commands.pivot.StowPivotCommand;
 import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 import frc.robot.subsystems.led.LightsSubsystem;
@@ -38,7 +39,7 @@ public class SuperSystem extends SubsystemBase {
 
     public static SuperSystem mInstance;
 
-    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L3; //TODO:
+    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L4; 
 
     LightState desiredLightState = LightState.OFF;
 
@@ -109,6 +110,8 @@ public class SuperSystem extends SubsystemBase {
 
     public Command RunTargetElevator(){
 
+        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
+
         return new SelectCommand<>
         (
             Map.ofEntries
@@ -140,7 +143,9 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public void ToogleIntakePivot(){
-      
+        
+        effector.setWantedState(EndEffectorState.IDLE);
+
         if(pivot.getCurrentState() == PivotSystemState.STOWED){
             pivot.setWantedState(PivotSystemState.INTAKE);
         }else{
@@ -163,15 +168,6 @@ public class SuperSystem extends SubsystemBase {
 
     public boolean isElevatorUp(){
         return elevator.isElevatorUp();
-    }
-
-    public Command HumanPlayerIntake() {
-        if(intake.isBeamBreakOneTripped()) {
-            intake.setWantedState(IntakeSystemState.HUMAN_PLAYER);
-        }
-        //TODO:
-
-        return Commands.print("TODO: Complete me");
     }
 
    

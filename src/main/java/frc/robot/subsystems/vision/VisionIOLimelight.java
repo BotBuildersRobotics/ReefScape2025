@@ -63,11 +63,11 @@ public class VisionIOLimelight implements VisionIO {
     
     PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.limelightName);
 
-    Logger.recordOutput("LL Name",this.limelightName);
+    //Logger.recordOutput("LL Name",this.limelightName);
 
     if(estimate != null){
       
-      Logger.recordOutput("PE",estimate.pose);
+     // Logger.recordOutput("PE",estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(estimate.timestampSeconds),
                               new Pose3d(estimate.pose),
@@ -88,7 +88,7 @@ public class VisionIOLimelight implements VisionIO {
    
     if(megaTag2Estimate != null){
 
-      Logger.recordOutput("PE2",megaTag2Estimate.pose);
+     // Logger.recordOutput("PE2",megaTag2Estimate.pose);
       poseObservations.add(
         new PoseObservation(  Utils.fpgaToCurrentTime(megaTag2Estimate.timestampSeconds),
                               new Pose3d(megaTag2Estimate.pose),

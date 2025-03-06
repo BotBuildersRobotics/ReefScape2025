@@ -24,7 +24,7 @@ public class ElevatorL3Command extends Command
 
   @Override
   public void initialize() {
-    effectorSubsystem.setWantedState(EndEffectorState.L2_L3_DEPOSIT);
+    effectorSubsystem.setWantedState(EndEffectorState.L3_DEPOSIT);
     elevatorSubsystem.setWantedState(ElevatorPosition.L3);
   }
 }

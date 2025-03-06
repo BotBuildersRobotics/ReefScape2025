@@ -17,15 +17,14 @@ import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.led.LightsSubsystem;
+import frc.robot.subsystems.led.LightsSubsystem.LightState;
 
 
 
 public class AutoAlignPID2 extends Command {
 
   private final CommandSwerveDrivetrain swerveDrive;
-
-
-  private Pose2d Pose;
 
   private final ProfiledPIDController rotationController =
       new ProfiledPIDController(
@@ -60,14 +59,8 @@ public class AutoAlignPID2 extends Command {
   public AutoAlignPID2(CommandSwerveDrivetrain swerveDrive, boolean rightSide) {
     
 
-   // xTranslationController.setSetpoint(-0.5);
     xTranslationController.setTolerance(0.005);
-    
-    
-
     yTranslationController.setTolerance(0.005);
-    
-    
     rotationController.setTolerance(0.5);
     
     this.swerveDrive = swerveDrive;
@@ -99,22 +92,23 @@ public class AutoAlignPID2 extends Command {
       
         swerveDrive.setControl(robotSpeed);
     }
-    
-
-         
-    
-    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-   // swerveDrive.setControl(new SwerveRequest.SwerveDriveBrake());
+    swerveDrive.setControl(new SwerveRequest.SwerveDriveBrake());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+    if(yTranslationController.atGoal() && rotationController.atGoal()){
+      LightsSubsystem.getInstance().setStrobeState(LightState.GREEN);
+      return true;
+    }
+
     return false;
   }
 }

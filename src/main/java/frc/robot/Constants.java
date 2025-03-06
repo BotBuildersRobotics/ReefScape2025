@@ -4,15 +4,19 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -78,7 +82,7 @@ public final class Constants {
 
       config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
       config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.5;
+      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 12.2;
       config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.05;
 
       //want the motors to stop.
@@ -118,8 +122,13 @@ public final class Constants {
 
   public static final class EndEffectorConstants {
 
+   
+    public static double END_EFFECTOR_CLAW_START = 15;
+    public static double END_EFFECTOR_CLAW_END = 46;
+    
+
     // copying more constans
-    public static TalonFXConfiguration EndEffectorFXRollerConfig() {
+    public static TalonFXConfiguration EndEffectorSpinner() {
       TalonFXConfiguration config = new TalonFXConfiguration();
 
       config.CurrentLimits.SupplyCurrentLimit = 20.0;
@@ -203,7 +212,7 @@ public final class Constants {
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-      config.Feedback.RotorToSensorRatio = 45;
+      //config.Feedback.RotorToSensorRatio = 0;//45;
       
 
        /* Configure Motion Magic */
@@ -223,6 +232,19 @@ public final class Constants {
     slot0.kD = 0.15; 
     slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
+    /*CANcoder m_cc = new CANcoder(Ports.FUSED_END_EFFECTOR_ARM.getDeviceNumber(), Ports.FUSED_END_EFFECTOR_ARM.getBus());
+
+    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+    
+    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    cc_cfg.MagnetSensor.MagnetOffset = 0.25;
+    m_cc.getConfigurator().apply(cc_cfg);
+
+    config.Feedback.FeedbackRemoteSensorID = Ports.FUSED_END_EFFECTOR_ARM.getDeviceNumber();
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+   
+*/
 
       return config;
     }

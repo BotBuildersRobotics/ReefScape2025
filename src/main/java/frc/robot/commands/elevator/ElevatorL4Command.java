@@ -27,4 +27,9 @@ public class ElevatorL4Command extends Command
     effectorSubsystem.setWantedState(EndEffectorState.L4_DEPOSIT);
     elevatorSubsystem.setWantedState(ElevatorPosition.L4);
   }
+
+  @Override
+  public boolean isFinished() {
+    return elevatorSubsystem.checkElevatorPosition(ElevatorPosition.L4);
+  }
 }

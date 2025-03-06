@@ -7,19 +7,31 @@
         {
           "type": "named",
           "data": {
-            "name": "LightShow"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1AutoDelivery"
+            "name": "CloseClaw"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 0.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StageCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReefMove"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DeliverL4"
           }
         }
       ]

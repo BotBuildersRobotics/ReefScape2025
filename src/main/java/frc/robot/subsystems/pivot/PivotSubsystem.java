@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
 
 
 
@@ -99,12 +100,12 @@ public class PivotSubsystem extends SubsystemBase {
 
         
         //we are currently in the intake position
-        if(this.endEffectorSubsystem.getArmAngle() > 15){
+        if(this.endEffectorSubsystem.getArmAngle() > 5){
             //reset the state to reflect
             PivotSubsystem.currentState = PivotSystemState.INTAKE;
         }
         
-        if(this.intakeSubsystem.isBeamBreakOneTripped()){
+        if(this.intakeSubsystem.isBeamBreakOneTripped() || this.intakeSubsystem.isBeamBreakTwoTripped()){
             //overwrite this as well
             PivotSubsystem.currentState = PivotSystemState.INTAKE;
         }
@@ -128,15 +129,25 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if(this.intakeSubsystem.getCurrentState() == IntakeSystemState.AUTO_L1 ){
+            //we are happy with this, it's controlled.
+            return;
+        }
    
         if(this.intakeSubsystem.isBeamBreakOneTripped() && PivotSubsystem.currentState == PivotSystemState.STOWED){
             //overwrite this as well
             PivotSubsystem.currentState = PivotSystemState.INTAKE;
         }
 
+        if(this.intakeSubsystem.isBeamBreakTwoTripped() && PivotSubsystem.currentState == PivotSystemState.STOWED){
+            //overwrite this as well
+            PivotSubsystem.currentState = PivotSystemState.INTAKE;
+        }
+
         //this actually writes to the log file.
         io.updateInputs(inputs);
-        SmartDashboard.putString("Pivot State",currentState.toString());
+       // SmartDashboard.putString("Pivot State",currentState.toString());
         Logger.processInputs("Pivot", inputs);
 
         //check to see that angle of the arm is clear of the intake.

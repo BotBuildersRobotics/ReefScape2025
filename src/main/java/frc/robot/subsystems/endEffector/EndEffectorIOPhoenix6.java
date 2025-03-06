@@ -26,6 +26,9 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
     private TalonFXS endEffectorClaw;
 
+
+    private TalonFX algaeSpinner;
+
    
     private double dutyCycleRoller = 0;
    
@@ -44,13 +47,15 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
         endEffectorClaw =  TalonFXFactory.createDefaultTalonFXS(Ports.END_EFFECTOR_CLAW);
 
+        algaeSpinner =  TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_SPINNER);
        
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
        // TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
         TalonUtil.applyAndCheckConfiguration(endEffectorArm, Constants.EndEffectorConstants.EndEffectorArmPivot());
         TalonUtil.applyAndCheckConfiguration(endEffectorClaw, Constants.EndEffectorConstants.endEffectorClaw());
-
+        TalonUtil.applyAndCheckConfiguration(algaeSpinner, Constants.EndEffectorConstants.EndEffectorSpinner());
+      
        // endEffectorClaw.setPosition(0);
     }
 
@@ -92,7 +97,8 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     public void setArmPosition(double angle){
         // 45:1
         //0.125 rotations per degree
-        
+        //double desiredRotations = angle / 360;
+        //endEffectorArm.setControl(armMotionMagic.withPosition(desiredRotations).withSlot(0));
 
         endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
     }
@@ -101,17 +107,20 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     @Override
     public void closeClaw(){
       
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(45));
-     // endEffectorClaw.setControl(new VoltageOut(-2));
+        endEffectorClaw.setControl(clawMotionMagic.withPosition(Constants.EndEffectorConstants.END_EFFECTOR_CLAW_END));
+     
     }
 
     @Override
     public void openClaw(){
        
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(15));
-      // endEffectorClaw.setControl(new VoltageOut(2));
-      
-        
+        endEffectorClaw.setControl(clawMotionMagic.withPosition(Constants.EndEffectorConstants.END_EFFECTOR_CLAW_START));
+     
+    }
+
+    @Override
+    public boolean isClawClosed(){
+        return (endEffectorClaw.getPosition(true).getValueAsDouble() >= (Constants.EndEffectorConstants.END_EFFECTOR_CLAW_END - 5));
     }
 
     @Override
@@ -119,6 +128,11 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
         return endEffectorArm.getPosition(true).getValueAsDouble();
 
+    }
+
+    @Override
+    public void setSpinnerSpeed(double speed){
+        algaeSpinner.setControl(new DutyCycleOut(speed));
     }
 
 }

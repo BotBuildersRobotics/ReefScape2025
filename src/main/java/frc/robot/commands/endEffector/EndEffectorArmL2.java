@@ -17,6 +17,6 @@ public class EndEffectorArmL2 extends Command
   @Override
   public void initialize() {
     
-    effectorSubSystem.setWantedState(EndEffectorState.L2_L3_DEPOSIT);
+    effectorSubSystem.setWantedState(EndEffectorState.L2_DEPOSIT);
   }
 }

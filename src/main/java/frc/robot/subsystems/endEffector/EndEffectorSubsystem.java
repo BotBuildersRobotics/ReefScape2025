@@ -56,13 +56,15 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public enum EndEffectorState 
     {
-        IDLE(15),
+        IDLE(5),
 		INTAKE(108),
         PRE_CLAMP(120),
         CLAMP(135),
         L1_DEPOSIT(-20),
-        L2_L3_DEPOSIT(-18),
+        L2_DEPOSIT(-30),
+        L3_DEPOSIT(-18),
         L4_DEPOSIT(-15),
+        ALGAE(-5),
 		REVERSE(.0);
        
         public double end_effector_arm_angle;
@@ -105,9 +107,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
         io.openClaw();
     }
 
+    public void setSpinnerSpeed(double speed){
+        io.setSpinnerSpeed(speed);
+    }
+
+    public boolean isClawClosed(){
+        return io.isClawClosed();
+    }
+
     public boolean isArmInIntakePosition(){
-        //TODO: check to see if our arm is in position
-        return io.getArmAngle() >= 15;
+        
+        return io.getArmAngle() >= 8;
     }
 
     public double getArmAngle()

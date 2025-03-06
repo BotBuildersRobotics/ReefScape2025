@@ -56,7 +56,8 @@ public class IntakeSubsystem extends SubsystemBase {
         HUMAN_PLAYER(3.0, 0),
         STARS(0, 2),
         LIFT_HELP(0, -0.4),
-        ALGAE(5, 0.0);
+        ALGAE(5, 0.0),
+        AUTO_L1(-6,0);
 
         public double intake_voltage;
         public double transfer_voltage;
