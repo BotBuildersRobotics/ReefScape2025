@@ -61,7 +61,7 @@ public class AutoAlignPID2 extends Command {
 
     xTranslationController.setTolerance(0.005);
     yTranslationController.setTolerance(0.005);
-    rotationController.setTolerance(0.5);
+    rotationController.setTolerance(0.05);
     
     this.swerveDrive = swerveDrive;
     this.isRightTargetted = rightSide;

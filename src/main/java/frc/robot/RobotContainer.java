@@ -128,8 +128,8 @@ public class RobotContainer {
 
 
 	
-	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.3; // kSpeedAt12Volts desired top speed
-	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.3; // 3/4 of a rotation per second
+	private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8 ; // kSpeedAt12Volts desired top speed
+	private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.8 ; // 3/4 of a rotation per second
 																						// max angular velocity
 
 	private double SlowSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.08; // kSpeedAt12Volts desired top speed
@@ -137,8 +137,8 @@ public class RobotContainer {
 																						
 																						/* Setting up bindings for necessary control of the swerve drive platform */
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-			.withDeadband(MaxSpeed )
-			.withRotationalDeadband(MaxAngularRate) // Add a 10% deadband
+			.withDeadband(MaxSpeed *0.1)
+			.withRotationalDeadband(MaxAngularRate *0.1) // Add a 10% deadband
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
 	
 	
@@ -219,7 +219,9 @@ public class RobotContainer {
 		);
 
 		NamedCommands.registerCommand("DeliverL1", 
-			Commands.runOnce( () -> leds.coralStagedLed()).andThen(
+			Commands.runOnce( () -> pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER))
+			.andThen(Commands.waitSeconds(0.5))
+			.andThen(
 				Commands.runOnce( () -> intakeSubsystem.setWantedState(IntakeSystemState.AUTO_L1))
 				.andThen(
 					Commands.waitSeconds(3).andThen(
@@ -266,23 +268,23 @@ public class RobotContainer {
 		
 		
 
-		/*drivetrain.setDefaultCommand(
+		drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) ) // Drive forward with negative Y (forward)
                     .withVelocityY((-driverControl.getLeftX() * MaxSpeed) ) // Drive left with negative X (left)
                     .withRotationalRate((-driverControl.getRightX() * MaxAngularRate)  ) // Drive counterclockwise with negative X (left)
             )
-        );*/
+        );
 
-		drivetrain.setDefaultCommand(
+		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getLeftY(),0.1),3) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getLeftX(), 0.1),3) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driverControl.getRightX(), 0.1),3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-(Math.pow(driverControl.getLeftY(), 3)) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-(Math.pow(driverControl.getLeftX(), 3)) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(- (driverControl.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
-        );
+        );*/
 
 		driverControl.povLeft()
 		.whileTrue(
@@ -331,6 +333,13 @@ public class RobotContainer {
 		
 		//toggle the intake, but do it safely
 		driverControl.x().onTrue(new InstantCommand( ()->
+		{ 
+			superSystem.ToogleIntakePivot();
+			
+			
+		}));
+
+		operatorControl.x().onTrue(new InstantCommand( ()->
 		{ 
 			superSystem.ToogleIntakePivot();
 			
@@ -393,7 +402,7 @@ public class RobotContainer {
 
 				).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		operatorControl.a()
+		operatorControl.povLeft()
 		.onTrue(
 			Commands.runOnce(()-> {
 				//move the pivot to human player range
@@ -457,7 +466,7 @@ public class RobotContainer {
 
 
 		//lift the elevator up a little so we can run the spinner and remove the algae
-		operatorControl.y().onTrue(Commands.runOnce( () -> {
+		operatorControl.y().whileTrue(Commands.run( () -> {
 			elevatorSubsystem.setWantedState(ElevatorPosition.ALGAE);
 			endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
 			endEffectorSubsystem.setSpinnerSpeed(20);
@@ -466,32 +475,43 @@ public class RobotContainer {
 		
 		))
 		.onFalse(
-			Commands.runOnce(() -> {endEffectorSubsystem.setSpinnerSpeed(0);}).andThen(
-			new EndEffectorIdle(endEffectorSubsystem)
-			.andThen(new ElevatorHomeCommand(elevatorSubsystem)))
+				
+					//new EndEffectorIdle(endEffectorSubsystem).withTimeout(2).andThen(
+						Commands.run(() ->
+						{
+							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+							elevatorSubsystem.setWantedState(ElevatorPosition.STOWED);
+							//endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+							endEffectorSubsystem.setSpinnerSpeed(0);
+						})
+					//)
+				
 		);
 		
+		operatorControl.b().whileTrue(
+			new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem, pivotSubsystem)
+					.alongWith(
+						new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
+					)	
+		
+			).onFalse(
+					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
+					
+			);
 
 		operatorControl.start().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)));
 		
 		//Test the claw positions
 
-		/*driverControl.rightBumper().onTrue(
-			Commands.runOnce(() ->
-				{
-					endEffectorSubsystem.openClaw();
-					leds.setStrobeState(LightState.ORANGE);
-				}
-			)
-		);
-		driverControl.leftBumper().onTrue(
+		
+		operatorControl.a().onTrue(
 			Commands.runOnce(() ->
 			{
 				endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.FIRE);
 			}
 			)
-		);*/
+		);
 
 		drivetrain.registerTelemetry(logger::telemeterize);
 

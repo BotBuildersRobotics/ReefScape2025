@@ -132,6 +132,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         if(this.intakeSubsystem.getCurrentState() == IntakeSystemState.AUTO_L1 ){
             //we are happy with this, it's controlled.
+            PivotSubsystem.currentState = PivotSubsystem.PivotSystemState.HUMAN_PLAYER;
             return;
         }
    
