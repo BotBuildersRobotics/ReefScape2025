@@ -52,6 +52,7 @@ import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
+import frc.robot.commands.drive.AutoAlignAuto;
 import frc.robot.commands.drive.AutoAlignPID;
 import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.commands.drive.AutoAlignment;
@@ -230,6 +231,10 @@ public class RobotContainer {
 			
 		);
 
+		NamedCommands.registerCommand("AutoAlign", 
+				new AutoAlignAuto(drivetrain, true)
+		);
+
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
 		/*if(SmartDashboard.containsKey("Auto Mode")) {
 			SmartDashboard.getEntry("Auto Mode").close();
@@ -324,10 +329,10 @@ public class RobotContainer {
 			));
 
 
-		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, false));
+		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
 		//.onFalse(drivetrain.applyRequest(() -> brake));
 
-		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
+		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, false));
 		//.onFalse(drivetrain.applyRequest(() -> brake));
 
 		
@@ -469,22 +474,22 @@ public class RobotContainer {
 		operatorControl.y().whileTrue(Commands.run( () -> {
 			elevatorSubsystem.setWantedState(ElevatorPosition.ALGAE);
 			endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
-			endEffectorSubsystem.setSpinnerSpeed(20);
+			//endEffectorSubsystem.setSpinnerSpeed(20);
 
 		}
 		
 		))
 		.onFalse(
 				
-					//new EndEffectorIdle(endEffectorSubsystem).withTimeout(2).andThen(
-						Commands.run(() ->
-						{
-							endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
-							elevatorSubsystem.setWantedState(ElevatorPosition.STOWED);
-							//endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
-							endEffectorSubsystem.setSpinnerSpeed(0);
-						})
-					//)
+					
+			Commands.run(() ->
+			{
+				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+				elevatorSubsystem.setWantedState(ElevatorPosition.STOWED);
+				
+				//endEffectorSubsystem.setSpinnerSpeed(0);
+			})
+				
 				
 		);
 		
@@ -500,6 +505,8 @@ public class RobotContainer {
 			);
 
 		operatorControl.start().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)));
+		
+		operatorControl.back().onTrue(Commands.runOnce(() -> pivotSubsystem.setWantedState(PivotSystemState.INTAKE_HIGH)));
 		
 		//Test the claw positions
 

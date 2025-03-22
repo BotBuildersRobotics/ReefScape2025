@@ -93,15 +93,14 @@ public final class Constants {
       config.Slot0 = new Slot0Configs();
       
       config.Slot0.kP = 9.6;
-     
       config.Slot0.kD = 0;
       config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
      
-      config.Slot0.kV = 0.3;//1.09;
+      config.Slot0.kV = 0.3;
       
-      config.Slot0.kG = 0.55;//0.35; //volts to overcome gravity
+      config.Slot0.kG = 0.55; //volts to overcome gravity
       
-      config.Slot0.kS = 0.34;//0.55; // volts to get over the static friction
+      config.Slot0.kS = 0.34;// volts to get over the static friction
     
       config.Slot0.kA = 0.02; //volts for accel 
      
@@ -427,7 +426,7 @@ public final class Constants {
   public static final double AUTO_ALIGN_MAX_SPEED = 0.7; //meters per second
   public static final double ALIGN_RIGHT_OFFSET = -0.15;
   public static final double ALIGN_LEFT_OFFSET = 0.15; //meters from center
-  public static final double ALIGN_DIS_REEF = 0.8; //meters - distance to reef
+  public static final double ALIGN_DIS_REEF = -0.6; //meters - distance to reef
 
   public static class SwerveConstants {
 

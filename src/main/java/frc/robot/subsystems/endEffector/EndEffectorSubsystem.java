@@ -63,8 +63,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         L1_DEPOSIT(-20),
         L2_DEPOSIT(-30),
         L3_DEPOSIT(-18),
-        L4_DEPOSIT(-15),
-        ALGAE(-5),
+        L4_DEPOSIT(-18),
+        ALGAE(-10),
+        ALGAE_2(-15),
 		REVERSE(.0);
        
         public double end_effector_arm_angle;

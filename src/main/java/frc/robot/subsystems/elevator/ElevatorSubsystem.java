@@ -101,8 +101,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         L1(3, 3.1),
         L2(2.5, 2.7),
         L3(4.9, 5.1),
-        L4(12, 12.2),
-        ALGAE(2.05, 2.4);
+        L4(12.5, 12.6),
+        ALGAE(2.55, 2.4);
 
         public double lowerBound;
         public double upperBound;
