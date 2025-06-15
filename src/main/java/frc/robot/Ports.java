@@ -16,30 +16,25 @@ public class Ports {
     public static final CanDeviceId ELEVATOR_RIGHT = new CanDeviceId(14, "canivore");
 
     //End Effector Subsystem Motors
-    public static final CanDeviceId END_EFFECTOR_CLAW = new CanDeviceId(27, "canivore");
-    public static final CanDeviceId END_EFFECTOR_SPINNER = new CanDeviceId(31, "canivore");
+    public static final CanDeviceId END_EFFECTOR_CLAW = new CanDeviceId(30, "canivore");
     
     
-    public static final CanDeviceId END_EFFECTOR_ARM = new CanDeviceId(19, "canivore");
-    
-    public static final CanDeviceId FUSED_END_EFFECTOR_ARM = new CanDeviceId(21, "canivore");
+    public static final CanDeviceId PIVOT_ARM = new CanDeviceId(31, "canivore");
     
 
     //Intake Subsystem Motors
-    public static final CanDeviceId INTAKE = new CanDeviceId(18, "canivore");
-    public static final CanDeviceId TRANSFER = new CanDeviceId(16, "canivore");
+    public static final CanDeviceId INTAKE = new CanDeviceId(22, "canivore");
+    public static final CanDeviceId TRANSFER = new CanDeviceId(18, "canivore");
+    
     public static final CanDeviceId INTAKE_1_CANRANGE = new CanDeviceId(26, "canivore"); 
    
     
-    //Pivot Subsystem Motors
-    public static final CanDeviceId PIVOT_LEFT = new CanDeviceId(17,"canivore");
-    public static final CanDeviceId PIVOT_RIGHT = new CanDeviceId(22, "canivore");
-   
+    //Pivot Subsystem Motors -10.5 rotations
+    public static final CanDeviceId INTAKE_PIVOT = new CanDeviceId(19,"canivore");
+    
   
     public static final CanDeviceId LEDS = new CanDeviceId(25, "canivore");
 
-
-    public static final CanDeviceId SERVO_HUB = new CanDeviceId(3, "rio");
 
 	public static final int PIGEON = 13;
 
