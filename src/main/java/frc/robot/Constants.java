@@ -17,14 +17,20 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.Units;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -141,8 +147,8 @@ public final class Constants {
       return config;
     }
 
-    public static TalonFXSConfiguration endEffectorClaw() {
-      TalonFXSConfiguration config = new TalonFXSConfiguration();
+    public static TalonFXConfiguration endEffectorClaw() {
+      TalonFXConfiguration config = new TalonFXConfiguration();
   
         config.CurrentLimits.SupplyCurrentLimit = 20.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -151,7 +157,7 @@ public final class Constants {
         config.CurrentLimits.StatorCurrentLimit = 80;
   
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+        //config.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         //config.ExternalFeedback.RotorToSensorRatio = 5.8;
@@ -253,87 +259,123 @@ public final class Constants {
 
   public static final class IntakeConstants {
 
+    private static final double kGearing = (24.0 / 12.0);
+
     public static TalonFXConfiguration IntakeFXConfig() {
       TalonFXConfiguration config = new TalonFXConfiguration();
 
-      config.CurrentLimits.SupplyCurrentLimit = 20.0;
-      config.CurrentLimits.SupplyCurrentLimitEnable = true;
-
       config.CurrentLimits.StatorCurrentLimitEnable = true;
-      config.CurrentLimits.StatorCurrentLimit = 80;
+      config.CurrentLimits.StatorCurrentLimit = 120;
+
+      config.CurrentLimits.SupplyCurrentLimitEnable = true;
+      config.CurrentLimits.SupplyCurrentLimit = 60.0;
+		  config.CurrentLimits.SupplyCurrentLowerLimit = 60.0;
+		  config.CurrentLimits.SupplyCurrentLowerTime = 0.1;
+
+      config.Voltage.PeakForwardVoltage = 12.0;
+		  config.Voltage.PeakReverseVoltage = -12.0;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      
+
+      config.Feedback.SensorToMechanismRatio = kGearing;
+
+		  config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
       return config;
     }
   }
   public static final class IntakeTransferConstants {
 
+    public static final double kGearing = 2.5;
+
       public static TalonFXConfiguration IntakeFXConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
   
-        config.CurrentLimits.SupplyCurrentLimit = 20.0;
-        config.CurrentLimits.SupplyCurrentLimitEnable = true;
-  
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.CurrentLimits.StatorCurrentLimit = 80;
-  
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.CurrentLimits.StatorCurrentLimitEnable = Robot.isReal();
+        config.CurrentLimits.StatorCurrentLimit = 120.0;
+
+        config.CurrentLimits.SupplyCurrentLimitEnable = Robot.isReal();
+        config.CurrentLimits.SupplyCurrentLimit = 60.0;
+        config.CurrentLimits.SupplyCurrentLowerLimit = 60.0;
+        config.CurrentLimits.SupplyCurrentLowerTime = 0.1;
+
+        config.Voltage.PeakForwardVoltage = 12.0;
+        config.Voltage.PeakReverseVoltage = -12.0;
+
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.Feedback.SensorToMechanismRatio = kGearing;
+
         return config;
       }
   }
 
   public static final class PivotConstants {
 
+    public static final double kGearing = 40.0;
+
+    public static final Angle kDeployPosition = Units.Degrees.of(10.0);
+	  public static final Angle kStowClearPosition = Units.Degrees.of(55.0);
+	  public static final Angle kFullStowPosition = Units.Degrees.of(85.918);
+	  public static final Angle kIndexerHold = Units.Degrees.of(20.0);
+
+	  public static final Angle kExhaustPosition = kDeployPosition;
+	  public static final Distance kArmLength = Units.Inches.of(14.0);
+
+	  public static final Angle kEpsilonThreshold = Units.Degrees.of(6.0);
+
+    public static final Pose3d kPoweredBarOffsetPose = new Pose3d(
+        Units.Meters.of(0.1406525),
+        Units.Meters.of(0.0),
+        Units.Meters.of(0.23622),
+        new Rotation3d(BaseUnits.AngleUnit.zero(), Units.Degrees.of(-90.0), BaseUnits.AngleUnit.zero()));
+    public static final Pose3d kUnpoweredBarOffsetPose = new Pose3d(
+        Units.Meters.of(0.2791203968),
+        Units.Meters.of(0.0),
+        Units.Meters.of(0.1820658792),
+        new Rotation3d(BaseUnits.AngleUnit.zero(), Units.Degrees.of(-90.0), BaseUnits.AngleUnit.zero()));
+    public static final Pose3d kMainIntakeOffsetPose = new Pose3d(
+        Units.Meters.of(0.0),
+        Units.Meters.of(0.0),
+        Units.Meters.of(0.0),
+        new Rotation3d(BaseUnits.AngleUnit.zero(), Units.Degrees.of(0.0), BaseUnits.AngleUnit.zero()));
+
+	  public static final Distance unpoweredBarDistance = Units.Inches.of(12.6744953704);
+	  public static final Distance poweredBarDistance = Units.Inches.of(13.2062952857);
+
    
     public static TalonFXConfiguration PivotFXConfig() {
       TalonFXConfiguration config = new TalonFXConfiguration();
+      config.Slot0.kP = 180.0;
+      config.Slot0.kD = 0.0;
+      config.Slot0.kS = 0.0;
+      config.Slot0.kG = 0.0;
 
-      config.CurrentLimits.SupplyCurrentLimit = 20.0;
+      config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+      config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
+      config.MotionMagic.MotionMagicCruiseVelocity = 7.0;
+      config.MotionMagic.MotionMagicAcceleration = 15.0;
+
+      config.Voltage.PeakForwardVoltage = 12.0;
+      config.Voltage.PeakReverseVoltage = -12.0;
+
       config.CurrentLimits.SupplyCurrentLimitEnable = true;
+      config.CurrentLimits.SupplyCurrentLimit = 40.0;
 
-      config.CurrentLimits.StatorCurrentLimitEnable = true;
-      config.CurrentLimits.StatorCurrentLimit = 80;
+      config.Feedback.SensorToMechanismRatio = kGearing;
 
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-     /*   config.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs();
-      config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-      config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
       config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-      //config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 20; //TODO: Work out */
+      config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kFullStowPosition.in(Units.Rotations);
 
-
-      config.Slot0 = new Slot0Configs();
-      config.Slot0.kA = 0;
-      config.Slot0.kP = 0.3;
-      config.Slot0.kI = 0;
-      config.Slot0.kD = 0;
-      config.Slot0.kS = 0.3;
-      config.Slot0.kV = 0.12;
-
-      
-
-
-      config.MotionMagic = new MotionMagicConfigs();
-      config.MotionMagic.MotionMagicAcceleration = 100;
-      config.MotionMagic.MotionMagicCruiseVelocity = 100;
-      config.MotionMagic.MotionMagicJerk = 0;
-      
-
-
-      config.ClosedLoopRamps = new ClosedLoopRampsConfigs();
-      config.ClosedLoopRamps .DutyCycleClosedLoopRampPeriod = 0.02;
-      config.ClosedLoopRamps .TorqueClosedLoopRampPeriod = 0.02;
-      config.ClosedLoopRamps .VoltageClosedLoopRampPeriod = 0.02;
-
-      //config.Feedback.SensorToMechanismRatio = 51;
-
-      config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
+      config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kDeployPosition.in(Units.Rotations);
       return config;
+     
     }
   }
 

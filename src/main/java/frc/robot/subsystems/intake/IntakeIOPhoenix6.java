@@ -16,8 +16,8 @@ public class IntakeIOPhoenix6 implements IntakeIO{
     private TalonFX intakeRollersFx;
     private TalonFX transferRollersFx;
 
-    private DigitalInput intakeBeamBreakOne;
-    private CANrange intakeCanRange;
+    //private DigitalInput intakeBeamBreakOne;
+    //private CANrange intakeCanRange;
 
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
@@ -33,18 +33,18 @@ public class IntakeIOPhoenix6 implements IntakeIO{
 
         TalonUtil.applyAndCheckConfiguration(transferRollersFx, Constants.IntakeTransferConstants.IntakeFXConfig());
 
-        intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
-        intakeCanRange = new CANrange(Ports.INTAKE_1_CANRANGE.getDeviceNumber(), Ports.INTAKE_1_CANRANGE.getBus());
+        //intakeBeamBreakOne = new DigitalInput(Ports.INTAKE_BEAMBREAK_ONE);
+       // intakeCanRange = new CANrange(Ports.INTAKE_1_CANRANGE.getDeviceNumber(), Ports.INTAKE_1_CANRANGE.getBus());
        
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs){
        
-        inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
-        inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();
+       // inputs.intakeBeamBreakOneTripped = intakeBeamBreakOne.get();
+       // inputs.intakeBeamBreakTwoTripped = intakeCanRange.getIsDetected().getValue();
 
-        inputs.canRangeConnected = BaseStatusSignal.refreshAll(intakeCanRange.getIsDetected()).isOK();
+       // inputs.canRangeConnected = BaseStatusSignal.refreshAll(intakeCanRange.getIsDetected()).isOK();
 
         //check that the motor is connected and tell it that we are interested in knowing the following bits of information
         //device temp and speed.
@@ -91,15 +91,6 @@ public class IntakeIOPhoenix6 implements IntakeIO{
         //simple way to set the motor value.
         transferRollersFx.setControl(new VoltageOut(voltage));
     }
-    
-    @Override
-    public boolean getBeamBreakOneState() {
-        return intakeBeamBreakOne.get();
-    }
-
-    @Override
-    public boolean getFrontBeamBreak() {
-        return intakeCanRange.getIsDetected(true).getValue();
-    }
+   
 
 }

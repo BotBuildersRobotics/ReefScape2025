@@ -12,15 +12,15 @@ import frc.robot.lib.TalonUtil;
 public class PivotIOPhoenix6 implements PivotIO{
    //left and right is based off the forward direction
    // private TalonFX pivotLeftMotor;
-    private TalonFX pivotRightMotor;
+    private TalonFX intakePivotMotor;
 
     //this is a TalonFX implementation of our intake
     //we could in theory write one for REV motors, the core subsystem would remain the same, just how we talk to the motors is different.
     public PivotIOPhoenix6() {
 
-      pivotRightMotor = TalonFXFactory.createDefaultTalon(Ports.PIVOT_RIGHT);
+        intakePivotMotor = TalonFXFactory.createDefaultTalon(Ports.INTAKE_PIVOT);
         
-      TalonUtil.applyAndCheckConfiguration(pivotRightMotor, Constants.PivotConstants.PivotFXConfig());
+      TalonUtil.applyAndCheckConfiguration(intakePivotMotor, Constants.PivotConstants.PivotFXConfig());
        
        
     }
@@ -33,31 +33,26 @@ public class PivotIOPhoenix6 implements PivotIO{
      
         //repeat for right motor
         inputs.pivotRightConnected = BaseStatusSignal.refreshAll(
-                        pivotRightMotor.getStatorCurrent(),
-                        pivotRightMotor.getDeviceTemp(),
-                        pivotRightMotor.getPosition(),
-                        pivotRightMotor.getVelocity())
+            intakePivotMotor.getStatorCurrent(),
+                        intakePivotMotor.getDeviceTemp(),
+                        intakePivotMotor.getPosition(),
+                        intakePivotMotor.getVelocity())
                         .isOK();
 
-        inputs.pivotRightTemperature = pivotRightMotor.getDeviceTemp().getValueAsDouble();
-        inputs.pivotRightRPS = pivotRightMotor.getRotorVelocity().getValueAsDouble();
-        inputs.pivotRightCurrent = pivotRightMotor.getStatorCurrent().getValueAsDouble();
-        inputs.pivotRightMotorPos = pivotRightMotor.getPosition().getValueAsDouble();
-
-
-        //2.1 * 125 = 262
-        //2.1 * 64 = 134.4
+        inputs.pivotRightTemperature = intakePivotMotor.getDeviceTemp().getValueAsDouble();
+        inputs.pivotRightRPS = intakePivotMotor.getRotorVelocity().getValueAsDouble();
+        inputs.pivotRightCurrent = intakePivotMotor.getStatorCurrent().getValueAsDouble();
+        inputs.pivotRightMotorPos = intakePivotMotor.getPosition().getValueAsDouble();
 
         
-        double desiredRotations = inputs.pivotPosition * 0.373;
-        
-        pivotRightMotor.setControl(new MotionMagicVoltage(desiredRotations));
+        intakePivotMotor.setControl(new MotionMagicVoltage(inputs.pivotPosition));
         
     }   
 
     @Override
     public double getPivotAngle() {
-        return pivotRightMotor.getPosition().getValueAsDouble() * 0.71;
+        //TODO: calculate new angle.
+        return intakePivotMotor.getPosition().getValueAsDouble() * 0.71;
     }
 
    

@@ -1,4 +1,6 @@
 package frc.robot.subsystems.pivot;
+
+import edu.wpi.first.units.measure.Angle;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface PivotIO {
@@ -17,7 +19,7 @@ public interface PivotIO {
         public double pivotRightMotorPos = 0.0;
 
 
-        public double pivotPosition = 0.0;
+        public Angle pivotPosition;
 
     }
 

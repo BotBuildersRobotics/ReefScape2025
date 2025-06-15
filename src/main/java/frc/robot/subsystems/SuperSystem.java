@@ -142,53 +142,26 @@ public class SuperSystem extends SubsystemBase {
         return Commands.runOnce(() -> this.toggleScoringHeightDown());
     }
 
-    public void ToogleIntakePivot(){
+    public void DeployIntakePivot(){
         
-        effector.setWantedState(EndEffectorState.IDLE);
-
-        if(pivot.getCurrentState() == PivotSystemState.STOWED){
-            pivot.setWantedState(PivotSystemState.INTAKE);
-        }else{
-            if(intake.isBeamBreakTwoTripped()){
-                //don't allow the pivot to go back while coral is in the intake
-                pivot.setWantedState(PivotSystemState.INTAKE);
-            }
-            else if(intake.isBeamBreakOneTripped()){
-                //don't allow the pivot to go back while coral is in the intake
-                pivot.setWantedState(PivotSystemState.INTAKE);
-            }else{
-                //check the arm position
-                if(!effector.isArmInIntakePosition()){
-                    pivot.setWantedState(PivotSystemState.STOWED);
-                }
-            }
-        }
-      
+       //TODO: need to check to see if we have coral
+       //or to see if our arm is in the way.
+        
     }
+
+    public void ParkIntakePivot(){
+
+         //TODO: need to check to see if we have coral
+       //or to see if our arm is in the way.
+
+    }
+
 
     public boolean isElevatorUp(){
         return elevator.isElevatorUp();
     }
 
    
-
-
-    public LightState GetLightState() {
-        if (intake.getCurrentState() == IntakeSystemState.INTAKE || intake.getCurrentState() == IntakeSystemState.HUMAN_PLAYER) {
-            desiredLightState = LightState.ORANGE;
-        } else if (intake.getCurrentState() == IntakeSystemState.IDLE) {
-            if (intake.isBeamBreakOneTripped()) {
-                if (finishedAutoAlignment) {
-                    desiredLightState = LightState.GREEN;
-                } else {
-                    desiredLightState = LightState.BLUE;
-                }
-            } else {
-                desiredLightState = LightState.OFF;
-            }
-        }
-        return desiredLightState;
-    }
 
 
 }

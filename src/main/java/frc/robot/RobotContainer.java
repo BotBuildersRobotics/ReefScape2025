@@ -41,8 +41,6 @@ import frc.robot.commands.elevator.ElevatorHomeCommand;
 import frc.robot.commands.elevator.ElevatorL1Command;
 import frc.robot.commands.endEffector.EndEffectorArmIntake;
 import frc.robot.commands.endEffector.EndEffectorArmL4;
-import frc.robot.commands.endEffector.EndEffectorClawClose;
-import frc.robot.commands.endEffector.EndEffectorClawOpen;
 import frc.robot.commands.endEffector.EndEffectorIdle;
 import frc.robot.commands.endEffector.EndEffectorPivotIntake;
 import frc.robot.commands.endEffector.EndEffectorPivotL4;
@@ -61,12 +59,9 @@ import frc.robot.commands.drive.ControllerRumbleCommand;
 import frc.robot.commands.drive.PathFindToPose;
 import frc.robot.commands.drive.TagAutoAlign;
 import frc.robot.commands.elevator.ElevatorHomeCommand;
-import frc.robot.commands.intake.AlgaeIntake;
-import frc.robot.commands.intake.AutoL1Delivery;
 import frc.robot.commands.intake.HumanPlayerIntake;
 import frc.robot.commands.intake.IntakeIdleCommand;
 import frc.robot.commands.intake.IntakeOnCommand;
-import frc.robot.commands.intake.IntakeOnTillBeamBreakCommand;
 import frc.robot.commands.intake.IntakeReverseCommand;
 import frc.robot.commands.pivot.IntakePivotCommand;
 import frc.robot.commands.pivot.StowPivotCommand;
@@ -173,7 +168,7 @@ public class RobotContainer {
 		
 		
 
-		NamedCommands.registerCommand("DeliverL4", 
+		/*NamedCommands.registerCommand("DeliverL4", 
 		
 				
 			Commands.runOnce(()-> leds.setStrobeState(LightState.COLOR_FLOW_RED)).andThen(
@@ -195,7 +190,7 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("AutoTagAlign", 
 				new AutoAlignPID2(drivetrain, false)
-		);
+		);*/
 
 		NamedCommands.registerCommand("StageCoral", 
 		
@@ -208,7 +203,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("CloseClaw", 
 		
 				Commands.runOnce( () -> {
-					endEffectorSubsystem.closeClaw();
+					//endEffectorSubsystem.
 				} )
 			 
 		);
@@ -219,7 +214,7 @@ public class RobotContainer {
 			
 		);
 
-		NamedCommands.registerCommand("DeliverL1", 
+		/*NamedCommands.registerCommand("DeliverL1", 
 			Commands.runOnce( () -> pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER))
 			.andThen(Commands.waitSeconds(0.5))
 			.andThen(
@@ -229,7 +224,7 @@ public class RobotContainer {
 						Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))))
 			)
 			
-		);
+		);*/
 
 		NamedCommands.registerCommand("AutoAlign", 
 				new AutoAlignAuto(drivetrain, true)
@@ -329,24 +324,25 @@ public class RobotContainer {
 			));
 
 
-		driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
+		//driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
 		//.onFalse(drivetrain.applyRequest(() -> brake));
 
-		driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, false));
+		//driverControl.rightBumper().whileTrue(new AutoAlignPID2(drivetrain, false));
 		//.onFalse(drivetrain.applyRequest(() -> brake));
 
 		
 		//toggle the intake, but do it safely
 		driverControl.x().onTrue(new InstantCommand( ()->
 		{ 
-			superSystem.ToogleIntakePivot();
+			
+			superSystem.DeployIntakePivot();
 			
 			
 		}));
 
 		operatorControl.x().onTrue(new InstantCommand( ()->
 		{ 
-			superSystem.ToogleIntakePivot();
+			superSystem.ParkIntakePivot();
 			
 			
 		}));
@@ -361,7 +357,7 @@ public class RobotContainer {
 		});
 
 		//automatic clamp the coral
-		intakeClampTrigger.onTrue(
+		/*intakeClampTrigger.onTrue(
 			Commands.runOnce(() -> {
 				endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.GREEN);
@@ -383,7 +379,7 @@ public class RobotContainer {
 					)
 				)
 			)
-		);
+		);*/
 		
 		operatorControl.povDown()
 		.onTrue(
@@ -396,7 +392,7 @@ public class RobotContainer {
 
 				).onFalse(new IntakeIdleCommand(intakeSubsystem));
 
-		operatorControl.povUp()
+		/*operatorControl.povUp()
 		.onTrue(
 				Commands.runOnce(
 						() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)
@@ -405,7 +401,7 @@ public class RobotContainer {
 						)
 						)
 
-				).onFalse(new IntakeIdleCommand(intakeSubsystem));
+				).onFalse(new IntakeIdleCommand(intakeSubsystem));*/
 
 		operatorControl.povLeft()
 		.onTrue(
@@ -413,7 +409,7 @@ public class RobotContainer {
 				//move the pivot to human player range
 				//but hide the end effector
 				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
-				pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
+				//pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
 
 			})
 
@@ -430,7 +426,7 @@ public class RobotContainer {
 		);
 
 		//driver deliver coral
-		driverControl.a().onTrue(
+		/*driverControl.a().onTrue(
 			new InstantCommand(() -> {
 				endEffectorSubsystem.openClaw();
 				leds.setStrobeState(LightState.FIRE);
@@ -448,7 +444,7 @@ public class RobotContainer {
 			new EndEffectorIdle(endEffectorSubsystem).andThen(
 			new ElevatorHomeCommand(elevatorSubsystem)).andThen(
 			() -> leds.clear()
-		));
+		));*/
 
 		
 		
@@ -458,7 +454,7 @@ public class RobotContainer {
 		.onFalse(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE)));
 		
 		//intake
-		driverControl.rightTrigger().whileTrue(
+		/*driverControl.rightTrigger().whileTrue(
 			new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem, pivotSubsystem)
 					.alongWith(
 						new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
@@ -468,12 +464,12 @@ public class RobotContainer {
 					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
 					
 			);
-
+		*/
 
 		//lift the elevator up a little so we can run the spinner and remove the algae
 		operatorControl.y().whileTrue(Commands.run( () -> {
-			elevatorSubsystem.setWantedState(ElevatorPosition.ALGAE);
-			endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
+			elevatorSubsystem.setWantedState(ElevatorPosition.INTAKE_READY);
+			//endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
 			//endEffectorSubsystem.setSpinnerSpeed(20);
 
 		}
@@ -484,7 +480,7 @@ public class RobotContainer {
 					
 			Commands.run(() ->
 			{
-				endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
+				//endEffectorSubsystem.setWantedState(EndEffectorState.IDLE);
 				elevatorSubsystem.setWantedState(ElevatorPosition.STOWED);
 				
 				//endEffectorSubsystem.setSpinnerSpeed(0);
@@ -493,7 +489,7 @@ public class RobotContainer {
 				
 		);
 		
-		operatorControl.b().whileTrue(
+		/*operatorControl.b().whileTrue(
 			new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem, pivotSubsystem)
 					.alongWith(
 						new ControllerRumbleCommand(driverControl, () -> intakeSubsystem.isBeamBreakOneTripped())
@@ -502,11 +498,11 @@ public class RobotContainer {
 			).onFalse(
 					Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))
 					
-			);
+			);*/
 
-		operatorControl.start().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)));
+		//operatorControl.start().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorState.IDLE)));
 		
-		operatorControl.back().onTrue(Commands.runOnce(() -> pivotSubsystem.setWantedState(PivotSystemState.INTAKE_HIGH)));
+		//operatorControl.back().onTrue(Commands.runOnce(() -> pivotSubsystem.setWantedState(PivotSystemState.INTAKE_HIGH)));
 		
 		//Test the claw positions
 
@@ -514,7 +510,7 @@ public class RobotContainer {
 		operatorControl.a().onTrue(
 			Commands.runOnce(() ->
 			{
-				endEffectorSubsystem.closeClaw();
+				//endEffectorSubsystem.closeClaw();
 				leds.setStrobeState(LightState.FIRE);
 			}
 			)

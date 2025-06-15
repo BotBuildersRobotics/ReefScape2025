@@ -25,11 +25,7 @@ public class IntakePivotCommand  extends Command
   public void initialize() {
 
     
-    if(pivotState.get() == PivotSystemState.STOWED){
-      pivotSubSystem.setWantedState(PivotSystemState.INTAKE);
-    }else{
-      pivotSubSystem.setWantedState(PivotSystemState.STOWED);
-    }
+   
 
   }
 

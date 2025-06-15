@@ -7,8 +7,10 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
 
 public class HumanPlayerIntake extends Command {
-    private final IntakeSubsystem intakeSubsystem;
+    
+  private final IntakeSubsystem intakeSubsystem;
     private final PivotSubsystem pivotSubsystem;
+
     public HumanPlayerIntake(IntakeSubsystem subsystem, PivotSubsystem pivot) {
         intakeSubsystem = subsystem;
         pivotSubsystem = pivot;
@@ -18,18 +20,15 @@ public class HumanPlayerIntake extends Command {
     
   @Override
   public void initialize() {
-    pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
-    intakeSubsystem.setWantedState(IntakeSystemState.HUMAN_PLAYER);
+    //pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER);
+   // intakeSubsystem.setWantedState(IntakeSystemState.HUMAN_PLAYER);
   }
 
   @Override
   public boolean isFinished() {
 
-    if(intakeSubsystem.isBeamBreakTwoTripped()){
-        intakeSubsystem.setWantedState(IntakeSystemState.IDLE);
-    }
-
-    return intakeSubsystem.isBeamBreakTwoTripped();
+    
+    return  true;
   }
 }
 

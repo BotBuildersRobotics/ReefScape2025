@@ -100,21 +100,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
         io.setArmPosition(currentState.end_effector_arm_angle);
     }
 
-    public void closeClaw(){
-        io.closeClaw();
-    }
-
-    public void openClaw(){
-        io.openClaw();
-    }
 
     public void setSpinnerSpeed(double speed){
         io.setSpinnerSpeed(speed);
     }
 
-    public boolean isClawClosed(){
-        return io.isClawClosed();
-    }
 
     public boolean isArmInIntakePosition(){
         

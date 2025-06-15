@@ -24,15 +24,9 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
    
     private TalonFX endEffectorArm;
 
-    private TalonFXS endEffectorClaw;
-
-
-    private TalonFX algaeSpinner;
+    private TalonFX endEffectorClaw;
 
    
-    private double dutyCycleRoller = 0;
-   
-    private double currentArmAngle = 0;
 
     private MotionMagicVoltage armMotionMagic = new MotionMagicVoltage(0);
 
@@ -43,19 +37,17 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     public EndEffectorIOPhoenix6() {
 
       
-        endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_ARM);
+        endEffectorArm = TalonFXFactory.createDefaultTalon(Ports.PIVOT_ARM);
 
-        endEffectorClaw =  TalonFXFactory.createDefaultTalonFXS(Ports.END_EFFECTOR_CLAW);
+        endEffectorClaw =  TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_CLAW);
 
-        algaeSpinner =  TalonFXFactory.createDefaultTalon(Ports.END_EFFECTOR_SPINNER);
        
         //we store all of the current limits in the constants file
         //only need to look in one place to change all motor configs.
        // TalonUtil.applyAndCheckConfiguration(endEffectorRoller, Constants.EndEffectorConstants.EndEffectorFXRollerConfig());
         TalonUtil.applyAndCheckConfiguration(endEffectorArm, Constants.EndEffectorConstants.EndEffectorArmPivot());
         TalonUtil.applyAndCheckConfiguration(endEffectorClaw, Constants.EndEffectorConstants.endEffectorClaw());
-        TalonUtil.applyAndCheckConfiguration(algaeSpinner, Constants.EndEffectorConstants.EndEffectorSpinner());
-      
+       
        // endEffectorClaw.setPosition(0);
     }
 
@@ -84,7 +76,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         inputs.clawTemp = endEffectorClaw.getDeviceTemp().getValueAsDouble();
 
         //TODO: check this is correct in terms of rotations vs angle
-        currentArmAngle = inputs.armPivotPosition;
+       
 
         setArmPosition(inputs.desiredArmPosition);
        // openClaw(); 
@@ -104,24 +96,6 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
     }
 
     
-    @Override
-    public void closeClaw(){
-      
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(Constants.EndEffectorConstants.END_EFFECTOR_CLAW_END));
-     
-    }
-
-    @Override
-    public void openClaw(){
-       
-        endEffectorClaw.setControl(clawMotionMagic.withPosition(Constants.EndEffectorConstants.END_EFFECTOR_CLAW_START));
-     
-    }
-
-    @Override
-    public boolean isClawClosed(){
-        return (endEffectorClaw.getPosition(true).getValueAsDouble() >= (Constants.EndEffectorConstants.END_EFFECTOR_CLAW_END - 5));
-    }
 
     @Override
     public double getArmAngle(){
@@ -132,7 +106,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
 
     @Override
     public void setSpinnerSpeed(double speed){
-        algaeSpinner.setControl(new DutyCycleOut(speed));
+       
     }
 
 }

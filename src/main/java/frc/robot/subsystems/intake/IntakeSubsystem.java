@@ -50,14 +50,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public enum IntakeSystemState 
     {
+        
         IDLE(0.0, 0.0),
-		INTAKE(12, 3),
-		REVERSE(-6.0, -6.0),
-        HUMAN_PLAYER(3.0, 0),
-        STARS(0, 2),
-        LIFT_HELP(0, -0.4),
-        ALGAE(5, 0.0),
-        AUTO_L1(-6,0);
+		INTAKE(12, 10),
+		REVERSE(-12, -8);
+       
+       
 
         public double intake_voltage;
         public double transfer_voltage;
