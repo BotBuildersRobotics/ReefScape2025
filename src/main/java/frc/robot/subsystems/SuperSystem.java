@@ -142,18 +142,27 @@ public class SuperSystem extends SubsystemBase {
         return Commands.runOnce(() -> this.toggleScoringHeightDown());
     }
 
-    public void DeployIntakePivot(){
+    public Command DeployIntakePivot(){
         
        //TODO: need to check to see if we have coral
        //or to see if our arm is in the way.
+       return Commands.runOnce(() -> pivot.setWantedState(PivotSystemState.DEPLOY));
         
     }
 
-    public void ParkIntakePivot(){
+    public Command ParkIntakePivot(){
 
          //TODO: need to check to see if we have coral
        //or to see if our arm is in the way.
+       return Commands.runOnce(() -> pivot.setWantedState(PivotSystemState.STOWED));
+    }
 
+    public Command IntakeOn(){
+        return Commands.runOnce(() -> intake.setWantedState(IntakeSystemState.INTAKE));
+    }
+
+    public Command IntakeOff(){
+        return Commands.runOnce(() -> intake.setWantedState(IntakeSystemState.IDLE));
     }
 
 

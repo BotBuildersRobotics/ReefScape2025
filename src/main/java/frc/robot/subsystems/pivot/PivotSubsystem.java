@@ -68,7 +68,7 @@ public class PivotSubsystem extends SubsystemBase {
         this.io = io;
         this.endEffectorSubsystem = EndEffectorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
-
+        
        
 
     }
@@ -77,6 +77,7 @@ public class PivotSubsystem extends SubsystemBase {
       
 
         PivotSubsystem.currentState = wantedState;
+        inputs.pivotPosition = wantedState.angle;
     }
 
 
@@ -107,7 +108,9 @@ public class PivotSubsystem extends SubsystemBase {
         Logger.processInputs("Pivot", inputs);
 
         //check to see that angle of the arm is clear of the intake.
-        inputs.pivotPosition = currentState.angle;
+        if(inputs.pivotPosition != null){
+            inputs.pivotPosition = currentState.angle;
+        }
 
 
     }

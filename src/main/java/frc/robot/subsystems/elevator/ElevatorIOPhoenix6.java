@@ -49,7 +49,7 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
        
         //setup leader / follower configuration.
 
-        elevatorLeft.setControl(new Follower(Ports.ELEVATOR_RIGHT.getDeviceNumber(), true));
+       // elevatorLeft.setControl(new Follower(Ports.ELEVATOR_RIGHT.getDeviceNumber(), true));
 
         elevatorBeamBreak = new DigitalInput(Ports.ELEVATOR_BEAMBREAK);
 
@@ -90,7 +90,7 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
         double desiredRotations = inputs.desiredElevatorPosition;
 
        
-        elevatorRight.setControl(mmVoltage.withPosition(desiredRotations).withSlot(0).withEnableFOC(true));
+      //  elevatorRight.setControl(mmVoltage.withPosition(desiredRotations).withSlot(0).withEnableFOC(true));
        
       
        

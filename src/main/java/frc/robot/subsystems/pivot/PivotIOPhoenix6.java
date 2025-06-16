@@ -44,8 +44,9 @@ public class PivotIOPhoenix6 implements PivotIO{
         inputs.pivotRightCurrent = intakePivotMotor.getStatorCurrent().getValueAsDouble();
         inputs.pivotRightMotorPos = intakePivotMotor.getPosition().getValueAsDouble();
 
-        
-        intakePivotMotor.setControl(new MotionMagicVoltage(inputs.pivotPosition));
+        if(inputs.pivotPosition != null){
+            intakePivotMotor.setControl(new MotionMagicVoltage(inputs.pivotPosition));
+        }
         
     }   
 

@@ -78,7 +78,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         //TODO: check this is correct in terms of rotations vs angle
        
 
-        setArmPosition(inputs.desiredArmPosition);
+       // setArmPosition(inputs.desiredArmPosition);
        // openClaw(); 
       
         
@@ -92,7 +92,7 @@ public class EndEffectorIOPhoenix6 implements EndEffectorIO{
         //double desiredRotations = angle / 360;
         //endEffectorArm.setControl(armMotionMagic.withPosition(desiredRotations).withSlot(0));
 
-        endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
+      //  endEffectorArm.setControl(armMotionMagic.withPosition(Angle.ofBaseUnits(angle, Degrees)).withSlot(0));
     }
 
     

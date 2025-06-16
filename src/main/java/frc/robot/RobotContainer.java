@@ -263,19 +263,19 @@ public class RobotContainer {
 		// and Y is defined as to the left according to WPILib convention.
 		
 		//resets the field position
-		driverControl.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+		//driverControl.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 		
 		
 
-		drivetrain.setDefaultCommand(
+		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX((-driverControl.getLeftY() * MaxSpeed) ) // Drive forward with negative Y (forward)
                     .withVelocityY((-driverControl.getLeftX() * MaxSpeed) ) // Drive left with negative X (left)
                     .withRotationalRate((-driverControl.getRightX() * MaxAngularRate)  ) // Drive counterclockwise with negative X (left)
             )
-        );
+        );*/
 
 		/*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -286,7 +286,7 @@ public class RobotContainer {
             )
         );*/
 
-		driverControl.povLeft()
+		/*driverControl.povLeft()
 		.whileTrue(
 			drivetrain.applyRequest(() -> 
 				alignDrive.withVelocityX(( 0) ) 
@@ -322,7 +322,7 @@ public class RobotContainer {
 			
 
 			));
-
+		*/
 
 		//driverControl.leftBumper().whileTrue(new AutoAlignPID2(drivetrain, true));
 		//.onFalse(drivetrain.applyRequest(() -> brake));
@@ -332,29 +332,32 @@ public class RobotContainer {
 
 		
 		//toggle the intake, but do it safely
-		driverControl.x().onTrue(new InstantCommand( ()->
-		{ 
-			
-			superSystem.DeployIntakePivot();
+		/*driverControl.x().onTrue(
+			superSystem.DeployIntakePivot()
 			
 			
-		}));
+		);
 
-		operatorControl.x().onTrue(new InstantCommand( ()->
-		{ 
-			superSystem.ParkIntakePivot();
+		driverControl.y().onTrue(
+			superSystem.ParkIntakePivot()
 			
-			
-		}));
+		);*/
 
-		Trigger intakeClampTrigger = new Trigger(() ->{
+		driverControl.a().onTrue(
+			superSystem.IntakeOn()
+			
+		).onFalse(
+			superSystem.IntakeOff()
+		);
+
+		/*Trigger intakeClampTrigger = new Trigger(() ->{
 
 			if(intakeSubsystem.isBeamBreakTwoTripped() && endEffectorSubsystem.getCurrentState() == EndEffectorState.CLAMP){
 					return true;
 			}
 
 			return false;
-		});
+		});*/
 
 		//automatic clamp the coral
 		/*intakeClampTrigger.onTrue(
@@ -417,13 +420,13 @@ public class RobotContainer {
 		.onFalse(new IntakeIdleCommand(intakeSubsystem));
 
 		//toggle reef heights
-		operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeightUp());
-		operatorControl.leftBumper().onTrue(superSystem.ToggleReefHeightDown());
+	//	operatorControl.rightBumper().onTrue(superSystem.ToggleReefHeightUp());
+	//	operatorControl.leftBumper().onTrue(superSystem.ToggleReefHeightDown());
 		
 		//runs the elevator to the set position
-		operatorControl.rightTrigger().onTrue(
-			superSystem.RunTargetElevator()
-		);
+	//	operatorControl.rightTrigger().onTrue(
+		//	superSystem.RunTargetElevator()
+	//	);
 
 		//driver deliver coral
 		/*driverControl.a().onTrue(
@@ -449,9 +452,9 @@ public class RobotContainer {
 		
 		
 		//outtake
-		driverControl.leftTrigger()
-		.onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.REVERSE)))
-		.onFalse(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE)));
+		//driverControl.leftTrigger()
+		//.onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.REVERSE)))
+		//.onFalse(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE)));
 		
 		//intake
 		/*driverControl.rightTrigger().whileTrue(
@@ -467,7 +470,7 @@ public class RobotContainer {
 		*/
 
 		//lift the elevator up a little so we can run the spinner and remove the algae
-		operatorControl.y().whileTrue(Commands.run( () -> {
+		/*operatorControl.y().whileTrue(Commands.run( () -> {
 			elevatorSubsystem.setWantedState(ElevatorPosition.INTAKE_READY);
 			//endEffectorSubsystem.setWantedState(EndEffectorState.ALGAE);
 			//endEffectorSubsystem.setSpinnerSpeed(20);
@@ -487,7 +490,7 @@ public class RobotContainer {
 			})
 				
 				
-		);
+		);*/
 		
 		/*operatorControl.b().whileTrue(
 			new IntakeOnTillBeamBreakCommand(intakeSubsystem, endEffectorSubsystem, lightsSubsystem, pivotSubsystem)

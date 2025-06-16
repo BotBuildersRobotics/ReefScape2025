@@ -52,8 +52,8 @@ public class IntakeSubsystem extends SubsystemBase {
     {
         
         IDLE(0.0, 0.0),
-		INTAKE(12, 10),
-		REVERSE(-12, -8);
+		INTAKE(-12, 8),
+		REVERSE(12, 0);
        
        
 
