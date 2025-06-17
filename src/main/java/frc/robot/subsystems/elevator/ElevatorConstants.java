@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.BaseUnits;
@@ -15,6 +16,7 @@ import frc.robot.lib.io.MotorIOTalonFX;
 import frc.robot.lib.io.MotorIOTalonFX.MotorIOTalonFXConfig;
 import frc.robot.lib.Util;
 import frc.robot.Ports;
+import com.ctre.phoenix6.signals.InvertedValue;
 import static edu.wpi.first.units.Units.*;
 
 public class ElevatorConstants {
@@ -31,11 +33,11 @@ public class ElevatorConstants {
 			0.0,
 			new Rotation3d(BaseUnits.AngleUnit.zero(), BaseUnits.AngleUnit.zero(), Units.Degrees.of(90.0)));
 
-	public static final Distance kMaxHeight = converter.toDistance(Units.Degrees.of(3316));
+	public static final Distance kMaxHeight = converter.toDistance(Units.Degrees.of(12*260));
 
-	public static final Distance kL1ScoringHeight = Units.Centimeters.of(0.0);
+	public static final Distance kL1ScoringHeight = Units.Centimeters.of(30);
 	public static final Distance kL2ScoringHeight = Units.Centimeters.of(6.3);
-	public static final Distance kLIntakeHeight = Units.Centimeters.of(20);
+	public static final Distance kLIntakeHeight = Units.Centimeters.of(25);
 	public static final Distance kL3ScoringHeight = kL2ScoringHeight.plus(Units.Centimeters.of(16.0));
 	public static final Distance kL4ScoringHeight = Units.Centimeters.of(60.25);
 	
@@ -57,6 +59,8 @@ public class ElevatorConstants {
 		FXConfig.Slot0.kS = 0.34;// volts to get over the static friction
     
 		FXConfig.Slot0.kA = 0.02; //volts for accel 
+
+		FXConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
 		MotionMagicConfigs mm = FXConfig.MotionMagic;
         mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(60)) 
@@ -86,6 +90,8 @@ public class ElevatorConstants {
 
 		FXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+		FXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
 		return FXConfig;
 	}
 
@@ -100,7 +106,7 @@ public class ElevatorConstants {
 				.withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
 						.withForwardSoftLimitEnable(false)
 						.withReverseSoftLimitEnable(false));
-		IOConfig.followerOpposeMain = new boolean[] {false};
+		IOConfig.followerOpposeMain = new boolean[] {true};
 		IOConfig.followerBuses = new String[] {Ports.ELEVATOR_RIGHT.getBus()};
 		IOConfig.followerIDs = new int[] {Ports.ELEVATOR_RIGHT.getDeviceNumber()};
 		return IOConfig;

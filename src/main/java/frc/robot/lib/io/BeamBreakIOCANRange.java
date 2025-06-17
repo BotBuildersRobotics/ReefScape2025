@@ -3,6 +3,9 @@ package frc.robot.lib.io;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
+
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Notifier;
@@ -14,6 +17,7 @@ public class BeamBreakIOCANRange extends BeamBreakIO {
 	private final Notifier notifier;
 	private final double signalStrengthThreshold;
     private boolean detected = false;
+	private Distance detectedDistance;
 
 	public static BeamBreakIOCANRange makeInverted(
 			int channel,
@@ -46,6 +50,7 @@ public class BeamBreakIOCANRange extends BeamBreakIO {
 		notifier = new Notifier(() -> {
 			lastSignalStrength = mBreak.getSignalStrength().getValueAsDouble();
             detected = mBreak.getIsDetected().getValue();
+			detectedDistance = mBreak.getDistance().getValue();
 		});
 
 		notifier.startPeriodic(0.02);
@@ -55,7 +60,7 @@ public class BeamBreakIOCANRange extends BeamBreakIO {
 
 	@Override
 	public boolean get() {
-		return detected;//lastSignalStrength > signalStrengthThreshold;
+		return detectedDistance.lt(Units.Centimeters.of(4)); //detected;//lastSignalStrength > signalStrengthThreshold;
 	}
 
 	@Override

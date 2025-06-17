@@ -27,6 +27,7 @@ import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotConstants;
@@ -143,11 +144,28 @@ public class SuperSystem extends SubsystemBase {
        return Commands.runOnce(() -> PivotSubsystem.mInstance.applySetpoint(PivotSubsystem.STOW_CLEAR));
     }
 
+    public Command L1Elevator(){
+        return  ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L1_SCORE);
+    }
+
+    public Command HomeElevator(){
+        return  ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
+    }
+
+    public Command HomeEF(){
+        return  EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW);
+    }
+
+    public Command L1EF(){
+        return  EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.L1_SCORE);
+    }
+
     public Command Intake(){
        
         return Commands.sequence(
 						Commands.parallel(
                                 setState(State.GROUND_CORAL),
+                                ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.INTAKE),
 								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
 								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
                         )
@@ -155,6 +173,7 @@ public class SuperSystem extends SubsystemBase {
 						.finallyDo(() -> {
                             IntakeSubsystem.mInstance.applySetpoint(IntakeSubsystem.IDLE);
                             IndexerSubsystem.mInstance.applySetpoint(IndexerSubsystem.IDLE);
+                            ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
                            
                         }).withName("Coral Intake On");
        

@@ -46,9 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private DriveSubsystem() {
 		lastReadState = drivetrain.getState();
-		drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> {
+		/*drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> {
 			return driveRequest;
-		}));
+		}));*/
 
 		if (!Robot.isReal()) {
 			drivetrain.resetPose((new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90.0))));

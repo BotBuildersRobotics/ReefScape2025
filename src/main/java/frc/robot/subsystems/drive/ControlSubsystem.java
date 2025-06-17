@@ -18,8 +18,8 @@ public class ControlSubsystem {
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     public void configureBindings() {
-		DriveSubsystem.mInstance.setDefaultCommand(DriveSubsystem.mInstance.followSwerveRequestCommand(
-				DriveConstants.teleopRequest, DriveConstants.teleopRequestUpdater));
+		//DriveSubsystem.mInstance.setDefaultCommand(DriveSubsystem.mInstance.followSwerveRequestCommand(
+		//		DriveConstants.teleopRequest, DriveConstants.teleopRequestUpdater));
 		
         //back button to re-seed heading       
         driver.back()
@@ -35,10 +35,24 @@ public class ControlSubsystem {
 		SuperSystem s = SuperSystem.mInstance;
 
         driver.a().onTrue(
-			s.Intake()
+			//s.Intake()
+			s.HomeEF()
 			
-		).onFalse(
-			s.idleIntakes()
+		);
+
+
+
+		driver.b().onTrue(
+			//s.DeployIntakePivot()
+			s.L1EF()
+		);
+
+		driver.y().onTrue(
+			s.L1Elevator()
+		);
+		
+		driver.x().onTrue(
+			s.HomeElevator()
 		);
     }
 

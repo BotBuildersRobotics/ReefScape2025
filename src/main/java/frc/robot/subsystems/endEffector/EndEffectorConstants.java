@@ -23,7 +23,7 @@ public class EndEffectorConstants {
 	
 	public static final Angle kProcessorPosition = Units.Degrees.of(70.0);
 
-	public static final Angle kL1Score = Units.Degrees.of(55.0);
+	public static final Angle kL1Score = Units.Degrees.of(80.0);
 	
 	public static final Distance kArmLength = Units.Centimeters.of(60);
 
@@ -58,13 +58,13 @@ public class EndEffectorConstants {
 
 		config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
 		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kStowPosition.in(Units.Rotations);
 
-		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -1000;
 
-		config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		//config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 		return config;
 	}
