@@ -15,7 +15,7 @@ public class IntakeSubsystem extends MotorSubsystem<MotorIOTalonFX> {
 	public static final IntakeSubsystem mInstance = new IntakeSubsystem();
 
 	public IntakeSubsystem() {
-		super(IntakeConstants.getMotorIO(), "Coral Rollers");
+		super(IntakeConstants.getMotorIO(), "Intake Rollers");
 	}
 
 	public boolean beamBreakTripped(){

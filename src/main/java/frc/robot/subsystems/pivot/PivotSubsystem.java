@@ -25,21 +25,21 @@ public class PivotSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final PivotSubsystem mInstance = new PivotSubsystem();
 
 	private final StructPublisher<Pose3d> poweredBarPublisher = NetworkTableInstance.getDefault()
-			.getStructTopic("Mechanisms/Coral Deploy Powered Bar", Pose3d.struct)
+			.getStructTopic("Mechanisms/Intake Pivot Powered Bar", Pose3d.struct)
 			.publish();
 
 	private final StructPublisher<Pose3d> unpoweredBarPublisher = NetworkTableInstance.getDefault()
-			.getStructTopic("Mechanisms/Coral Deploy Unpowered Bar", Pose3d.struct)
+			.getStructTopic("Mechanisms/Intake Pivot Unpowered Bar", Pose3d.struct)
 			.publish();
 
 	private final StructPublisher<Pose3d> mainIntakePublisher = NetworkTableInstance.getDefault()
-			.getStructTopic("Mechanisms/Coral Deploy Main", Pose3d.struct)
+			.getStructTopic("Mechanisms/Intake Pivot Main", Pose3d.struct)
 			.publish();
 
 	public PivotSubsystem() {
 		super(
                 PivotConstants.getMotorIO(),
-				"Coral Deploy",
+				"Intake Pivot",
 				PivotConstants.kEpsilonThreshold,
 				PivotConstants.getServoHomingConfig());
 		setCurrentPosition(PivotConstants.kFullStowPosition);
