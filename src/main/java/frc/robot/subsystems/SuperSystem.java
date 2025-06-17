@@ -3,47 +3,58 @@ package frc.robot.subsystems;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.elevator.ElevatorL1Command;
-import frc.robot.commands.elevator.ElevatorL2Command;
-import frc.robot.commands.elevator.ElevatorL3Command;
-import frc.robot.commands.elevator.ElevatorL4Command;
-import frc.robot.commands.pivot.IntakePivotCommand;
-import frc.robot.commands.pivot.StowPivotCommand;
-import frc.robot.subsystems.drive.ReefTargeting.ReefBranchLevel;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
-import frc.robot.subsystems.endEffector.EndEffectorSubsystem.EndEffectorState;
+import frc.robot.RobotConstants;
+import frc.robot.lib.FieldLayout;
+import frc.robot.lib.FieldLayout.Branch;
+import frc.robot.lib.FieldLayout.Branch.Face;
+import frc.robot.lib.io.BeamBreakIO;
+import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem.IntakeSystemState;
-import frc.robot.subsystems.led.LightsSubsystem;
-import frc.robot.subsystems.led.LightsSubsystem.LightState;
+
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.pivot.PivotSubsystem.PivotSystemState;
+
 
 public class SuperSystem extends SubsystemBase {
     
-    private ElevatorSubsystem elevator = ElevatorSubsystem.getInstance();
-    private IntakeSubsystem intake = IntakeSubsystem.getInstance();
-    private EndEffectorSubsystem effector = EndEffectorSubsystem.getInstance();
-    private PivotSubsystem pivot = PivotSubsystem.getInstance();
-    private LightsSubsystem leds = LightsSubsystem.getInstance();
-    //private TagVisionSubsystem vision = TagVisionSubsystem.getInstance();
-   
+    private State state = State.TUCK;
 
-    //private CommandSwerveDrivetrain swerveDriveTrain = CommandSwerveDrivetrain.getInstance();
+   
+   
+    public static BeamBreakIO intakeRollersCurrentSpike = BeamBreakConstants.getIntakeRollersCurrentSpike();
+	
+    public static BeamBreakIO indexerBeamBrake = BeamBreakConstants.getIndexerBeamBreak();
+	
 
     public static SuperSystem mInstance;
 
-    public static ReefBranchLevel desiredReefLevel = ReefBranchLevel.L4; 
+    private Branch targetingBranch = Branch.A;
+    private Face targetingFace = targetingBranch.getKey().face();
 
-    LightState desiredLightState = LightState.OFF;
+    private boolean isPathFollowing = false;
 
-    private boolean finishedAutoAlignment = false;
+	private boolean hasAlgae = false;
+
+    public boolean readyToRaiseElevator = false;
+
+    private boolean targetingL3ReefIntake = true;
+
 
     public static SuperSystem getInstance() {
 
@@ -55,122 +66,111 @@ public class SuperSystem extends SubsystemBase {
 	}
 
     @Override
-    public void periodic() {
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		intakeRollersCurrentSpike.initSendable(builder);
+        indexerBeamBrake.initSendable(builder);
 
-    }
-
-    //toggle the scoring position around around
-    public ReefBranchLevel toggleScoringHeightUp(){
-
-        //show the green flow when the L4 is set
-        if(desiredReefLevel == ReefBranchLevel.L4){
-            leds.clear();
-            desiredReefLevel = ReefBranchLevel.L2;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L2){
-            desiredReefLevel = ReefBranchLevel.L3;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L3){
-            leds.setStrobeState(LightState.COLOR_FLOW_GREEN);
-            desiredReefLevel = ReefBranchLevel.L4;
-        }
-
-        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
-    
-        return desiredReefLevel;
-    }
-
-    public ReefBranchLevel toggleScoringHeightDown(){
-
-        //show the green flow when the L4 is set
-        if(desiredReefLevel == ReefBranchLevel.L3){
-            leds.clear();
-            desiredReefLevel = ReefBranchLevel.L2;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L4){
-            desiredReefLevel = ReefBranchLevel.L3;
-        }
-        else if(desiredReefLevel == ReefBranchLevel.L2){
-            leds.setStrobeState(LightState.COLOR_FLOW_GREEN);
-            desiredReefLevel = ReefBranchLevel.L4;
-        }
-
-        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
-    
-        return desiredReefLevel;
-    }
-    
-    public ReefBranchLevel getDesiredScoringLevel(){
-        return desiredReefLevel;
-    }
-
-    public void targetReefAlgae(){
-        desiredReefLevel = ReefBranchLevel.ALGAE;
-    }
-
-    public Command RunTargetElevator(){
-
-        SmartDashboard.putString("Desired Location", desiredReefLevel.toString());
-
-        return new SelectCommand<>
-        (
-            Map.ofEntries
-            (
-                Map.entry(ReefBranchLevel.L1, new ElevatorL1Command(elevator, effector)),
-                Map.entry(ReefBranchLevel.L2, new ElevatorL2Command(elevator, effector)),
-                Map.entry(ReefBranchLevel.L3, new ElevatorL3Command(elevator, effector)),
-                Map.entry(ReefBranchLevel.L4, new ElevatorL4Command(elevator, effector))),
-            this::getDesiredScoringLevel
-        );
        
-      
+		builder.addStringProperty("Targeting Branch", () -> targetingBranch.toString(), null);
+		builder.addStringProperty("State", () -> state.toString(), null);
+
+        builder.addDoubleProperty("Battery Voltage", () -> RobotController.getBatteryVoltage(), null);
+
     }
 
-    public PivotSystemState getCurrentPivotState(){
-        return pivot.getCurrentState();
-    }
+    @Override
+	public void periodic() {
+		if (!isPathFollowing) {
+			updateTargetedBranch();
+			updateTargetedFace();
+			updateTargetedReefIntake();
+		}
+	}
 
-    public Supplier<PivotSystemState> getPivotState(){
-        return () -> pivot.getCurrentState();
-    }
+    public void updateTargetedBranch() {
+		SwerveDriveState currentState = DriveSubsystem.mInstance.getState();
+		Transform2d speedsPose = new Transform2d(
+						currentState.Speeds.vxMetersPerSecond,
+						currentState.Speeds.vyMetersPerSecond,
+						Rotation2d.fromRadians(currentState.Speeds.omegaRadiansPerSecond))
+				.times(SuperSystemConstants.lookaheadBranchSelectionTime.in(Units.Seconds));
+		Pose2d lookeaheadPose = currentState.Pose.transformBy(speedsPose);
+		targetingBranch = FieldLayout.Branch.getClosestBranch(lookeaheadPose, RobotConstants.isRedAlliance);
+	}
 
-    public Command ToggleReefHeightUp() {
-        return Commands.runOnce(()-> this.toggleScoringHeightUp());
-    }
+    public void updateTargetedFace() {
+		targetingFace = targetingBranch.getKey().face();
+	}
 
-    public Command ToggleReefHeightDown(){
-        return Commands.runOnce(() -> this.toggleScoringHeightDown());
-    }
+	public void updateTargetedReefIntake() {
+		targetingL3ReefIntake = switch (targetingFace) {
+			case NEAR_CENTER, FAR_LEFT, FAR_RIGHT -> true;
+			case FAR_CENTER, NEAR_LEFT, NEAR_RIGHT -> false;};
+	}
+
 
     public Command DeployIntakePivot(){
-        
-       //TODO: need to check to see if we have coral
-       //or to see if our arm is in the way.
-       return Commands.runOnce(() -> pivot.setWantedState(PivotSystemState.DEPLOY));
+      
+       return Commands.runOnce(() -> PivotSubsystem.mInstance.applySetpoint(PivotSubsystem.DEPLOY));
         
     }
 
-    public Command ParkIntakePivot(){
+    public Command idleIntakes() {
+		return Commands.parallel(
+						IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
+						IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE))
+				.withName("Idle Intakes");
+	}
 
-         //TODO: need to check to see if we have coral
-       //or to see if our arm is in the way.
-       return Commands.runOnce(() -> pivot.setWantedState(PivotSystemState.STOWED));
+    public Command ParkIntakePivot()
+    {
+
+       return Commands.runOnce(() -> PivotSubsystem.mInstance.applySetpoint(PivotSubsystem.STOW_CLEAR));
     }
 
-    public Command IntakeOn(){
-        return Commands.runOnce(() -> intake.setWantedState(IntakeSystemState.INTAKE));
+    public Command Intake(){
+       
+        return Commands.sequence(
+						Commands.parallel(
+								
+								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
+								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
+                        )
+						.withDeadline(indexerBeamBrake.stateWaitWithDebounceIfReal(true, 1.5))
+						.finallyDo(() -> {
+                            IntakeSubsystem.mInstance.applySetpoint(IntakeSubsystem.IDLE);
+                            IndexerSubsystem.mInstance.applySetpoint(IndexerSubsystem.IDLE);
+                           
+                        }).withName("Coral Intake On");
+       
+       
     }
 
-    public Command IntakeOff(){
-        return Commands.runOnce(() -> intake.setWantedState(IntakeSystemState.IDLE));
-    }
+    
 
+    public Command setState(State state) {
+		return Commands.runOnce(() -> this.state = state);
+	}
 
-    public boolean isElevatorUp(){
-        return elevator.isElevatorUp();
-    }
-
-   
+    public static enum State {
+		TUCK,
+		SPIT,
+		GROUND_CORAL,
+		STATION,
+		HOLD_CORAL,
+		HOLD_ALGAE,
+		L1_CORAL,
+		L2_CORAL,
+		L3_CORAL,
+		L4_CORAL,
+		L2_ALGAE,
+		L3_ALGAE,
+		PROCESSOR,
+		NET,
+		GULP,
+		GROUND_CORAL_WITH_ALGAE;
+	}
 
 
 }

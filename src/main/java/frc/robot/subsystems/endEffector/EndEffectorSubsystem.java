@@ -1,120 +1,44 @@
 package frc.robot.subsystems.endEffector;
 
-import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.Units;
+import frc.robot.lib.io.ServoMotorSubsystem;
+import frc.robot.lib.io.MotorIO.Setpoint;
+import frc.robot.lib.io.MotorIOTalonFX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 
 
+public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
+	private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+			.getStructTopic("Mechanisms/End Effector Pivot", Pose3d.struct)
+			.publish();
 
-public class EndEffectorSubsystem extends SubsystemBase {
+	public static final Setpoint STOW = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kStowPosition);
+	public static final Setpoint PROCESSOR = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kProcessorPosition);
+	public static final Setpoint L1_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL1Score);
 
-    //notice the static, this is shared 
-    public static EndEffectorSubsystem mInstance;
+	
+	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 
-    
-
-    //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
-    //this is a singleton pattern
-	public static EndEffectorSubsystem getInstance() {
-		if (mInstance == null) {
-			mInstance = new EndEffectorSubsystem(new EndEffectorIOPhoenix6());
-            if(!Robot.isReal()) {
-                //TODO: Create sim instance
-            }
-		}
-		return mInstance;
+	public EndEffectorSubsystem() {
+		super(
+            EndEffectorConstants.getMotorIO(),
+				"End Effector Pivot",
+				Units.Degrees.of(3.0),
+				EndEffectorConstants.getServoHomingConfig());
+		setCurrentPosition(EndEffectorConstants.kStowPosition);
+		applySetpoint(STOW);
 	}
 
-    private EndEffectorIO io;
-    //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
-    private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
-   
-
-    public EndEffectorSubsystem(EndEffectorIO io) {
-        //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
-        this.io = io;
-
-        io.openClaw();
-
-    }
-
-    @Override
-    public void periodic() {
-   
-        //this actually writes to the log file.
-        io.updateInputs(inputs);
-       
-        inputs.desiredArmPosition = EndEffectorSubsystem.currentState.end_effector_arm_angle;
-       
-        SetEndEffectorArmPos();
-      
-        Logger.processInputs("EndEffector", inputs);
-
-    }
-
-    public enum EndEffectorState 
-    {
-        IDLE(5),
-		INTAKE(108),
-        PRE_CLAMP(120),
-        CLAMP(135),
-        L1_DEPOSIT(-20),
-        L2_DEPOSIT(-30),
-        L3_DEPOSIT(-18),
-        L4_DEPOSIT(-18),
-        ALGAE(-10),
-        ALGAE_2(-15),
-		REVERSE(.0);
-       
-        public double end_effector_arm_angle;
-      
-       
-        
-		EndEffectorState(double armAngle) {
-			this.end_effector_arm_angle = armAngle;
-            
-		}
-    }
-    
-    public static EndEffectorState currentState = EndEffectorState.IDLE;
-
-    public EndEffectorState getCurrentState()
-    {
-        return EndEffectorSubsystem.currentState;
-    }
-
-    public void setWantedState(EndEffectorState state) {
-
-        SmartDashboard.putString("End Effector State", state.toString());
-        EndEffectorSubsystem.currentState = state;
-
-      
-
-    }
-
-
-    public void SetEndEffectorArmPos(){
-       
-        io.setArmPosition(currentState.end_effector_arm_angle);
-    }
-
-
-    public void setSpinnerSpeed(double speed){
-        io.setSpinnerSpeed(speed);
-    }
-
-
-    public boolean isArmInIntakePosition(){
-        
-        return io.getArmAngle() >= 8;
-    }
-
-    public double getArmAngle()
-    {
-        return io.getArmAngle();
-    }
-
-   
+	@Override
+	public void outputTelemetry() {
+		super.outputTelemetry();
+		publisher.set(EndEffectorConstants.kOffsetPose.plus(new Transform3d(
+				new Translation3d(), new Rotation3d(0.0, getPosition().in(Units.Radians), 0.0))));
+	}
 }

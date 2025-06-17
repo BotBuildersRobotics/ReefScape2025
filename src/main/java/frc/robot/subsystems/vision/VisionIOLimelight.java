@@ -1,123 +1,83 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
 
 package frc.robot.subsystems.vision;
 
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.PoseEstimate;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.Utils;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.vision.LimelightSubsystem.LimelightConfig;
+import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.LimelightConstants;
 
-/** IO implementation for real Limelight hardware. */
-public class VisionIOLimelight implements VisionIO {
-  private final Supplier<Rotation2d> rotationSupplier;
-  private final String limelightName;
+public class VisionIOLimelight extends VisionIO {
+	private Pose2d latestEstimate = new Pose2d();
+	private Time latestEstimateTime = Units.Seconds.of(0.0);
+	private LimelightConfig config = new LimelightConfig();
+	protected StructPublisher<Pose2d> visPose = NetworkTableInstance.getDefault()
+			.getTable("SmartDashboard/Vision")
+			.getStructTopic("", Pose2d.struct)
+			.publish();
 
-  /**
-   * Creates a new VisionIOLimelight.
-   *
-   * @param name The configured name of the Limelight.
-   * @param rotationSupplier Supplier for the current estimated rotation, used for MegaTag 2.
-   */
-  public VisionIOLimelight(String name, Supplier<Rotation2d> rotationSupplier) {
-      this.limelightName = name;
-      this.rotationSupplier = rotationSupplier;
-  }
+	@Override
+	public void setLatestEstimate(PoseEstimate poseEstimate, int minTagNum) {
+		SmartDashboard.putNumber(config.name + "/Tag Count", poseEstimate.tagCount);
+		SmartDashboard.putNumber(config.name + "/FGPA Timestamp", Timer.getFPGATimestamp());
+		SmartDashboard.putNumber(
+				config.name + "/Estimate to FGPA Timestamp", Utils.fpgaToCurrentTime(poseEstimate.timestampSeconds));
+		if (poseEstimate.tagCount >= minTagNum) {
+			latestEstimate = poseEstimate.pose;
+			latestEstimateTime = Units.Seconds.of(poseEstimate.timestampSeconds);
+			visPose.set(poseEstimate.pose);
+			DriveSubsystem.mInstance.getGeneratedDrive();
+			DriveSubsystem.mInstance.addVisionUpdate(
+					poseEstimate.pose,
+					Units.Seconds.of(poseEstimate.timestampSeconds),
+					LimelightConstants.enabledVisionStdDevs.times(poseEstimate.avgTagDist));
+		}
+	}
 
-  @Override
-  public <T extends VisionIOInputs> void updateInputs(T mInputs) {
-    AprilTagIOInputs inputs;
-    if(mInputs instanceof AprilTagIOInputs) {
-      inputs = (AprilTagIOInputs) mInputs;
-    }
-    else {
-      throw new IllegalArgumentException("Limelight updateInputs must take AprilTagIOInputs, not " + mInputs.getClass().toString());
-    }
-  
-    // Read new pose observations from NetworkTables
-    Set<Integer> tagIds = new HashSet<>();
-    List<PoseObservation> poseObservations = new LinkedList<>();
+	public Pose2d getLatestEstimate() {
+		return latestEstimate;
+	}
 
-    inputs.connected = true;
-    
-    PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.limelightName);
+	public Time getLatestEstimateTime() {
+		return latestEstimateTime;
+	}
 
-    //Logger.recordOutput("LL Name",this.limelightName);
+	@Override
+	public void update() {
+		updateGyro();
+		setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
 
-    if(estimate != null){
-      
-     // Logger.recordOutput("PE",estimate.pose);
-      poseObservations.add(
-        new PoseObservation(  Utils.fpgaToCurrentTime(estimate.timestampSeconds),
-                              new Pose3d(estimate.pose),
-                              0.0, 
-                              estimate.tagCount, 
-                              estimate.avgTagDist, 
-                              PoseObservationType.MEGATAG_1
-                            )
-      );
+		SmartDashboard.putBoolean(config.name + "/Disabled", disabled);
+	}
 
-      for(int i =0; i < estimate.rawFiducials.length; i++){
-        tagIds.add(estimate.rawFiducials[i].id);
-      }
-     
-    }
-    LimelightHelpers.SetRobotOrientation(this.limelightName, this.rotationSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
-    PoseEstimate megaTag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.limelightName);
-   
-    if(megaTag2Estimate != null){
+	@Override
+	public void disable(boolean disable) {
+		super.disable(disable);
 
-     // Logger.recordOutput("PE2",megaTag2Estimate.pose);
-      poseObservations.add(
-        new PoseObservation(  Utils.fpgaToCurrentTime(megaTag2Estimate.timestampSeconds),
-                              new Pose3d(megaTag2Estimate.pose),
-                              0.0, 
-                              megaTag2Estimate.tagCount, 
-                              megaTag2Estimate.avgTagDist, 
-                              PoseObservationType.MEGATAG_2
-                            )
-      );
+		if (disabled) {
+			LimelightHelpers.setPipelineIndex(config.name, LimelightConstants.kDisabledPipeline);
+		} else {
+			LimelightHelpers.setPipelineIndex(config.name, LimelightConstants.kEnabledPipeline);
+		}
+	}
 
-      for(int i =0; i < megaTag2Estimate.rawFiducials.length; i++){
-        tagIds.add(megaTag2Estimate.rawFiducials[i].id);
-      }
-    }
+	private void updateGyro() {
 
+		Rotation2d theta = DriveSubsystem.mInstance.getPose().getRotation();
+		LimelightHelpers.SetRobotOrientation(config.name, theta.getDegrees(), 0, 0, 0, 0, 0);
+	}
 
-    // Save pose observations to inputs object
-    inputs.poseObservations = new PoseObservation[poseObservations.size()];
-    for (int i = 0; i < poseObservations.size(); i++) {
-      inputs.poseObservations[i] = poseObservations.get(i);
-    }
-
-    // Save tag IDs to inputs objects
-    inputs.tagIds = new int[tagIds.size()];
-    int i = 0;
-    for (int id : tagIds) {
-      inputs.tagIds[i++] = id;
-    }
-  }
-
- 
+	public void updateConfig(LimelightConfig config) {
+		this.config = config;
+	}
 }

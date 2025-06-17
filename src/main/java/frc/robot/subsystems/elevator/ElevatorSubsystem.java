@@ -1,151 +1,75 @@
 package frc.robot.subsystems.elevator;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
+import frc.robot.lib.io.ServoMotorSubsystem;
+import frc.robot.lib.io.MotorIO.Setpoint;
+import frc.robot.lib.io.MotorIOTalonFX;
 
+public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
+	private final StructPublisher<Pose3d> stage1Publisher = NetworkTableInstance.getDefault()
+			.getStructTopic("Mechanisms/Elevator Stage 1", Pose3d.struct)
+			.publish();
 
+	private final StructPublisher<Pose3d> stage2Publisher = NetworkTableInstance.getDefault()
+			.getStructTopic("Mechanisms/Elevator Stage 2", Pose3d.struct)
+			.publish();
 
-public class ElevatorSubsystem extends SubsystemBase {
+	public static final Setpoint JOG_UP = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(0.5, Units.Volts));
+	public static final Setpoint JOG_DOWN = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(-0.5, Units.Volts));
+	public static final Setpoint HOLD_UP = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(0, Units.Volts));
 
-    //notice the static, this is shared 
-    public static ElevatorSubsystem mInstance;
+	public static final Setpoint L4_SCORE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL4ScoringHeight));
+	public static final Setpoint L3_SCORE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL3ScoringHeight));
+	public static final Setpoint L2_SCORE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL2ScoringHeight));
+	public static final Setpoint L1_SCORE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL1ScoringHeight));
+	public static final Setpoint STOW =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
+	
+	public static final Setpoint INTAKE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kLIntakeHeight));
+	
+			
+	public static final ElevatorSubsystem mInstance = new ElevatorSubsystem();
 
-    public ElevatorPosition currentState = ElevatorPosition.STOWED;
-
-    //I like having a static instance to the subsystem - we only have one subsystem, we don't need more instances.
-    //this is a singleton pattern. yay
-	public static ElevatorSubsystem getInstance() {
-		if (mInstance == null) {
-			mInstance = new ElevatorSubsystem(new ElevatorIOPhoenix6());
-            if(!Robot.isReal()) {
-                //TODO: Create sim instance
-            }
-		}
-		return mInstance;
+	private ElevatorSubsystem() {
+		super(
+				ElevatorConstants.getMotorIO(),
+				"Elevator",
+				ElevatorConstants.converter.toAngle(ElevatorConstants.kEpsilonThreshold),
+				ElevatorConstants.getServoConfig());
+		setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
+		applySetpoint(STOW);
 	}
 
-    private ElevatorIO io;
-    //the class below gets auto created by the use of the @autolog attribute in the IntakeIO.java file.
-    private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-   
-
-    public ElevatorSubsystem(ElevatorIO io) {
-        //this could either be a simulation object, a REV motor object (yuck) or the Phoenix6 motor object (yum)
-        this.io = io;
-
-    }
-
-    @Override
-    public void periodic() {
-   
-        //this actually writes to the log file.
-        io.updateInputs(inputs);
-
-        inputs.desiredElevatorPosition = currentState.lowerBound;
-
-        //48 tooth pulley = 75mm diameter
-        //1 rotation = 75mm lift
-        //75 * 13 = 975mm of lift
-
-        Logger.processInputs("Elevator", inputs);
-    }
-
-   
-
-    public void setManualElevatorPosition(double position)
-    {
-
-        inputs.desiredElevatorPosition = position;
-    }
-
-    public void setWantedState(ElevatorPosition position){
-       this.currentState = position;
-    }
-
-    public void setVoltage(double volts){
-        io.setVoltage(Units.Volts.of(volts));
-    }
-
-    public void setElevatorPosition(ElevatorPosition position) {
-        
-        //could make this the difference between upper and lower
-        
-        inputs.desiredElevatorPosition = position.lowerBound;
-           
-        
-    }
-
-    @AutoLogOutput
-    public boolean checkElevatorPosition(ElevatorPosition target) {
-        return target.isNear(inputs.desiredElevatorPosition);
-    }
-
-    public boolean isElevatorUp(){
-        if(currentState == ElevatorPosition.STOWED){
-            return false;
-        }
-        return true;
-    }
-
-    public enum ElevatorPosition {
-        //! TODO Change positions
-        STOWED(-0.3, 0.2),
-        INTAKE_READY(3,3.1),
-        L1(3, 3.1),
-        L2(2.5, 2.7),
-        L3(4.9, 5.1),
-        L4(12.5, 12.6),
-        ALGAE(2.55, 2.4);
-
-        public double lowerBound;
-        public double upperBound;
-        ElevatorPosition(double lower, double upper) {
-            lowerBound = lower;
-            upperBound = upper;
-        }
-
-        private boolean isNear(double position) { //* This function is needed because java doesnt allow you to chain comparison statments. For reference, see https://www.geeksforgeeks.org/chaining-comparison-operators-python/
-            boolean over = this.lowerBound < position;
-            boolean under = position < this.upperBound;
-            return over && under;
-        }
-        
-    }
-
-    public void ResetElevatorZero(){
-        io.resetElevatorZero();
-    }
-
-       // Creates a SysIdRoutine
-    SysIdRoutine routine =
-      new SysIdRoutine(
-          new SysIdRoutine.Config(),
-          new SysIdRoutine.Mechanism(this::voltageDrive, this::logMotors, this));
-    
-    public void logMotors(SysIdRoutineLog log){
-        io.logMotors(log);
-    }
-
-    public void voltageDrive(Voltage volts){
-        io.voltageDrive(volts);
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) 
-    {
-        return routine.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) 
-    {
-        return routine.dynamic(direction);
-    }
-
+	@Override
+	public void outputTelemetry() {
+		super.outputTelemetry();
+		stage2Publisher.set(ElevatorConstants.stage2Offset.plus(new Transform3d(
+				new Translation3d(
+						0.0,
+						0.0,
+						ElevatorConstants.converter.toDistance(getPosition()).in(Units.Meters)),
+				new Rotation3d(0.0, 0.0, 0.0))));
+		stage1Publisher.set(ElevatorConstants.stage1Offset.plus(new Transform3d(
+				new Translation3d(
+						0.0,
+						0.0,
+						ElevatorConstants.converter
+								.toDistance(getPosition())
+								.div(2.0)
+								.in(Units.Meters)),
+				new Rotation3d(0.0, 0.0, 0.0))));
+	}
 }

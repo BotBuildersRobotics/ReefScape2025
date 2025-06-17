@@ -13,12 +13,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.led.LightsSubsystem;
-import frc.robot.subsystems.led.LightsSubsystem.LightState;
 
 
 
@@ -105,7 +103,7 @@ public class AutoAlignPID2 extends Command {
   public boolean isFinished() {
 
     if(yTranslationController.atGoal() && rotationController.atGoal()){
-      LightsSubsystem.getInstance().setStrobeState(LightState.GREEN);
+     
       return true;
     }
 

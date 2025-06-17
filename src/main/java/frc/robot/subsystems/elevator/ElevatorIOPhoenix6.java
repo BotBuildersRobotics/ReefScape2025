@@ -12,7 +12,6 @@ import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -49,7 +48,7 @@ public class ElevatorIOPhoenix6 implements ElevatorIO{
        
         //setup leader / follower configuration.
 
-       // elevatorLeft.setControl(new Follower(Ports.ELEVATOR_RIGHT.getDeviceNumber(), true));
+        elevatorLeft.setControl(new Follower(Ports.ELEVATOR_RIGHT.getDeviceNumber(), true));
 
         elevatorBeamBreak = new DigitalInput(Ports.ELEVATOR_BEAMBREAK);
 
