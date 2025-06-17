@@ -19,15 +19,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-
+import frc.robot.subsystems.pivot.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 
@@ -109,6 +111,18 @@ public class SuperSystem extends SubsystemBase {
 			case FAR_CENTER, NEAR_LEFT, NEAR_RIGHT -> false;};
 	}
 
+    /*
+	 * Subsystem zero(ing) method
+	 */
+	public Command zero() {
+		return Commands.runOnce(() -> {
+					PivotSubsystem.mInstance.setCurrentPosition(PivotConstants.kFullStowPosition);
+					//ElevatorSubsystem.mInstance.setCurrentPosition(
+                    //    ElevatorConstants.converter.toAngle(ElevatorSubsystem.STOW));
+				})
+				.withName("Zero");
+	}
+
 
     public Command DeployIntakePivot(){
       
@@ -133,7 +147,7 @@ public class SuperSystem extends SubsystemBase {
        
         return Commands.sequence(
 						Commands.parallel(
-								
+                                setState(State.GROUND_CORAL),
 								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
 								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
                         )
@@ -146,6 +160,23 @@ public class SuperSystem extends SubsystemBase {
        
        
     }
+
+    public Command exhaustCoralIntake() {
+		return Commands.sequence(
+						Commands.parallel(
+								
+								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.EXHAUST),
+								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.EXHAUST)),
+						Commands.waitTime(Units.Seconds.of(1.0)),
+						
+						IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE),
+						IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE))
+				.handleInterrupt(() -> {
+					IntakeSubsystem.mInstance.applySetpoint(IntakeSubsystem.IDLE);
+					IndexerSubsystem.mInstance.applySetpoint(IndexerSubsystem.IDLE);
+					
+				});
+	}
 
     
 
