@@ -17,20 +17,24 @@ import frc.robot.lib.io.MotorIOTalonFX.MotorIOTalonFXConfig;
 import frc.robot.Ports;
 
 public class EndEffectorConstants {
-	public static final double kGearing = 144 / 1;
+
+	//56 teeth / 18 tooth   * 5:1 * 5:1
+	public static final double kGearing = 77.7777 / 1;
 
 	public static final Angle kStowPosition = Units.Degrees.of(90.0);
 	
 	public static final Angle kProcessorPosition = Units.Degrees.of(70.0);
 
-	public static final Angle kL1Score = Units.Degrees.of(80.0);
+	public static final Angle kL1Score = Units.Degrees.of(45.0);
+
+	public static final Angle kMaxPos = Units.Degrees.of(0.0);
 	
 	public static final Distance kArmLength = Units.Centimeters.of(60);
 
 	public static final Angle kEpsilonThreshold = Units.Degrees.of(8.0);
 
 	public static final Pose3d kOffsetPose = new Pose3d(
-			Units.Meters.of(-0.302971),
+			Units.Meters.of(-0.502971),
 			Units.Meters.of(0.0),
 			Units.Meters.of(0.177800),
 			new Rotation3d(BaseUnits.AngleUnit.zero(), Units.Degrees.of(90.0), BaseUnits.AngleUnit.zero()));
@@ -59,10 +63,10 @@ public class EndEffectorConstants {
 		config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
 		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kStowPosition.in(Units.Rotations);
+		//config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kStowPosition.in(Units.Rotations);
 
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -1000;
+		//config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kMaxPos.in(Units.Rotations);
 
 		//config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -92,7 +96,7 @@ public class EndEffectorConstants {
 		config.kHomingTimeout = Units.Seconds.of(0.2);
 		config.kHomingVoltage = Units.Volts.of(1.0);
 		config.kSetHomedVelocity = Units.DegreesPerSecond.of(5.0);
-
+		
 		return config;
 	}
 }

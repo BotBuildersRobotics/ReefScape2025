@@ -19,12 +19,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.endEffector.EndEffectorConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
+import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
@@ -153,16 +154,32 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public Command HomeEF(){
-        return  EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW);
+        return  
+        Commands.sequence(
+            EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW),
+            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
+        );
+        
     }
 
     public Command L1EF(){
-        return  EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.L1_SCORE);
+        return  
+        Commands.sequence(
+            EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.L1_SCORE),
+            waitForEndEffectorL1Move(),
+            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
+            Commands.waitSeconds(1),
+            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+            EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW)
+
+        );
     }
 
     public Command Intake(){
        
         return Commands.sequence(
+                     
+                          PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.DEPLOY),
 						Commands.parallel(
                                 setState(State.GROUND_CORAL),
                                 ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.INTAKE),
@@ -170,14 +187,33 @@ public class SuperSystem extends SubsystemBase {
 								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
                         )
 						.withDeadline(indexerBeamBrake.stateWaitWithDebounceIfReal(true, 1.5))
-						.finallyDo(() -> {
+                        .andThen(
+                            
+                                Commands.sequence(
+                                    ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW),
+                                    PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
+                                    IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
+                                    IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE)
+                                    
+                                )
+                            );
+                        
+						/* .finallyDo(() -> {
+                            
                             IntakeSubsystem.mInstance.applySetpoint(IntakeSubsystem.IDLE);
                             IndexerSubsystem.mInstance.applySetpoint(IndexerSubsystem.IDLE);
                             ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
                            
-                        }).withName("Coral Intake On");
+                        })*/
+                       // .withName("Coral Intake On");
        
        
+    }
+
+    public Command waitForEndEffectorL1Move(){
+        return Commands.waitUntil(
+            () -> EndEffectorSubsystem.mInstance.getPosition().lte(EndEffectorConstants.kL1Score)
+        );
     }
 
     public Command exhaustCoralIntake() {

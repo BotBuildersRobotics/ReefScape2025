@@ -18,7 +18,7 @@ import frc.robot.Ports;
 public class PivotConstants {
 	public static final double kGearing = 40.0;
 
-	public static final Angle kDeployPosition = Units.Degrees.of( 10.0);
+	public static final Angle kDeployPosition = Units.Degrees.of( 3.0);
 	public static final Angle kStowClearPosition = Units.Degrees.of(55.0);
 	public static final Angle kFullStowPosition = Units.Degrees.of(82.918);
 	public static final Angle kIndexerHold = Units.Degrees.of(20.0);
@@ -49,7 +49,7 @@ public class PivotConstants {
 
 	public static TalonFXConfiguration getFXConfig() {
 		TalonFXConfiguration config = new TalonFXConfiguration();
-		config.Slot0.kP = 180.0;
+		config.Slot0.kP = 30;//180.0;
 		config.Slot0.kD = 0.0;
 		config.Slot0.kS = 0.0;
 		config.Slot0.kG = 0.0;
@@ -57,8 +57,8 @@ public class PivotConstants {
 		config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 		config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
-		config.MotionMagic.MotionMagicCruiseVelocity = 7.0;
-		config.MotionMagic.MotionMagicAcceleration = 15.0;
+		config.MotionMagic.MotionMagicCruiseVelocity = 7.0;//7.0;
+		config.MotionMagic.MotionMagicAcceleration = 15.0;//15.0;
 
 		config.Voltage.PeakForwardVoltage = 12.0;
 		config.Voltage.PeakReverseVoltage = -12.0;

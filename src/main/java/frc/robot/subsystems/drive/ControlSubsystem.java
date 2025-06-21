@@ -40,7 +40,11 @@ public class ControlSubsystem {
 			
 		);
 
-
+		driver.rightTrigger().onTrue(
+			s.Intake()
+		).onFalse(
+			s.idleIntakes()
+		);
 
 		driver.b().onTrue(
 			//s.DeployIntakePivot()

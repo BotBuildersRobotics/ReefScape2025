@@ -50,6 +50,7 @@ import frc.robot.commands.drive.TagAutoAlign;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperSystem;
+import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.ControlSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -101,7 +102,8 @@ public class RobotContainer {
 			Limelight.mInstance,
 			PivotSubsystem.mInstance,
 			IntakeSubsystem.mInstance,
-			SuperSystem.mInstance
+			SuperSystem.mInstance,
+			ClawSubsystem.mInstance
 		}) {
 			SmartDashboard.putData(s);
 		}
