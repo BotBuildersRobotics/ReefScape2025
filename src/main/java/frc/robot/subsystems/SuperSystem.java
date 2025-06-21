@@ -175,6 +175,10 @@ public class SuperSystem extends SubsystemBase {
         );
     }
 
+    public void setPathFollowing(boolean following){
+
+    }
+
     public Command Intake(){
        
         return Commands.sequence(
