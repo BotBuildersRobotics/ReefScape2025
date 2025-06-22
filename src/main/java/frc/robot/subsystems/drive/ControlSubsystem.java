@@ -35,10 +35,20 @@ public class ControlSubsystem {
 		SuperSystem s = SuperSystem.mInstance;
 
         driver.a().onTrue(
-			s.HomeEF()
-			
+			//s.HomeEF()
+			s.ClawOn()
+		).onFalse(
+			s.ClawOff()
 		);
 
+		driver.b().onTrue(
+			//s.HomeEF()
+			s.SuperPinch()
+		).onFalse(
+			s.ClawOff()
+		);
+
+		/*
 		driver.rightTrigger().onTrue(
 			s.Intake()
 		).onFalse(
@@ -47,7 +57,7 @@ public class ControlSubsystem {
 
 		driver.b().onTrue(
 			
-			s.L1EF()
+			//s.L1EF()
 		);
 
 		driver.y().onTrue(
@@ -57,6 +67,7 @@ public class ControlSubsystem {
 		driver.x().onTrue(
 			s.HomeElevator()
 		);
+		 */
     }
 
     public void setRumble(boolean on) {

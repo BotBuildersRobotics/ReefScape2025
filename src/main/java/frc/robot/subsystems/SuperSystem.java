@@ -25,6 +25,7 @@ import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
+import frc.robot.subsystems.clawSubsystem.ClawConstants;
 import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -173,6 +174,18 @@ public class SuperSystem extends SubsystemBase {
             EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW)
 
         );
+    }
+
+    public Command ClawOn(){
+        return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE);
+    }
+
+    public Command ClawOff(){
+        return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE);
+    }
+
+    public Command SuperPinch(){
+        return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SUPER_PINCH);
     }
 
     public void setPathFollowing(boolean following){

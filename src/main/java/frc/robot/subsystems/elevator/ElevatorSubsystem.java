@@ -50,8 +50,8 @@ public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 				"Elevator",
 				ElevatorConstants.converter.toAngle(ElevatorConstants.kEpsilonThreshold),
 				ElevatorConstants.getServoConfig());
-		setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
-		applySetpoint(STOW);
+		//setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
+		//applySetpoint(STOW);
 	}
 
 	@Override

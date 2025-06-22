@@ -1,5 +1,7 @@
 package frc.robot.subsystems.clawSubsystem;
 
+import java.util.Set;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -17,7 +19,7 @@ import frc.robot.lib.io.MotorSubsystem;
 public class ClawSubsystem extends MotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint IDLE = Setpoint.withNeutralSetpoint();
 	public static final Setpoint OUTTAKE = Setpoint.withVoltageSetpoint(ClawConstants.kOutTakeVoltage);
-	
+	public static final Setpoint SUPER_PINCH = Setpoint.withVoltageSetpoint(ClawConstants.kSuperPinch);
 	public static final ClawSubsystem mInstance = new ClawSubsystem();
 
 	public ClawSubsystem() {

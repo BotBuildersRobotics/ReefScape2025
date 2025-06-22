@@ -55,7 +55,8 @@ public class VisionIOLimelight extends VisionIO {
 	@Override
 	public void update() {
 		updateGyro();
-		setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
+		//setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
+		setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue(config.name), 1);
 
 		SmartDashboard.putBoolean(config.name + "/Disabled", disabled);
 	}
