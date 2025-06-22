@@ -31,6 +31,7 @@ import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.clawSubsystem.ClawConstants;
 import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
@@ -182,12 +183,16 @@ public class SuperSystem extends SubsystemBase {
     public Command L1EF(){
         return  
         Commands.sequence(
-            EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.L1_SCORE),
-            waitForEndEffectorL1Move(),
+            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
+            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
+            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE_LOW),
             ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
             Commands.waitSeconds(1),
             ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
-            EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW)
+            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
+            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW)
+          
+            //TODO: Add elevator down
 
         );
     }
@@ -232,6 +237,7 @@ public class SuperSystem extends SubsystemBase {
                         .andThen(
                             
                                 Commands.sequence(
+                                    Commands.waitSeconds(0.1),
                                     ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW),
                                     PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
                                     IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
@@ -255,6 +261,18 @@ public class SuperSystem extends SubsystemBase {
     public Command waitForEndEffectorL1Move(){
         return Commands.waitUntil(
             () -> EndEffectorSubsystem.mInstance.getPosition().lte(EndEffectorConstants.kL1Score)
+        );
+    }
+
+    public Command waitForEndEffectorStowMove(){
+        return Commands.waitUntil(
+            () -> EndEffectorSubsystem.mInstance.getPosition().lte(EndEffectorConstants.kStowPosition)
+        );
+    }
+
+    public Command waitForElevatorL1(){
+        return Commands.waitUntil(
+            () -> ElevatorSubsystem.mInstance.nearPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kL1ScoringHeight))
         );
     }
 

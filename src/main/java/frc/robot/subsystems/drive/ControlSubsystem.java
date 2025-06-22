@@ -23,7 +23,7 @@ public class ControlSubsystem {
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
 
-	private final Trigger overrideTrigger = driver.rightTrigger(0.1);
+	private final Trigger overrideTrigger = driver.leftTrigger(0.1);
 	private OverrideBehavior overrideBehavior = OverrideBehavior.NONE;
 
     public void configureBindings() {
@@ -51,27 +51,17 @@ public class ControlSubsystem {
 		);
 
 		driver.b().onTrue(
-			//s.HomeEF()
-			s.SuperPinch()
-		).onFalse(
-			s.ClawOff()
+			s.L1EF()
 		);
 
-		/*
+		
 		driver.rightTrigger().onTrue(
 			s.Intake()
 		).onFalse(
 			s.idleIntakes()
 		);
 
-		driver.b().onTrue(
-			
-			//s.L1EF()
-		);
 
-		driver.y().onTrue(
-			s.L1Elevator()
-		);
 		
 		driver.x().onTrue(
 			s.HomeElevator()

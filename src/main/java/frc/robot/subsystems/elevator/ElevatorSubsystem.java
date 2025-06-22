@@ -33,9 +33,15 @@ public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL3ScoringHeight));
 	public static final Setpoint L2_SCORE =
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL2ScoringHeight));
-	public static final Setpoint L1_SCORE =
+	
+    public static final Setpoint L1_SCORE =
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL1ScoringHeight));
-	public static final Setpoint STOW =
+	
+    public static final Setpoint L1_SCORE_LOW =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL1ScoringLowL1Height));
+	
+
+    public static final Setpoint STOW =
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
 	
 	public static final Setpoint INTAKE =
@@ -50,8 +56,8 @@ public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 				"Elevator",
 				ElevatorConstants.converter.toAngle(ElevatorConstants.kEpsilonThreshold),
 				ElevatorConstants.getServoConfig());
-		//setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
-		//applySetpoint(STOW);
+		setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
+		applySetpoint(STOW);
 	}
 
 	@Override

@@ -19,13 +19,13 @@ import frc.robot.Ports;
 public class EndEffectorConstants {
 
 	//56 teeth / 18 tooth   * 5:1 * 5:1
-	public static final double kGearing = 77.7777 / 1;
+	public static final double kGearing = 87.5 / 1;
 
 	public static final Angle kStowPosition = Units.Degrees.of(90.0);
 	
 	public static final Angle kProcessorPosition = Units.Degrees.of(70.0);
 
-	public static final Angle kL1Score = Units.Degrees.of(45.0);
+	public static final Angle kL1Score = Units.Degrees.of(55.0);
 
 	public static final Angle kMaxPos = Units.Degrees.of(0.0);
 	
@@ -41,14 +41,14 @@ public class EndEffectorConstants {
 
 	public static TalonFXConfiguration getFXConfig() {
 		TalonFXConfiguration config = new TalonFXConfiguration();
-		config.Slot0.kP = 115.0;
+		config.Slot0.kP = 80.0;//115.0;
 		config.Slot0.kS = 0.0;
 		config.Slot0.kG = 0.2;
 
 		config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
 		config.MotionMagic.MotionMagicCruiseVelocity = 100.0;
-		config.MotionMagic.MotionMagicAcceleration = 80.0;
+		config.MotionMagic.MotionMagicAcceleration = 40.0;//80.0;
 
 		config.Voltage.PeakForwardVoltage = 12.0;
 		config.Voltage.PeakReverseVoltage = -12.0;

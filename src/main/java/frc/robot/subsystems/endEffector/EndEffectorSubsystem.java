@@ -31,8 +31,8 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 				"End Effector ARM Pivot",
 				Units.Degrees.of(1.0));//,
 				//EndEffectorConstants.getServoHomingConfig());
-		//setCurrentPosition(EndEffectorConstants.kStowPosition);
-		//applySetpoint(STOW);
+		setCurrentPosition(EndEffectorConstants.kStowPosition);
+		applySetpoint(STOW);
 	}
 
 	@Override

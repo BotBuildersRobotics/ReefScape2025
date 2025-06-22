@@ -18,7 +18,7 @@ import frc.robot.Ports;
 public class PivotConstants {
 	public static final double kGearing = 40.0;
 
-	public static final Angle kDeployPosition = Units.Degrees.of( 3.0);
+	public static final Angle kDeployPosition = Units.Degrees.of( 0.0);
 	public static final Angle kStowClearPosition = Units.Degrees.of(55.0);
 	public static final Angle kFullStowPosition = Units.Degrees.of(82.918);
 	public static final Angle kIndexerHold = Units.Degrees.of(20.0);

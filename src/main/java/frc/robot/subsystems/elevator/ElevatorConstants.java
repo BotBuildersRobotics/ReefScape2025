@@ -36,6 +36,9 @@ public class ElevatorConstants {
 	public static final Distance kMaxHeight = converter.toDistance(Units.Degrees.of(12*260));
 
 	public static final Distance kL1ScoringHeight = Units.Centimeters.of(50);
+	
+	public static final Distance kL1ScoringLowL1Height = Units.Centimeters.of(40);
+	
 	public static final Distance kL2ScoringHeight = Units.Centimeters.of(6.3);
 	public static final Distance kL3ScoringHeight = kL2ScoringHeight.plus(Units.Centimeters.of(16.0));
 	public static final Distance kL4ScoringHeight = Units.Centimeters.of(60.25);
