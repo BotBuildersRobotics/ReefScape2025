@@ -26,10 +26,10 @@ import frc.robot.subsystems.drive.DriveConstants;
 
 
 public class PIDToPoseCommand extends Command {
-	Pose2d finalPose;
-	Rotation2d targetRotation;
-	Distance epsilonDist;
-	Angle epsilonAngle;
+	protected Pose2d finalPose;
+	protected Rotation2d targetRotation;
+	protected Distance epsilonDist;
+	protected Angle epsilonAngle;
 	Util.Pose2dTimeInterpolable interpolable;
 	DelayedBoolean atTarget;
 	boolean isAuto;
