@@ -161,4 +161,7 @@ public class SuperSystemConstants {
 	public static final Angle kL2HeadingGenerationDeadband = Units.Degrees.of(0.0);
 	public static final Angle kL3HeadingGenerationDeadband = Units.Degrees.of(0.0);
 	public static final Angle kL4HeadingGenerationDeadband = Units.Degrees.of(0.0);
+
+    public static final Time kRecentUpdateTime = Units.Seconds.of(0.1);
+	public static final Distance kNearUpdateDistance = Units.Centimeters.of(2.0);
 }

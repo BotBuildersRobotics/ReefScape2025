@@ -1,10 +1,15 @@
 package frc.robot.subsystems.drive;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
 
 public class ControlSubsystem {
@@ -16,6 +21,10 @@ public class ControlSubsystem {
 
 	private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+
+	private final Trigger overrideTrigger = driver.rightTrigger(0.1);
+	private OverrideBehavior overrideBehavior = OverrideBehavior.NONE;
 
     public void configureBindings() {
 		DriveSubsystem.mInstance.setDefaultCommand(DriveSubsystem.mInstance.followSwerveRequestCommand(
@@ -67,11 +76,54 @@ public class ControlSubsystem {
 		driver.x().onTrue(
 			s.HomeElevator()
 		);
-		 */
+
+		bindCoralAutoScore(Level.L1, driver.povRight());
+
+		// Top Right Paddle
+		bindCoralAutoScore(Level.L2, driver.povUp());
+
+		// Bottom Left Paddle
+		bindCoralAutoScore(Level.L3, driver.povLeft());
+
+		// Bottom Right Paddle
+		bindCoralAutoScore(Level.L4, driver.povDown());
+
+
+		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));
+
     }
 
     public void setRumble(boolean on) {
 		ControlBoardConstants.mDriverController.getHID().setRumble(RumbleType.kBothRumble, on ? 1.0 : 0.0);
+	}
+
+
+	public void bindCoralAutoScore(Level level, Trigger button) {
+
+		button.onTrue(SuperSystem.mInstance
+						.goToScoringPose(level)
+						.asProxy()
+						.until(overrideTrigger)
+						.unless(overrideTrigger)
+						.onlyWhile(button)
+						.withName("Auto Align " + level.toString())
+		);
+		
+	}
+
+	public static enum OverrideBehavior {
+		/*CORAL_SCORE_L1(() -> SuperSystem.mInstance.softCoralScore()),
+		CORAL_SCORE_L2(() -> SuperSystem.mInstance.coralScore(Level.L2)),
+		CORAL_SCORE_L3(() -> SuperSystem.mInstance.coralScore(Level.L3)),
+		CORAL_SCORE_L4(() -> SuperSystem.mInstance.coralScore(Level.L4)),*/
+		
+		NONE(() -> Commands.none());
+
+		public final Supplier<Command> action;
+
+		private OverrideBehavior(Supplier<Command> overrideAction) {
+			action = overrideAction;
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
@@ -19,10 +20,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.commands.drive.FollowTagPIDToPose;
 import frc.robot.subsystems.endEffector.EndEffectorConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
+import frc.robot.lib.FieldLayout.Level;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.clawSubsystem.ClawConstants;
@@ -140,6 +143,19 @@ public class SuperSystem extends SubsystemBase {
 				.withName("Idle Intakes");
 	}
 
+	public Command goToScoringPose(Level level) {
+		return Commands.sequence(Commands.defer(
+				() -> {
+					
+						Pose2d scoringPose = FieldLayout.handleAllianceFlip(
+								FieldLayout.getCoralScoringPose(targetingBranch), RobotConstants.isRedAlliance);
+						return new FollowTagPIDToPose(scoringPose, level);
+					
+				},
+				Set.of(DriveSubsystem.mInstance)));
+	}
+
+
     public Command ParkIntakePivot()
     {
 
@@ -189,8 +205,17 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public void setPathFollowing(boolean following){
-
+		isPathFollowing = following;
     }
+
+	public Branch getTargetingBranch() {
+		return targetingBranch;
+	}
+
+	public Face getTargetingFace() {
+		return targetingFace;
+	}
+
 
     public Command Intake(){
        
