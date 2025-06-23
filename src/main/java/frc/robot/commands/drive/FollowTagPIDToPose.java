@@ -12,10 +12,7 @@ import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.SuperSystemConstants;
 import frc.robot.subsystems.vision.Limelight;
 
-/**
- * Adds another layer to the FollowSyncedPIDToPose command, alerting the driver when a tag is not seen while scoring so that they know that they're on their own.
- * With where our camera is placed, no matter where you're scoring on the reef you should be able to see at least one tag, so something must be up if you can't.
- */
+
 public class FollowTagPIDToPose extends PIDToPoseCommand {
 	public FollowTagPIDToPose(Pose2d finalPose, Level level) {
 		super(finalPose, level);

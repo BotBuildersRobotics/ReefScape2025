@@ -27,6 +27,10 @@ public class EndEffectorConstants {
 
 	public static final Angle kL1Score = Units.Degrees.of(55.0);
 
+	public static final Angle kL4PreScore = Units.Degrees.of(200);
+
+	public static final Angle kL4Score = Units.Degrees.of(245);
+
 	public static final Angle kMaxPos = Units.Degrees.of(0.0);
 	
 	public static final Distance kArmLength = Units.Centimeters.of(60);

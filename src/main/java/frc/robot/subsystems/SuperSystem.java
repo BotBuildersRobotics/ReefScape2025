@@ -197,6 +197,25 @@ public class SuperSystem extends SubsystemBase {
         );
     }
 
+	public Command L4EF(){
+		return 
+
+		Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_SCORE),
+			EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_PRESCORE),
+			setState(State.L4_CORAL_PRESCORE)
+		)
+		;
+	}
+
+	public Command L4Score(){
+
+		return Commands.either(Commands.sequence(
+			EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE)
+
+		), L4EF(), () -> state == State.L4_CORAL_PRESCORE);
+	}
+
     public Command ClawOn(){
         return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE);
     }
@@ -309,6 +328,7 @@ public class SuperSystem extends SubsystemBase {
 		L1_CORAL,
 		L2_CORAL,
 		L3_CORAL,
+		L4_CORAL_PRESCORE,
 		L4_CORAL,
 		L2_ALGAE,
 		L3_ALGAE,

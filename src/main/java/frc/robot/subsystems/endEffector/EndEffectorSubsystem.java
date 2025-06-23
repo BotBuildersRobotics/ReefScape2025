@@ -21,7 +21,8 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint STOW = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kStowPosition);
 	public static final Setpoint PROCESSOR = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kProcessorPosition);
 	public static final Setpoint L1_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL1Score);
-
+	public static final Setpoint L4_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4PreScore);
+	public static final Setpoint L4_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4Score);
 	
 	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 
