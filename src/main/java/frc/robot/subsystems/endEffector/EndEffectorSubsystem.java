@@ -12,7 +12,10 @@ import frc.robot.lib.io.MotorIO.Setpoint;
 import frc.robot.Ports;
 import frc.robot.lib.io.MotorIOTalonFX;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.pheonix6.configs.CANcoderConfiguration;
+
+import static edu.wpi.first.units.Units.Degrees;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 
 
 
@@ -31,14 +34,15 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 
 	public EndEffectorSubsystem() {
-        encoder.config = EndEffectorConstants.getEncoderConfig();
+       
 		super(
             EndEffectorConstants.getMotorIO(),
 				"End Effector ARM Pivot",
 				Units.Degrees.of(1.0));//,
 				//EndEffectorConstants.getServoHomingConfig());
-        
-		setCurrentPosition(EndEffectorConstants.kStowPosition);
+        encoder.getConfigurator().apply(EndEffectorConstants.getEncoderConfig());
+		//setCurrentPosition(EndEffectorConstants.kStowPosition);
+        //setCurrentPosition(encoder.getAbsolutePosition().getValue().plus(Degrees.of(20)));
 		applySetpoint(STOW);
 	}
 
@@ -48,4 +52,11 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 		publisher.set(EndEffectorConstants.kOffsetPose.plus(new Transform3d(
 				new Translation3d(), new Rotation3d(0.0, getPosition().in(Units.Radians), 0.0))));
 	}
+
+    @Override
+    public void periodic(){
+        super.periodic();
+       // setCurrentPosition(encoder.getAbsolutePosition().getValue().plus(Degrees.of(20)));
+		
+    }
 }
