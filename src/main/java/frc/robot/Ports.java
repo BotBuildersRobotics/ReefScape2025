@@ -21,6 +21,8 @@ public class Ports {
     
     public static final CanDeviceId PIVOT_ARM = new CanDeviceId(31, "canivore");
     
+    public static final CanDeviceId PIVOT_ARM_ENCODER = new CanDeviceId(21, "canivore");
+    
 
     //Intake Subsystem Motors
     public static final CanDeviceId INTAKE = new CanDeviceId(22, "canivore");

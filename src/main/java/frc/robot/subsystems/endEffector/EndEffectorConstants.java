@@ -1,9 +1,17 @@
 package frc.robot.subsystems.endEffector;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
+
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.BaseUnits;
@@ -25,7 +33,7 @@ public class EndEffectorConstants {
 	
 	public static final Angle kProcessorPosition = Units.Degrees.of(70.0);
 
-	public static final Angle kL1Score = Units.Degrees.of(55.0);
+	public static final Angle kL1Score = Units.Degrees.of(145.0);
 
 	public static final Angle kL4PreScore = Units.Degrees.of(200);
 
@@ -72,8 +80,28 @@ public class EndEffectorConstants {
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 		//config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kMaxPos.in(Units.Rotations);
 
-		//config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+		
+		
+		config.Feedback.FeedbackRemoteSensorID = Ports.PIVOT_ARM_ENCODER.getDeviceNumber();
+		config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+		config.Feedback.SensorToMechanismRatio = 1.0;
+		config.Feedback.RotorToSensorRatio = kGearing;
+		
+		return config;
+	}
+
+	public static CANcoderConfiguration getEncoderConfig(){
+		
+		CANcoderConfiguration config = new CANcoderConfiguration();
+		//config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+		config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+		
+		//config.MagnetSensor.withMagnetOffset(Rotations.of(-0.668457).plus(Degrees.of(-38.672)));
+		//config.MagnetSensor.withMagnetOffset(-0.085957);
+		config.MagnetSensor.withMagnetOffset(Degrees.of(20));
+		
 		return config;
 	}
 
