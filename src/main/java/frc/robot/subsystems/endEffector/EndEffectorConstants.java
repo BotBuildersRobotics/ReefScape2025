@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.pheonix6.configs.CANcoderConfiguration;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.BaseUnits;
@@ -70,6 +71,18 @@ public class EndEffectorConstants {
 
 		//config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+		
+		
+		config.Feedback.FeedbackRemoteSensorID = Ports.PIVOT_ARM_ENCODER.getDeviceNumber();
+		config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+		config.Feedback.SensorToMechanismRatio = 1.0;
+		config.Feedback.RotorToSensorRatio = kGearing;
+		return config;
+	}
+
+	public static CANcoderConfiguration getEncoderConfig(){
+		CANcoderConfiguration config = new CANcoderConfiguration();
+		config.MagnetSensor.withMagnetOffset(Rotations.of(-0.2322));
 		return config;
 	}
 
