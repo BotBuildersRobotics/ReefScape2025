@@ -23,7 +23,7 @@ public class ControlSubsystem {
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
 
-	private final Trigger overrideTrigger = driver.leftTrigger(0.1);
+	private final Trigger overrideTrigger = driver.start();
 	private OverrideBehavior overrideBehavior = OverrideBehavior.NONE;
 
     public void configureBindings() {
@@ -51,7 +51,7 @@ public class ControlSubsystem {
 		);
 
 		driver.b().onTrue(
-			s.L1EF()
+			s.L4Score()
 		);
 
 		
@@ -61,6 +61,19 @@ public class ControlSubsystem {
 			s.idleIntakes()
 		);
 
+		driver.leftTrigger().onTrue(
+			s.exhaustCoralIntake()
+		).onFalse(
+			s.idleIntakes()
+		);
+
+		driver.rightBumper().onTrue(
+			s.L4EF()
+		);
+
+		driver.leftBumper().onTrue(
+			s.HomeEF()
+		);
 
 		
 		driver.x().onTrue(
@@ -77,6 +90,16 @@ public class ControlSubsystem {
 
 		// Bottom Right Paddle
 		bindCoralAutoScore(Level.L4, driver.povDown());
+
+		operator.a().onTrue(
+			s.SuperPinch()
+		).onFalse(
+			s.ClawOff()
+		);
+
+		operator.b().onTrue(
+			s.EFSuperPinch()
+		);
 
 
 		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));

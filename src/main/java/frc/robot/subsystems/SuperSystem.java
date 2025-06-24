@@ -168,7 +168,11 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public Command HomeElevator(){
-        return  ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
+        return Commands.sequence(
+            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+            ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW)
+        );
     }
 
     public Command HomeEF(){
@@ -197,6 +201,15 @@ public class SuperSystem extends SubsystemBase {
         );
     }
 
+    public Command EFSuperPinch(){
+        return  
+        Commands.sequence(
+            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
+            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE)
+            
+        );
+    }
+
 	public Command L4EF(){
 		return 
 
@@ -211,7 +224,8 @@ public class SuperSystem extends SubsystemBase {
 	public Command L4Score(){
 
 		return Commands.either(Commands.sequence(
-			EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE)
+			EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE),
+            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE)
 
 		), L4EF(), () -> state == State.L4_CORAL_PRESCORE);
 	}
