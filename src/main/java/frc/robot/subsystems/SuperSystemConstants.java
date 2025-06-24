@@ -164,4 +164,7 @@ public class SuperSystemConstants {
 
     public static final Time kRecentUpdateTime = Units.Seconds.of(0.1);
 	public static final Distance kNearUpdateDistance = Units.Centimeters.of(2.0);
+    public static final Distance kL1CoralHorizontalOffsetFactor = Units.Inches.of(6.469);
+
+
 }

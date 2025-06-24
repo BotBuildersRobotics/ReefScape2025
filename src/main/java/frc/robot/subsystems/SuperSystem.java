@@ -148,9 +148,22 @@ public class SuperSystem extends SubsystemBase {
 		return Commands.sequence(Commands.defer(
 				() -> {
 					
+					Pose2d finalL1Pose = FieldLayout.handleAllianceFlip(
+						FieldLayout.getCoralScoringPose(targetingBranch)
+								.transformBy(new Transform2d(
+									SuperSystemConstants.kL1CoralOffsetFactor.unaryMinus(),
+										targetingBranch.getKey().isLeft()
+												? SuperSystemConstants.kL1CoralHorizontalOffsetFactor
+														.unaryMinus()
+												: SuperSystemConstants.kL1CoralHorizontalOffsetFactor,
+										new Rotation2d())),
+						RobotConstants.isRedAlliance);
+
 						Pose2d scoringPose = FieldLayout.handleAllianceFlip(
 								FieldLayout.getCoralScoringPose(targetingBranch), RobotConstants.isRedAlliance);
-						return new FollowTagPIDToPose(scoringPose, level);
+						
+						return new FollowTagPIDToPose(finalL1Pose, level);
+						//return new FollowTagPIDToPose(scoringPose, level);
 					
 				},
 				Set.of(DriveSubsystem.mInstance)));
