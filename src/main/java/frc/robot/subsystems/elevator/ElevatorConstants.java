@@ -41,7 +41,7 @@ public class ElevatorConstants {
 	
 	public static final Distance kL2ScoringHeight = Units.Centimeters.of(6.3);
 	public static final Distance kL3ScoringHeight = kL2ScoringHeight.plus(Units.Centimeters.of(16.0));
-	public static final Distance kL4ScoringHeight = Units.Centimeters.of(60.25);
+	public static final Distance kL4ScoringHeight = Units.Centimeters.of(73.25);
 	
 	public static final Distance kLIntakeHeight = Units.Centimeters.of(10);
 	

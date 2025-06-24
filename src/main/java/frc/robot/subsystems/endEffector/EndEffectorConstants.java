@@ -35,9 +35,9 @@ public class EndEffectorConstants {
 
 	public static final Angle kL1Score = Units.Degrees.of(145.0);
 
-	public static final Angle kL4PreScore = Units.Degrees.of(200);
+	public static final Angle kL4PreScore = Units.Degrees.of(320);
 
-	public static final Angle kL4Score = Units.Degrees.of(245);
+	public static final Angle kL4Score = Units.Degrees.of(350);
 
 	public static final Angle kMaxPos = Units.Degrees.of(0.0);
 	
@@ -53,14 +53,14 @@ public class EndEffectorConstants {
 
 	public static TalonFXConfiguration getFXConfig() {
 		TalonFXConfiguration config = new TalonFXConfiguration();
-		config.Slot0.kP = 80.0;//115.0;
+		config.Slot0.kP = 50.0;//115.0;
 		config.Slot0.kS = 0.0;
 		config.Slot0.kG = 0.2;
 
 		config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-		config.MotionMagic.MotionMagicCruiseVelocity = 100.0;
-		config.MotionMagic.MotionMagicAcceleration = 40.0;//80.0;
+		config.MotionMagic.MotionMagicCruiseVelocity = 30.0;
+		config.MotionMagic.MotionMagicAcceleration = 15.0;//80.0;
 
 		config.Voltage.PeakForwardVoltage = 12.0;
 		config.Voltage.PeakReverseVoltage = -12.0;

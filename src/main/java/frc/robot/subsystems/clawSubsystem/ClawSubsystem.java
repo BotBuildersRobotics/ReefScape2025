@@ -19,6 +19,7 @@ import frc.robot.lib.io.MotorSubsystem;
 public class ClawSubsystem extends MotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint IDLE = Setpoint.withNeutralSetpoint();
 	public static final Setpoint OUTTAKE = Setpoint.withVoltageSetpoint(ClawConstants.kOutTakeVoltage);
+	public static final Setpoint SCORE = Setpoint.withVoltageSetpoint(ClawConstants.kScoreVoltage);
 	public static final Setpoint SUPER_PINCH = Setpoint.withVoltageSetpoint(ClawConstants.kSuperPinch);
 	public static final ClawSubsystem mInstance = new ClawSubsystem();
 
