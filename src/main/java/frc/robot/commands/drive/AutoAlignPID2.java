@@ -86,9 +86,11 @@ public class AutoAlignPID2 extends Command {
         //xspeed is left / right
         double xSpeed =   MathUtil.clamp(MathUtil.applyDeadband(-xTranslationController.calculate(positions[2], Constants.ALIGN_DIS_REEF), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
         
+        double offsetRotation = LimelightHelpers.getTX("limelight-back");// positions[4];// - Math.toRadians(-15);
+
         double rotation =   
         MathUtil.clamp(MathUtil.applyDeadband(rotationController.calculate(
-          positions[4], 
+          0, 
         0), 
         0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
 
