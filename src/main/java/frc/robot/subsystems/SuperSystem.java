@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.commands.drive.FollowTagPIDToPose;
 import frc.robot.subsystems.endEffector.EndEffectorConstants;
 import frc.robot.lib.FieldLayout;
@@ -142,6 +143,16 @@ public class SuperSystem extends SubsystemBase {
 						IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
 						IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE))
 				.withName("Idle Intakes");
+	}
+
+	public Command autoAlign(boolean rightSide)
+	{
+		return Commands.sequence(Commands.defer(
+				() -> {
+					return new AutoAlignPID2(DriveSubsystem.mInstance, rightSide);
+				},
+				Set.of(DriveSubsystem.mInstance)));
+		
 	}
 
 	public Command goToScoringPose(Level level) {

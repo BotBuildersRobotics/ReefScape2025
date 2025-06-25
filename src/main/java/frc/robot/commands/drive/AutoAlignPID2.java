@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -17,12 +18,16 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.ControlSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.led.LEDs;
 
 
 
 public class AutoAlignPID2 extends Command {
 
-  private final CommandSwerveDrivetrain swerveDrive;
+  private final DriveSubsystem swerveDrive;
+
 
   private final ProfiledPIDController rotationController =
       new ProfiledPIDController(
@@ -54,7 +59,7 @@ public class AutoAlignPID2 extends Command {
    *
    * @param swerveDrive The subsystem for the swerve drive
    */
-  public AutoAlignPID2(CommandSwerveDrivetrain swerveDrive, boolean rightSide) {
+  public AutoAlignPID2(DriveSubsystem swerveDrive, boolean rightSide) {
     
 
     xTranslationController.setTolerance(0.005);
@@ -76,11 +81,18 @@ public class AutoAlignPID2 extends Command {
         double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-back");
         
 
+        //yspeed is forward / back
         double ySpeed = MathUtil.clamp( MathUtil.applyDeadband(yTranslationController.calculate(positions[0], this.isRightTargetted ? Constants.ALIGN_RIGHT_OFFSET : Constants.ALIGN_LEFT_OFFSET), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED); //TODO
+        //xspeed is left / right
         double xSpeed =   MathUtil.clamp(MathUtil.applyDeadband(-xTranslationController.calculate(positions[2], Constants.ALIGN_DIS_REEF), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
-        double rotation =   MathUtil.clamp(MathUtil.applyDeadband(-rotationController.calculate(positions[4], 0), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
+        
+        double rotation =   
+        MathUtil.clamp(MathUtil.applyDeadband(rotationController.calculate(
+          positions[4], 
+        0), 
+        0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
 
-       
+        
 
         final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
       
@@ -88,22 +100,25 @@ public class AutoAlignPID2 extends Command {
             .withSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotation))
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
       
-        swerveDrive.setControl(robotSpeed);
+        swerveDrive.setSwerveRequest(robotSpeed);
+
+       
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerveDrive.setControl(new SwerveRequest.SwerveDriveBrake());
+    swerveDrive.setSwerveRequest(new SwerveRequest.SwerveDriveBrake());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
 
-    if(yTranslationController.atGoal() && rotationController.atGoal()){
-     
+    if( (yTranslationController.atGoal() && xTranslationController.atGoal() && rotationController.atGoal())){
+      ControlSubsystem.mInstance.setRumble(true);
+    
       return true;
     }
 

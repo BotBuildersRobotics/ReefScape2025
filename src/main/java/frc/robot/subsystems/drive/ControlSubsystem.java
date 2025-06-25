@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
 
@@ -67,14 +68,10 @@ public class ControlSubsystem {
 			s.idleIntakes()
 		);
 
-		driver.rightBumper().onTrue(
-			s.L4EF()
-		);
-
-		driver.leftBumper().onTrue(
-			s.HomeEF()
-		);
-
+		
+		bindAutoAlign(true, driver.rightBumper());
+		
+		bindAutoAlign(false, driver.leftBumper());
 		
 		driver.x().onTrue(
 			s.HomeElevator()
@@ -122,6 +119,20 @@ public class ControlSubsystem {
 						.withName("Auto Align " + level.toString())
 		);
 		
+	}
+
+	public void bindAutoAlign(boolean rightSide, Trigger button){
+		button.onTrue(SuperSystem.mInstance
+						.autoAlign(rightSide)
+						.asProxy()
+						.until(overrideTrigger)
+						.unless(overrideTrigger)
+						.onlyWhile(button)
+						.withName("Auto Align PID")
+		).onFalse(
+			Commands.runOnce(() ->			
+					ControlSubsystem.mInstance.setRumble(false))
+		);
 	}
 
 	public static enum OverrideBehavior {
