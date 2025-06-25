@@ -44,12 +44,7 @@ public class ControlSubsystem {
     public void driverControls() {
 		SuperSystem s = SuperSystem.mInstance;
 
-        driver.a().onTrue(
-			//s.HomeEF()
-			s.ClawOn()
-		).onFalse(
-			s.ClawOff()
-		);
+        
 
 		driver.b().onTrue(
 			s.L4Score()
@@ -77,7 +72,15 @@ public class ControlSubsystem {
 			s.HomeElevator()
 		);
 
-		bindCoralAutoScore(Level.L1, driver.povRight());
+		driver.povUp().onTrue(
+			s.L4EF()
+		);
+
+		driver.povLeft().onTrue(
+			s.L3EF()
+		);
+
+		/*bindCoralAutoScore(Level.L1, driver.povRight());
 
 		// Top Right Paddle
 		bindCoralAutoScore(Level.L2, driver.povUp());
@@ -86,7 +89,7 @@ public class ControlSubsystem {
 		bindCoralAutoScore(Level.L3, driver.povLeft());
 
 		// Bottom Right Paddle
-		bindCoralAutoScore(Level.L4, driver.povDown());
+		bindCoralAutoScore(Level.L4, driver.povDown());*/
 
 		operator.a().onTrue(
 			s.SuperPinch()
@@ -95,7 +98,7 @@ public class ControlSubsystem {
 		);
 
 		operator.b().onTrue(
-			s.EFSuperPinch()
+			s.EFL2SuperPinch()
 		);
 
 

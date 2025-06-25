@@ -35,9 +35,15 @@ public class EndEffectorConstants {
 
 	public static final Angle kL1Score = Units.Degrees.of(145.0);
 
+	public static final Angle kL2Algae = Units.Degrees.of(180);
+
 	public static final Angle kL4PreScore = Units.Degrees.of(320);
 
 	public static final Angle kL4Score = Units.Degrees.of(350);
+
+	public static final Angle kL3PreScore = Units.Degrees.of(320);
+
+	public static final Angle kL3Score = Units.Degrees.of(350);
 
 	public static final Angle kMaxPos = Units.Degrees.of(0.0);
 	

@@ -29,9 +29,16 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint STOW = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kStowPosition);
 	public static final Setpoint PROCESSOR = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kProcessorPosition);
 	public static final Setpoint L1_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL1Score);
+	
 	public static final Setpoint L4_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4PreScore);
 	public static final Setpoint L4_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4Score);
 	
+
+	public static final Setpoint L3_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3PreScore);
+	public static final Setpoint L3_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3Score);
+	
+	public static final Setpoint L2_ALGAE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL2Algae);
+
 	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 
 	public EndEffectorSubsystem() {
@@ -39,11 +46,8 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 		super(
             EndEffectorConstants.getMotorIO(),
 				"End Effector ARM Pivot",
-				Units.Degrees.of(1.0));//,
-				//EndEffectorConstants.getServoHomingConfig());
+				Units.Degrees.of(3.0));
         encoder.getConfigurator().apply(EndEffectorConstants.getEncoderConfig());
-		//setCurrentPosition(EndEffectorConstants.kStowPosition);
-        //setCurrentPosition(encoder.getAbsolutePosition().getValue().plus(Degrees.of(20)));
 		applySetpoint(STOW);
 	}
 
@@ -57,7 +61,6 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
     @Override
     public void periodic(){
         super.periodic();
-       // setCurrentPosition(encoder.getAbsolutePosition().getValue().plus(Degrees.of(20)));
-		
+       
     }
 }

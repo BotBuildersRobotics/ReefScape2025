@@ -225,24 +225,85 @@ public class SuperSystem extends SubsystemBase {
         );
     }
 
-    public Command EFSuperPinch(){
+    public Command EFL2SuperPinch(){
         return  
         Commands.sequence(
-            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
-            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE)
+            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_ALGAE),
+            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L2_ALGAE)
             
         );
     }
 
 	public Command L4EF(){
-		return 
 
-		Commands.sequence(
-			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_SCORE),
-			EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_PRESCORE),
-			setState(State.L4_CORAL_PRESCORE)
-		)
-		;
+		//if we are holding coral, then we can run the command and it should go to the pre-score
+		//if we run the command again, we should go from pre-score to score.
+
+		return 
+		Commands.either(
+			//if we are holding coral
+			Commands.sequence(
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_SCORE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_PRESCORE),
+				setState(State.L4_CORAL_PRESCORE)
+			),
+			//if we are not holding coral
+			Commands.either(
+				Commands.sequence(
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE),
+					Commands.waitSeconds(0.5), // TODO: Test
+					//now to bring the system down
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_RETRACT),
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					setState(State.GROUND_CORAL) // set ready for ground coral
+					
+				),
+					//do nothing, we aren't in the correct state - no coral held - no scoring state
+					Commands.waitSeconds(0.1)
+							
+				,
+				() -> state == State.L4_CORAL_PRESCORE)
+			,
+		() -> state == State.HOLD_CORAL);
+
+		
+	}
+
+	public Command L3EF(){
+
+		//if we are holding coral, then we can run the command and it should go to the pre-score
+		//if we run the command again, we should go from pre-score to score.
+
+		return 
+		Commands.either(
+			//if we are holding coral
+			Commands.sequence(
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_SCORE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_PRESCORE),
+				setState(State.L3_CORAL_PRESCORE)
+			),
+			//if we are not holding coral
+			Commands.either(
+				Commands.sequence(
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_SCORE),
+					Commands.waitSeconds(0.5), // TODO: Test
+					//now to bring the system down
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_RETRACT),
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					setState(State.GROUND_CORAL) // set ready for ground coral
+					
+				),
+					//do nothing, we aren't in the correct state - no coral held - no scoring state
+					Commands.waitSeconds(0.1)
+							
+				,
+				() -> state == State.L3_CORAL_PRESCORE)
+			,
+		() -> state == State.HOLD_CORAL);
+
+		
 	}
 
 	public Command L4Score(){
@@ -289,6 +350,7 @@ public class SuperSystem extends SubsystemBase {
                                 ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.INTAKE),
 								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
 								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
+								
                         )
 						.withDeadline(indexerBeamBrake.stateWaitWithDebounceIfReal(true, 1.5))
                         .andThen(
@@ -298,7 +360,8 @@ public class SuperSystem extends SubsystemBase {
                                     ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW),
                                     PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
                                     IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
-                                    IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE)
+                                    IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE),
+									setState(State.HOLD_CORAL)
                                     
                                 )
                             );
