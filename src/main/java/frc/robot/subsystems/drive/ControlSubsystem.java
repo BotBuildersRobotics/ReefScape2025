@@ -1,8 +1,11 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drive.AutoAlignPID2;
+import frc.robot.generated.TunerConstants;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
 
@@ -46,9 +50,9 @@ public class ControlSubsystem {
 
         
 
-		driver.b().onTrue(
-			s.L4Score()
-		);
+		/*driver.b().onTrue(
+		
+		);*/
 
 		
 		driver.rightTrigger().onTrue(
@@ -80,6 +84,10 @@ public class ControlSubsystem {
 			s.L3EF()
 		);
 
+		driver.povDown().onTrue(
+			s.L1EF()
+		);
+
 		/*bindCoralAutoScore(Level.L1, driver.povRight());
 
 		// Top Right Paddle
@@ -91,16 +99,43 @@ public class ControlSubsystem {
 		// Bottom Right Paddle
 		bindCoralAutoScore(Level.L4, driver.povDown());*/
 
-		operator.a().onTrue(
+		operator.b().onTrue(
 			s.SuperPinch()
 		).onFalse(
 			s.ClawOff()
 		);
 
-		operator.b().onTrue(
+		operator.y().onTrue(
+			s.EFL3SuperPinch()
+		);
+
+		operator.a().onTrue(
 			s.EFL2SuperPinch()
 		);
 
+		SwerveRequest.RobotCentric alignDrive = new SwerveRequest.RobotCentric();
+		
+		double SlowSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.08;
+
+		operator.povLeft()
+		.whileTrue(
+			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
+			alignDrive.withVelocityX(( 0) ) 
+			.withVelocityY((SlowSpeed) ) 
+			
+
+		));
+
+		SwerveRequest.RobotCentric slowMoveRight = new SwerveRequest.RobotCentric();
+		
+		operator.povRight()
+		.whileTrue(
+			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
+			alignDrive.withVelocityX(( 0) ) 
+			.withVelocityY((-SlowSpeed) ) 
+			
+
+		));
 
 		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));
 

@@ -254,4 +254,8 @@ public class DriveSubsystem extends SubsystemBase {
 						.lte(DriveConstants.kScoringTranslationMaxSpeed)
 				&& Units.RadiansPerSecond.of(speeds.omegaRadiansPerSecond).lte(DriveConstants.kScoringRotationMaxSpeed);
 	}
+
+	public CommandSwerveDrivetrain getDrivetrain(){
+		return drivetrain;
+	}
 }

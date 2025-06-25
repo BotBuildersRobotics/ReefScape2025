@@ -64,7 +64,7 @@ public class AutoAlignPID2 extends Command {
 
     xTranslationController.setTolerance(0.005);
     yTranslationController.setTolerance(0.005);
-    rotationController.setTolerance(0.05);
+    rotationController.setTolerance(3);
     
     this.swerveDrive = swerveDrive;
     this.isRightTargetted = rightSide;
@@ -86,12 +86,12 @@ public class AutoAlignPID2 extends Command {
         //xspeed is left / right
         double xSpeed =   MathUtil.clamp(MathUtil.applyDeadband(-xTranslationController.calculate(positions[2], Constants.ALIGN_DIS_REEF), 0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
         
-        double offsetRotation = LimelightHelpers.getTX("limelight-back");// positions[4];// - Math.toRadians(-15);
+        double offsetRotation = positions[4];
 
         double rotation =   
         MathUtil.clamp(MathUtil.applyDeadband(rotationController.calculate(
-          0, 
-        0), 
+          offsetRotation, 
+          Math.toRadians(-20)), 
         0.05), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
 
         
@@ -105,6 +105,14 @@ public class AutoAlignPID2 extends Command {
         swerveDrive.setSwerveRequest(robotSpeed);
 
        
+    }else{
+      final SwerveRequest.ApplyRobotSpeeds robotStop = new SwerveRequest.ApplyRobotSpeeds();
+      
+      robotStop
+          .withSpeeds(new ChassisSpeeds(0, 0, 0))
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    
+    //  swerveDrive.setSwerveRequest(robotStop);
     }
   }
 

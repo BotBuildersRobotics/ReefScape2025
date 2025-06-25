@@ -4,6 +4,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
@@ -12,6 +17,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +49,7 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 
 public class SuperSystem extends SubsystemBase {
     
-    private State state = State.TUCK;
+    public State state = State.TUCK;
 
    
    
@@ -194,6 +200,7 @@ public class SuperSystem extends SubsystemBase {
     public Command HomeElevator(){
         return Commands.sequence(
             ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
             EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
             ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW)
         );
@@ -202,6 +209,7 @@ public class SuperSystem extends SubsystemBase {
     public Command HomeEF(){
         return  
         Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
             EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.STOW),
             ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
         );
@@ -210,29 +218,70 @@ public class SuperSystem extends SubsystemBase {
 
     public Command L1EF(){
         return  
-        Commands.sequence(
-            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
-            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
-            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE_LOW),
-            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
-            Commands.waitSeconds(1),
-            ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
-            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
-            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW)
-          
-            //TODO: Add elevator down
+		Commands.either(
+			Commands.sequence(
+				setState(State.L1_CORAL),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE_LOW)
+				
+			),
+				Commands.either(
+					Commands.waitSeconds(0.1), //do nothing, we have ground coral
+				Commands.sequence(
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
+					Commands.waitSeconds(1),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					setState(State.GROUND_CORAL)
+				),
+				() -> state == State.GROUND_CORAL),
+			() -> state == State.HOLD_CORAL
 
         );
     }
 
     public Command EFL2SuperPinch(){
-        return  
-        Commands.sequence(
-            ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_ALGAE),
-            EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L2_ALGAE)
-            
-        );
+        //toggle the super pinch position and stow
+		return Commands.either(
+			
+			Commands.sequence(
+				setState(State.GROUND_CORAL),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+				ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW)
+			),
+			Commands.sequence(
+				setState(State.SUPER_PINCH),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_ALGAE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L2_ALGAE)
+				
+			),
+			() -> state == State.SUPER_PINCH);
     }
+
+	public Command EFL3SuperPinch(){
+
+		 //toggle the super pinch position and stow
+		 return Commands.either(
+			
+		 Commands.sequence(
+			 setState(State.GROUND_CORAL),
+			 ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+			 EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+			 ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+			 ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW)
+		 ),
+		 Commands.sequence(
+			 setState(State.SUPER_PINCH),
+			 ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_ALGAE),
+			 EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_ALGAE)
+			 
+		 ),
+		 () -> state == State.SUPER_PINCH);
+	}
 
 	public Command L4EF(){
 
@@ -251,10 +300,14 @@ public class SuperSystem extends SubsystemBase {
 			Commands.either(
 				Commands.sequence(
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
 					Commands.waitSeconds(0.5), // TODO: Test
 					//now to bring the system down
+					//move the robot forward a small amount
+					MoveForwardOffReef(),
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_RETRACT),
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL) // set ready for ground coral
 					
@@ -269,6 +322,27 @@ public class SuperSystem extends SubsystemBase {
 
 		
 	}
+
+	public Command MoveForwardOffReef(){
+
+		final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
+      
+		final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
+        robotSpeed
+            .withSpeeds(new ChassisSpeeds(0.7, 0, 0))
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+      
+		return Commands.sequence(
+		
+        	DriveSubsystem.mInstance.getDrivetrain().applyRequest(()-> robotSpeed),
+			Commands.waitSeconds(0.5),
+			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> brake)
+		);
+
+	}
+
+	
 
 	public Command L3EF(){
 
@@ -291,7 +365,7 @@ public class SuperSystem extends SubsystemBase {
 					//now to bring the system down
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_RETRACT),
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL) // set ready for ground coral
 					
 				),
@@ -346,7 +420,7 @@ public class SuperSystem extends SubsystemBase {
                      
                           PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.DEPLOY),
 						Commands.parallel(
-                                setState(State.GROUND_CORAL),
+                                
                                 ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.INTAKE),
 								IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
 								IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.INTAKE))
@@ -429,11 +503,13 @@ public class SuperSystem extends SubsystemBase {
 		L1_CORAL,
 		L2_CORAL,
 		L3_CORAL,
+		L3_CORAL_PRESCORE,
 		L4_CORAL_PRESCORE,
 		L4_CORAL,
 		L2_ALGAE,
 		L3_ALGAE,
 		PROCESSOR,
+		SUPER_PINCH,
 		NET,
 		GULP,
 		GROUND_CORAL_WITH_ALGAE;

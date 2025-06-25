@@ -38,6 +38,7 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint L3_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3Score);
 	
 	public static final Setpoint L2_ALGAE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL2Algae);
+	public static final Setpoint L3_ALGAE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3Algae);
 
 	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 

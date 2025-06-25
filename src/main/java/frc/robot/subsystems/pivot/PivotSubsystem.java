@@ -40,8 +40,7 @@ public class PivotSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 		super(
                 PivotConstants.getMotorIO(),
 				"Intake Pivot",
-				PivotConstants.kEpsilonThreshold);//,
-				//PivotConstants.getServoHomingConfig());
+				PivotConstants.kEpsilonThreshold);
 		setCurrentPosition(PivotConstants.kFullStowPosition);
 		applySetpoint(STOW_CLEAR);
 	}

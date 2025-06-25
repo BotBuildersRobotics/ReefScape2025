@@ -51,6 +51,13 @@ public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint L2_ALGAE =
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL2AlgaeHeight));
 	
+	public static final Setpoint L3_ALGAE =
+			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL3AlgaeHeight));
+	
+
+	public static final Setpoint SAFE_ARM_STOW = Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kSafeArmStowHeight));
+	
+
 
     public static final Setpoint L1_SCORE_LOW =
 			Setpoint.withMotionMagicSetpoint(ElevatorConstants.converter.toAngle(ElevatorConstants.kL1ScoringLowL1Height));

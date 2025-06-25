@@ -35,7 +35,9 @@ public class EndEffectorConstants {
 
 	public static final Angle kL1Score = Units.Degrees.of(145.0);
 
-	public static final Angle kL2Algae = Units.Degrees.of(180);
+	public static final Angle kL2Algae = Units.Degrees.of(160);
+
+	public static final Angle kL3Algae = Units.Degrees.of(180);
 
 	public static final Angle kL4PreScore = Units.Degrees.of(320);
 
@@ -101,12 +103,10 @@ public class EndEffectorConstants {
 	public static CANcoderConfiguration getEncoderConfig(){
 		
 		CANcoderConfiguration config = new CANcoderConfiguration();
-		//config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+		
 		config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 		
-		//config.MagnetSensor.withMagnetOffset(Rotations.of(-0.668457).plus(Degrees.of(-38.672)));
-		//config.MagnetSensor.withMagnetOffset(-0.085957);
-		config.MagnetSensor.withMagnetOffset(Degrees.of(20));
+		config.MagnetSensor.withMagnetOffset(Degrees.of(63));
 		
 		return config;
 	}

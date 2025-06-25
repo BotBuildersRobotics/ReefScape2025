@@ -12,6 +12,7 @@ import frc.robot.lib.io.LightsSubsystem;
 import frc.robot.lib.io.LightsIO;
 import frc.robot.lib.io.LightsIO.State;
 import frc.robot.lib.io.LightsIO.State.RGBColor;
+import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.pivot.PivotConstants;
 import frc.robot.subsystems.vision.Limelight;
 import java.util.ArrayList;
@@ -96,11 +97,24 @@ public class LEDs extends LightsSubsystem<LightsIO> {
 
 	@Override
 	public void periodic() {
-		ArrayList<Pair<State, Integer>> stateToApply = getStateToApply();
+		/*ArrayList<Pair<State, Integer>> stateToApply = getStateToApply();
 		ArrayList<Pair<State, Integer>> currentState = io.getCurrentState();
 		boolean alreadyInState = areSameStates(stateToApply, currentState);
 		if (!alreadyInState) {
 			io.setState(stateToApply);
+		}*/
+
+		if(SuperSystem.mInstance.state == SuperSystem.State.HOLD_CORAL){
+			io.setState(LEDsConstants.getSolidState(RGBColor.green));
+		}
+		else if(SuperSystem.mInstance.state == SuperSystem.State.L4_CORAL_PRESCORE){
+			io.setState(LEDsConstants.getSolidState(RGBColor.blue));
+		}
+		else if(SuperSystem.mInstance.state == SuperSystem.State.L3_CORAL_PRESCORE){
+			io.setState(LEDsConstants.getSolidState(RGBColor.blue));
+		}
+		else{
+			io.setState(LEDsConstants.getSolidState(RGBColor.none));
 		}
 		super.periodic();
 	}
