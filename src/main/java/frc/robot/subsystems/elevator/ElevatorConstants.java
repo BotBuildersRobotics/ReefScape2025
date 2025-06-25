@@ -45,7 +45,7 @@ public class ElevatorConstants {
 
 	public static final Distance kL3AlgaeHeight = Units.Centimeters.of(60);
 
-	public static final Distance kL3ScoringHeight = Units.Centimeters.of(57);
+	public static final Distance kL3ScoringHeight = Units.Centimeters.of(25 );
 	
 	public static final Distance kL3RetractHeight = Units.Centimeters.of(45);
 
@@ -57,7 +57,7 @@ public class ElevatorConstants {
 	
 	
 	public static final Distance kSafeArmStowHeight = Units.Centimeters.of(50);
-	
+
 	public static final Distance kStowPosition = Units.Centimeters.of(0.0);
 
 	public static final Distance kEpsilonThreshold = Units.Centimeters.of(1.0);

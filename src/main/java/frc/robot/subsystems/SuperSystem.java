@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.commands.drive.FollowTagPIDToPose;
+import frc.robot.commands.drive.MoveForwardSlowPP;
 import frc.robot.subsystems.endEffector.EndEffectorConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
@@ -199,6 +200,7 @@ public class SuperSystem extends SubsystemBase {
 
     public Command HomeElevator(){
         return Commands.sequence(
+			setState(State.GROUND_CORAL),
             ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
 			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
             EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
@@ -304,7 +306,7 @@ public class SuperSystem extends SubsystemBase {
 					Commands.waitSeconds(0.5), // TODO: Test
 					//now to bring the system down
 					//move the robot forward a small amount
-					MoveForwardOffReef(),
+					new MoveForwardSlowPP(DriveSubsystem.mInstance),
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_RETRACT),
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
 					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
@@ -323,24 +325,6 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
-	public Command MoveForwardOffReef(){
-
-		final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
-      
-		final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
-        robotSpeed
-            .withSpeeds(new ChassisSpeeds(0.7, 0, 0))
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-      
-		return Commands.sequence(
-		
-        	DriveSubsystem.mInstance.getDrivetrain().applyRequest(()-> robotSpeed),
-			Commands.waitSeconds(0.5),
-			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> brake)
-		);
-
-	}
 
 	
 
@@ -353,18 +337,21 @@ public class SuperSystem extends SubsystemBase {
 		Commands.either(
 			//if we are holding coral
 			Commands.sequence(
-				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_SCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
 				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_PRESCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_SCORE),
 				setState(State.L3_CORAL_PRESCORE)
 			),
 			//if we are not holding coral
 			Commands.either(
 				Commands.sequence(
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_SCORE),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
 					Commands.waitSeconds(0.5), // TODO: Test
 					//now to bring the system down
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_RETRACT),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
 					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL) // set ready for ground coral
 					
