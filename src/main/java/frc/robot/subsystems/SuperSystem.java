@@ -331,6 +331,28 @@ public class SuperSystem extends SubsystemBase {
 	}
 
 
+	public Command L2EF(){
+		return Commands.either(
+			Commands.sequence(
+				
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L2_PRESCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+				setState(State.L2_CORAL_PRESCORE)
+			), 
+				Commands.either(
+					Commands.sequence(
+						EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L2_SCORE),
+						ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
+						Commands.waitSeconds(0.5),
+						ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
+					
+					),
+					Commands.waitSeconds(0.1),
+					() -> state == State.L2_CORAL_PRESCORE),
+			() -> state == State.HOLD_CORAL);
+	}
 	
 
 	public Command L3EF(){
@@ -494,6 +516,7 @@ public class SuperSystem extends SubsystemBase {
 		HOLD_CORAL,
 		HOLD_ALGAE,
 		L1_CORAL,
+		L2_CORAL_PRESCORE,
 		L2_CORAL,
 		L3_CORAL,
 		L3_CORAL_PRESCORE,

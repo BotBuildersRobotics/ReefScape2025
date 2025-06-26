@@ -85,6 +85,10 @@ public class ControlSubsystem {
 			s.L3EF()
 		);
 
+		driver.povRight().onTrue(
+			s.L2EF() //score from the front
+		);
+
 		driver.povDown().onTrue(
 			s.L1EF()
 		);
