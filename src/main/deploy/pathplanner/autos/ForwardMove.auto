@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "StageL1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CoralMove"
@@ -14,12 +20,6 @@
           "type": "wait",
           "data": {
             "waitTime": 3.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LightShow"
           }
         },
         {

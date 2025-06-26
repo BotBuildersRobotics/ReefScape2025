@@ -151,17 +151,14 @@ public class RobotContainer {
 			
 		);*/
 
-		/*NamedCommands.registerCommand("DeliverL1", 
-			Commands.runOnce( () -> pivotSubsystem.setWantedState(PivotSystemState.HUMAN_PLAYER))
-			.andThen(Commands.waitSeconds(0.5))
-			.andThen(
-				Commands.runOnce( () -> intakeSubsystem.setWantedState(IntakeSystemState.AUTO_L1))
-				.andThen(
-					Commands.waitSeconds(3).andThen(
-						Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSystemState.IDLE))))
-			)
+		NamedCommands.registerCommand("StageL1", 
+			SuperSystem.mInstance.AutoL1Stage()
+		);
+
+		NamedCommands.registerCommand("DeliverL1", 
+			SuperSystem.mInstance.AutoL1Deliver()
 			
-		);*/
+		);
 
 		
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");

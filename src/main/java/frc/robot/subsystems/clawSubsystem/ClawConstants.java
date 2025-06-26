@@ -20,7 +20,7 @@ import frc.robot.Ports;
 public class ClawConstants {
 
 	public static final Voltage kIdleVoltage = Units.Volts.of(0.0);
-	public static final Voltage kOutTakeVoltage = Units.Volts.of( -6.0);
+	public static final Voltage kOutTakeVoltage = Units.Volts.of( -2.0);
 	public static final Voltage kScoreVoltage = Units.Volts.of( -2.0);
 	public static final Voltage kSuperPinch = Units.Volts.of(12);
 

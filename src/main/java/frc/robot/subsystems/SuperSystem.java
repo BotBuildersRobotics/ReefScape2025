@@ -330,6 +330,31 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
+	public Command AutoL1Stage(){
+		return Commands.sequence(
+				setState(State.L1_CORAL),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.DEPLOY),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE_LOW),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL)
+				
+			);
+	}
+
+	public Command AutoL1Deliver(){
+		return Commands.sequence(
+			
+				ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
+				Commands.waitSeconds(1),
+				ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+				setState(State.GROUND_CORAL)
+			
+			);
+	}
 
 	public Command L2EF(){
 		return Commands.either(
