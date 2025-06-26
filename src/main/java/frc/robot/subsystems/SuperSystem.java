@@ -236,6 +236,7 @@ public class SuperSystem extends SubsystemBase {
 					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL)
 				),
 				() -> state == State.GROUND_CORAL),
@@ -263,6 +264,10 @@ public class SuperSystem extends SubsystemBase {
 			),
 			() -> state == State.SUPER_PINCH);
     }
+
+	public Command StowIntake(){
+		return PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR);
+	}
 
 	public Command EFL3SuperPinch(){
 
@@ -306,11 +311,11 @@ public class SuperSystem extends SubsystemBase {
 					Commands.waitSeconds(0.5), // TODO: Test
 					//now to bring the system down
 					//move the robot forward a small amount
-					new MoveForwardSlowPP(DriveSubsystem.mInstance),
+					//new MoveForwardSlowPP(DriveSubsystem.mInstance),
 					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_RETRACT),
-					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					//EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
 					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL) // set ready for ground coral
 					
 				),
@@ -347,10 +352,11 @@ public class SuperSystem extends SubsystemBase {
 				Commands.sequence(
 					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_SCORE),
 					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
-					Commands.waitSeconds(0.5), // TODO: Test
+					Commands.waitSeconds(0.5),
+					//new MoveForwardSlowPP(DriveSubsystem.mInstance),
 					//now to bring the system down
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
-					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+					//EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
 					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
 					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 					setState(State.GROUND_CORAL) // set ready for ground coral

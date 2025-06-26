@@ -31,8 +31,8 @@ public class MoveForwardSlowPP extends Command {
         
         // Very slow constraints
         PathConstraints constraints = new PathConstraints(
-            0.2, // Max velocity (m/s) - extra slow
-            0.3, // Max acceleration (m/s²)
+            0.5, // Max velocity (m/s) - extra slow
+            0.4, // Max acceleration (m/s²)
             Units.degreesToRadians(90),  // Max angular velocity
             Units.degreesToRadians(180) // Max angular acceleration
         );

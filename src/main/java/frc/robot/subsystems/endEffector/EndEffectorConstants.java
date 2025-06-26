@@ -26,8 +26,8 @@ import frc.robot.Ports;
 
 public class EndEffectorConstants {
 
-	//56 teeth / 18 tooth   * 5:1 * 5:1
-	public static final double kGearing = 87.5 / 1;
+	//56 teeth / 21 tooth   * 5:1 * 9:1
+	public static final double kGearing =  111.428571;// 87.5 / 1;
 
 	public static final Angle kStowPosition = Units.Degrees.of(90.0);
 	
@@ -106,7 +106,7 @@ public class EndEffectorConstants {
 		
 		config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 		
-		config.MagnetSensor.withMagnetOffset(Degrees.of(63));
+		config.MagnetSensor.withMagnetOffset(Degrees.of(97));
 		
 		return config;
 	}

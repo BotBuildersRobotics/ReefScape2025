@@ -16,6 +16,7 @@ import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.generated.TunerConstants;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
+import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
 
 public class ControlSubsystem {
 
@@ -88,16 +89,9 @@ public class ControlSubsystem {
 			s.L1EF()
 		);
 
-		/*bindCoralAutoScore(Level.L1, driver.povRight());
-
-		// Top Right Paddle
-		bindCoralAutoScore(Level.L2, driver.povUp());
-
-		// Bottom Left Paddle
-		bindCoralAutoScore(Level.L3, driver.povLeft());
-
-		// Bottom Right Paddle
-		bindCoralAutoScore(Level.L4, driver.povDown());*/
+		driver.start().onTrue(
+			s.StowIntake()
+		);
 
 		operator.b().onTrue(
 			s.SuperPinch()
@@ -111,6 +105,12 @@ public class ControlSubsystem {
 
 		operator.a().onTrue(
 			s.EFL2SuperPinch()
+		);
+
+		operator.rightBumper().onTrue(
+			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE)
+		).onFalse(
+			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
 		);
 
 		SwerveRequest.RobotCentric alignDrive = new SwerveRequest.RobotCentric();

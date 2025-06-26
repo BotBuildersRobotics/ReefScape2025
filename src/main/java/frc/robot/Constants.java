@@ -122,7 +122,7 @@ public final class Constants {
     public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(0.3, 0.3);
   }
 
-  public static final double AUTO_ALIGN_MAX_SPEED = 0.7; //meters per second
+  public static final double AUTO_ALIGN_MAX_SPEED = 1.4; //meters per second
   public static final double ALIGN_RIGHT_OFFSET = -0.15;
   public static final double ALIGN_LEFT_OFFSET = 0.15; //meters from center
   public static final double ALIGN_DIS_REEF = -0.8; //meters - distance to reef

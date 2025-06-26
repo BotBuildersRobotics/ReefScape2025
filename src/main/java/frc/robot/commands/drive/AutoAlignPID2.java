@@ -62,7 +62,7 @@ public class AutoAlignPID2 extends Command {
   public AutoAlignPID2(DriveSubsystem swerveDrive, boolean rightSide) {
     
 
-    xTranslationController.setTolerance(0.005);
+    xTranslationController.setTolerance(0.05);
     yTranslationController.setTolerance(0.005);
     rotationController.setTolerance(3);
     
@@ -112,7 +112,7 @@ public class AutoAlignPID2 extends Command {
           .withSpeeds(new ChassisSpeeds(0, 0, 0))
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     
-    //  swerveDrive.setSwerveRequest(robotStop);
+      swerveDrive.setSwerveRequest(robotStop);
     }
   }
 
