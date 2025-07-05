@@ -141,6 +141,23 @@ public class ControlSubsystem {
 
 		));
 
+		operator.povUp()
+		.whileTrue(
+			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
+			alignDrive.withVelocityY(( 0) ) 
+			.withVelocityX((SlowSpeed) ) 
+			
+		));
+
+		operator.povDown()
+		.whileTrue(
+			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
+			alignDrive.withVelocityY(( 0) ) 
+			.withVelocityX((-SlowSpeed) ) 
+			
+
+		));
+
 		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));
 
     }
