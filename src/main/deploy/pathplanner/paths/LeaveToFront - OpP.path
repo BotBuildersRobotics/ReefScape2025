@@ -3,47 +3,33 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.254,
-        "y": 4.2
+        "x": 7.57840909090909,
+        "y": 7.071321022727273
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.373367813373806,
-        "y": 4.204694274456491
+        "x": 5.122703634367431,
+        "y": 7.071321022727273
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.3,
-        "y": 4.2
+        "x": 3.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 6.557839410507298,
-        "y": 4.199895588427919
+        "x": 3.0,
+        "y": 6.019093270651171
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OpP 1"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -56,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "OpPLeave",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

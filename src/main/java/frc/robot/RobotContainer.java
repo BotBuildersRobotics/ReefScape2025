@@ -137,7 +137,7 @@ public class RobotContainer {
 		);*/
 
 		
-		NamedCommands.registerCommand("CloseClaw", 
+		/*NamedCommands.registerCommand("CloseClaw", 
 		
 				Commands.runOnce( () -> {
 					//endEffectorSubsystem.
@@ -146,10 +146,10 @@ public class RobotContainer {
 		);
 
 		
-		/*NamedCommands.registerCommand("LightShow", 
+		NamedCommands.registerCommand("LightShow", 
 			Commands.runOnce( () -> leds.coralStagedLed())
 			
-		);*/
+		);
 
 		NamedCommands.registerCommand("StageL1", 
 			SuperSystem.mInstance.AutoL1Stage()
@@ -158,8 +158,19 @@ public class RobotContainer {
 		NamedCommands.registerCommand("DeliverL1", 
 			SuperSystem.mInstance.AutoL1Deliver()
 			
+		);*/
+
+		NamedCommands.registerCommand("ScoreL4",
+		
+			SuperSystem.mInstance.FRONTL4EF()
+		
 		);
 
+		NamedCommands.registerCommand("HoldCoral",
+		
+			SuperSystem.mInstance.setHoldCoralState()
+		
+		);
 		
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
 		/*if(SmartDashboard.containsKey("Auto Mode")) {

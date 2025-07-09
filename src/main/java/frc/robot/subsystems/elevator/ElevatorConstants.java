@@ -50,10 +50,13 @@ public class ElevatorConstants {
 	public static final Distance kL3RetractHeight = Units.Centimeters.of(45);
 
 	public static final Distance kL4ScoringHeight = Units.Centimeters.of(73.25);
+	public static final Distance kL4FrontScoringHeight = Units.Centimeters.of(60);
 
 	public static final Distance kL4RetractHeight = Units.Centimeters.of(40);
 	
 	public static final Distance kLIntakeHeight = Units.Centimeters.of(13);
+
+	public static final Distance kNetScoringHeight = Units.Centimeters.of(70);
 	
 	
 	public static final Distance kSafeArmStowHeight = Units.Centimeters.of(50);

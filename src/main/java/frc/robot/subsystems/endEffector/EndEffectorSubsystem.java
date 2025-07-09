@@ -33,15 +33,21 @@ public class EndEffectorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	public static final Setpoint L2_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL2PreScore);
 	public static final Setpoint L2_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL2Score);
 
+	//L4 scoring for the back
 	public static final Setpoint L4_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4PreScore);
 	public static final Setpoint L4_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4Score);
 	
+	//L4 scoring for the front
+	public static final Setpoint L4_PRESCORE_FRONT = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4FrontPreScore);
+	public static final Setpoint L4_SCORE_FRONT = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL4FrontScore);
+
 
 	public static final Setpoint L3_PRESCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3PreScore);
 	public static final Setpoint L3_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3Score);
 	
 	public static final Setpoint L2_ALGAE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL2Algae);
 	public static final Setpoint L3_ALGAE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kL3Algae);
+	public static final Setpoint NET_SCORE = Setpoint.withMotionMagicSetpoint(EndEffectorConstants.kNetScore);
 
 	public static final EndEffectorSubsystem mInstance = new EndEffectorSubsystem();
 

@@ -5,33 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "HoldCoral"
+            "pathName": "LeaveToFront - OpP"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ScoreL4"
+            "name": "StageL1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DeliverL1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CoralMove"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreL4"
+            "pathName": "FrontToCoral - OpP"
           }
         }
       ]

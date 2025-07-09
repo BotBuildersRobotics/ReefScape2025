@@ -1,3 +1,12 @@
+// PS5 Controller Binds
+// A = cross
+// B = circle
+// X = square
+// Y = triangle
+// L BUMPER = L1
+// R BUMPER = R1
+
+
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -11,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller; //Test for ps5 controller
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.generated.TunerConstants;
@@ -23,7 +33,7 @@ public class ControlSubsystem {
     public static final ControlSubsystem mInstance = new ControlSubsystem();
 
 	private CommandXboxController driver = ControlBoardConstants.mDriverController;
-	private CommandXboxController operator = ControlBoardConstants.mOperatorController;
+	private CommandPS5Controller operator = ControlBoardConstants.mOperatorController;
 
 	private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -49,13 +59,10 @@ public class ControlSubsystem {
     public void driverControls() {
 		SuperSystem s = SuperSystem.mInstance;
 
-        
-
 		/*driver.b().onTrue(
 		
 		);*/
 
-		
 		driver.rightTrigger().onTrue(
 			s.Intake()
 		).onFalse(
@@ -68,7 +75,10 @@ public class ControlSubsystem {
 			s.idleIntakes()
 		);
 
-		
+		driver.a().onTrue(
+			s.ElevatorUp()
+		);
+
 		bindAutoAlign(true, driver.rightBumper());
 		
 		bindAutoAlign(false, driver.leftBumper());
@@ -78,7 +88,9 @@ public class ControlSubsystem {
 		);
 
 		driver.povUp().onTrue(
-			s.L4EF()
+			//s.L4EF()
+			//command for scoring at the front
+			s.FRONTL4EF()
 		);
 
 		driver.povLeft().onTrue(
@@ -97,22 +109,28 @@ public class ControlSubsystem {
 			s.StowIntake()
 		);
 
-		operator.b().onTrue(
+		operator.circle().onTrue(
 			s.SuperPinch()
 		).onFalse(
 			s.ClawOff()
 		);
 
-		operator.y().onTrue(
+		operator.triangle().onTrue(
 			s.EFL3SuperPinch()
 		);
 
-		operator.a().onTrue(
+		operator.cross().onTrue(
 			s.EFL2SuperPinch()
 		);
 
-		operator.rightBumper().onTrue(
-			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE)
+		operator.L1().onTrue(
+			s.NetScore()
+		).onFalse(
+			s.ClawShoot()
+		);
+
+		operator.R1().onTrue(
+			s.ClawEject()	
 		).onFalse(
 			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
 		);
@@ -157,6 +175,8 @@ public class ControlSubsystem {
 			
 
 		));
+
+
 
 		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));
 

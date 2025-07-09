@@ -51,8 +51,6 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 public class SuperSystem extends SubsystemBase {
     
     public State state = State.TUCK;
-
-   
    
     public static BeamBreakIO intakeRollersCurrentSpike = BeamBreakConstants.getIntakeRollersCurrentSpike();
 	
@@ -187,6 +185,12 @@ public class SuperSystem extends SubsystemBase {
 				Set.of(DriveSubsystem.mInstance)));
 	}
 
+	//Manual Raising of Elevator to bump coral up
+	public Command ElevatorUp() {
+
+		return Commands.runOnce(() -> ElevatorSubsystem.mInstance.applySetpoint(ElevatorSubsystem.JOG_UP));
+
+	}
 
     public Command ParkIntakePivot()
     {
@@ -289,6 +293,63 @@ public class SuperSystem extends SubsystemBase {
 		 ),
 		 () -> state == State.SUPER_PINCH);
 	}
+
+	// Scoring logic for algae in the net
+	public Command NetScore(){
+
+		return Commands.either(
+			Commands.sequence(
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.NET_SCORE),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.NET_SCORE)
+			), 
+			Commands.waitSeconds(0.1),
+			() -> state == State.HOLD_ALGAE);
+
+	}
+
+	public Command FRONTL4EF(){
+
+		//if we are holding coral, then we can run the command and it should go to the pre-score
+		//if we run the command again, we should go from pre-score to score.
+		//score from the front of the robot
+
+		return 
+		Commands.either(
+			//if we are holding coral
+			Commands.sequence(
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_SCORE_FRONT),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_PRESCORE_FRONT),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL),
+				setState(State.L4_CORAL_PRESCORE_FRONT)
+			),
+			//if we are not holding coral
+			Commands.either(
+				Commands.sequence(
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L4_SCORE_FRONT),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
+					Commands.waitSeconds(0.5), // TODO: Test
+					//now to bring the system down
+					//move the robot forward a small amount
+					//new MoveForwardSlowPP(DriveSubsystem.mInstance),
+					PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L4_RETRACT_FRONT),
+					//EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					setState(State.GROUND_CORAL) // set ready for ground coral
+					
+				),
+					//do nothing, we aren't in the correct state - no coral held - no scoring state
+					Commands.waitSeconds(0.1)
+							
+				,
+				() -> state == State.L4_CORAL_PRESCORE_FRONT)
+			,
+		() -> state == State.HOLD_CORAL);
+
+		
+	}
+
 
 	public Command L4EF(){
 
@@ -437,9 +498,35 @@ public class SuperSystem extends SubsystemBase {
         return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE);
     }
 
+	public Command ClawShoot(){
+		return Commands.either(
+			Commands.sequence(
+				ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SHOOT),
+				Commands.waitSeconds(0.5),
+				ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
+			),	
+			Commands.waitSeconds(0.1),
+			() -> state == State.HOLD_ALGAE);
+	}
+
+	public Command ClawEject(){
+		return Commands.either(
+			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
+			Commands.waitSeconds(0.1),
+			() -> state == State.HOLD_CORAL);
+
+	}
+
+	public Command setHoldCoralState() {
+		return setState(State.HOLD_CORAL);
+	} 
+
     public Command SuperPinch(){
-        return ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SUPER_PINCH);
-    }
+        return Commands.sequence(
+			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SUPER_PINCH),
+			setState(State.HOLD_ALGAE) 
+		);
+	}
 
     public void setPathFollowing(boolean following){
 		isPathFollowing = following;
@@ -546,6 +633,7 @@ public class SuperSystem extends SubsystemBase {
 		L3_CORAL,
 		L3_CORAL_PRESCORE,
 		L4_CORAL_PRESCORE,
+		L4_CORAL_PRESCORE_FRONT,
 		L4_CORAL,
 		L2_ALGAE,
 		L3_ALGAE,
