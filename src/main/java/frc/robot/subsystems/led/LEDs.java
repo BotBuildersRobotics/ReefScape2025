@@ -95,8 +95,7 @@ public class LEDs extends LightsSubsystem<LightsIO> {
 		return isL3 ? LEDsConstants.kL3AlgaeColor : LEDsConstants.kL2AlgaeColor;
 	}
 
-	@Override
-	public void periodic() {
+	public void updateLights() {
 		/*ArrayList<Pair<State, Integer>> stateToApply = getStateToApply();
 		ArrayList<Pair<State, Integer>> currentState = io.getCurrentState();
 		boolean alreadyInState = areSameStates(stateToApply, currentState);
@@ -114,9 +113,8 @@ public class LEDs extends LightsSubsystem<LightsIO> {
 			io.setState(LEDsConstants.getSolidState(RGBColor.blue));
 		}
 		else{
-			io.setState(LEDsConstants.getSolidState(RGBColor.none));
+			io.setState(LEDsConstants.getSolidState(RGBColor.blue));
 		}
-		super.periodic();
 	}
 
 	public boolean areSameStates(ArrayList<Pair<State, Integer>> a, ArrayList<Pair<State, Integer>> b) {

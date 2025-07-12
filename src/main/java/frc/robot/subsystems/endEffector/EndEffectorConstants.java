@@ -33,7 +33,7 @@ public class EndEffectorConstants {
 	
 	public static final Angle kProcessorPosition = Units.Degrees.of(70.0);
 
-	public static final Angle kL1Score = Units.Degrees.of(145.0);
+	public static final Angle kL1Score = Units.Degrees.of(170);
 
 	public static final Angle kL2PreScore = Units.Degrees.of(200);
 
@@ -55,6 +55,10 @@ public class EndEffectorConstants {
 	public static final Angle kL4FrontScore = Units.Degrees.of(200);
 
 	public static final Angle kL3PreScore = Units.Degrees.of(320);
+
+	public static final Angle kL3FrontScore = Units.Degrees.of(200);
+
+	public static final Angle kL3FrontPreScore = Units.Degrees.of(220);
 
 	public static final Angle kL3Score = Units.Degrees.of(350);
 

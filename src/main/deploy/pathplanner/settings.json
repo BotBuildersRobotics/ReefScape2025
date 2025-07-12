@@ -3,10 +3,10 @@
   "robotLength": 0.762,
   "holonomicMode": true,
   "pathFolders": [
-    "3 Coral - Cage",
-    "3 Coral - Field",
-    "3 Coral - Processor",
-    "OpPLeave"
+    "Centre L4",
+    "Left L4",
+    "Right L4",
+    "Partner Push L4"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

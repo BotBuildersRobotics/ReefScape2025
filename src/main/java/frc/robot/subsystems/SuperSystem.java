@@ -35,6 +35,7 @@ import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.lib.io.BeamBreakIO;
+import frc.robot.lib.io.LightsSubsystem;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.clawSubsystem.ClawConstants;
 import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
@@ -44,6 +45,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endEffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LEDs;
 import frc.robot.subsystems.pivot.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
@@ -55,7 +57,6 @@ public class SuperSystem extends SubsystemBase {
     public static BeamBreakIO intakeRollersCurrentSpike = BeamBreakConstants.getIntakeRollersCurrentSpike();
 	
     public static BeamBreakIO indexerBeamBrake = BeamBreakConstants.getIndexerBeamBreak();
-	
 
     public static SuperSystem mInstance;
 
@@ -223,31 +224,26 @@ public class SuperSystem extends SubsystemBase {
     }
 
     public Command L1EF(){
-        return  
-		Commands.either(
+		return Commands.either(
 			Commands.sequence(
-				setState(State.L1_CORAL),
-				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE),
-				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
-				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L1_SCORE_LOW)
 				
-			),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L1_SCORE),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+				setState(State.L1_CORAL)
+			), 
 				Commands.either(
-					Commands.waitSeconds(0.1), //do nothing, we have ground coral
-				Commands.sequence(
-					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
-					Commands.waitSeconds(1),
-					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
-					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
-					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
-					setState(State.GROUND_CORAL)
-				),
-				() -> state == State.GROUND_CORAL),
-			() -> state == State.HOLD_CORAL
-
-        );
-    }
+					Commands.sequence(
+						ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
+						Commands.waitSeconds(0.5),
+						ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE)
+					
+					),
+					Commands.waitSeconds(0.1),
+					() -> state == State.L1_CORAL),
+			() -> state == State.HOLD_CORAL);
+	}
 
     public Command EFL2SuperPinch(){
         //toggle the super pinch position and stow
@@ -271,6 +267,10 @@ public class SuperSystem extends SubsystemBase {
 
 	public Command StowIntake(){
 		return PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR);
+	}
+
+	public Command FullStowIntake(){
+		return PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL);
 	}
 
 	public Command EFL3SuperPinch(){
@@ -344,6 +344,51 @@ public class SuperSystem extends SubsystemBase {
 							
 				,
 				() -> state == State.L4_CORAL_PRESCORE_FRONT)
+			,
+		() -> state == State.HOLD_CORAL);
+
+		
+	}
+
+	public Command FRONTL3EF(){
+
+		//if we are holding coral, then we can run the command and it should go to the pre-score
+		//if we run the command again, we should go from pre-score to score.
+		//score from the front of the robot
+
+		return 
+		Commands.either(
+			//if we are holding coral
+			Commands.sequence(
+				
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.SAFE_ARM_STOW),
+				EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_PRESCORE_FRONT),
+				ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_SCORE_FRONT),
+				PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_FULL),
+				setState(State.L3_CORAL_PRESCORE_FRONT)
+			),
+			//if we are not holding coral
+			Commands.either(
+				Commands.sequence(
+					EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.L3_SCORE_FRONT),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.SCORE),
+					Commands.waitSeconds(0.5), // TODO: Test
+					//now to bring the system down
+					//move the robot forward a small amount
+					//new MoveForwardSlowPP(DriveSubsystem.mInstance),
+					PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
+					ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_RETRACT_FRONT),
+					//EndEffectorSubsystem.mInstance.setpointCommandWithWait(EndEffectorSubsystem.STOW),
+					ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.IDLE),
+					//ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+					setState(State.GROUND_CORAL) // set ready for ground coral
+					
+				),
+					//do nothing, we aren't in the correct state - no coral held - no scoring state
+					Commands.waitSeconds(0.1)
+							
+				,
+				() -> state == State.L3_CORAL_PRESCORE_FRONT)
 			,
 		() -> state == State.HOLD_CORAL);
 
@@ -510,16 +555,17 @@ public class SuperSystem extends SubsystemBase {
 	}
 
 	public Command ClawEject(){
-		return Commands.either(
-			ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE),
-			Commands.waitSeconds(0.1),
-			() -> state == State.HOLD_CORAL);
-
+		return 	ClawSubsystem.mInstance.setpointCommand(ClawSubsystem.OUTTAKE);
 	}
 
 	public Command setHoldCoralState() {
-		return setState(State.HOLD_CORAL);
-	} 
+		return Commands.sequence(
+		
+			PivotSubsystem.mInstance.setpointCommandWithWait(PivotSubsystem.STOW_CLEAR),
+			setState(State.HOLD_CORAL)
+
+		);
+	}
 
     public Command SuperPinch(){
         return Commands.sequence(
@@ -538,6 +584,17 @@ public class SuperSystem extends SubsystemBase {
 
 	public Face getTargetingFace() {
 		return targetingFace;
+	}
+
+	public Command ElevatorUnstuck() {
+
+		return Commands.sequence(
+		
+			ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.NET_SCORE),
+			EndEffectorSubsystem.mInstance.setpointCommand(EndEffectorSubsystem.NET_SCORE)
+
+		);
+
 	}
 
 
@@ -562,9 +619,7 @@ public class SuperSystem extends SubsystemBase {
                                     PivotSubsystem.mInstance.setpointCommand(PivotSubsystem.STOW_CLEAR),
                                     IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
                                     IndexerSubsystem.mInstance.setpointCommand(IndexerSubsystem.IDLE),
-									setState(State.HOLD_CORAL)
-                                    
-                                )
+									setState(State.HOLD_CORAL))
                             );
                         
 						/* .finallyDo(() -> {
@@ -632,6 +687,7 @@ public class SuperSystem extends SubsystemBase {
 		L2_CORAL,
 		L3_CORAL,
 		L3_CORAL_PRESCORE,
+		L3_CORAL_PRESCORE_FRONT,
 		L4_CORAL_PRESCORE,
 		L4_CORAL_PRESCORE_FRONT,
 		L4_CORAL,

@@ -3,33 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1,
-        "y": 1.1
+        "x": 5.6,
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.829649862972024,
-        "y": 1.566124729333627
+        "x": 5.3533997027848494,
+        "y": 5.333825337635997
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LL4 - 1"
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 2.5
+        "x": 5.265,
+        "y": 5.215
       },
       "prevControl": {
-        "x": 2.164283253044153,
-        "y": 1.7188121101055973
+        "x": 5.477139720062804,
+        "y": 5.361065482671729
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LL4 - 2"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,10 +59,10 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "3 Coral - Processor",
+  "folder": "Left L4",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": -126.0
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

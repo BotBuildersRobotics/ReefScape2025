@@ -19,19 +19,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralMove"
+            "pathName": "CL4 - 1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ScoreL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CL4 - 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSubsystems"
           }
         }
       ]

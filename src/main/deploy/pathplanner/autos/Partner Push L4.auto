@@ -5,39 +5,57 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "CloseClaw"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.0
+            "pathName": "PPL4 - 1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StageCoral"
+            "name": "HoldCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreL4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ReefMove"
+            "pathName": "CL4 - 1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "DeliverL4"
+            "name": "ScoreL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CL4 - 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetSubsystems"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

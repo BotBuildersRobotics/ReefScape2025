@@ -171,6 +171,30 @@ public class RobotContainer {
 			SuperSystem.mInstance.setHoldCoralState()
 		
 		);
+
+		NamedCommands.registerCommand("ResetSubsystems",
+		
+			SuperSystem.mInstance.HomeElevator()
+
+		);
+
+		NamedCommands.registerCommand("Intake",
+		
+			SuperSystem.mInstance.Intake()
+
+		);
+
+		NamedCommands.registerCommand("StowIntake",
+		
+			SuperSystem.mInstance.StowIntake()
+
+		);
+
+		NamedCommands.registerCommand("FullStowIntake",
+		
+			SuperSystem.mInstance.FullStowIntake()
+
+		);
 		
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
 		/*if(SmartDashboard.containsKey("Auto Mode")) {
@@ -179,7 +203,6 @@ public class RobotContainer {
 		SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
-		
 
 		//drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 	}

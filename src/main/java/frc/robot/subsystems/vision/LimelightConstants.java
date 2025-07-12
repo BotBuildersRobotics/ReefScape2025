@@ -26,7 +26,7 @@ public class LimelightConstants {
 	static {
 		
 			kRobotToCameraOffset = new Pose3d(
-					new Translation3d(Units.Centimeters.of(0), Units.Centimeters.of(35), Units.Centimeters.of(90)),
+					new Translation3d(Units.Centimeters.of(0), Units.Centimeters.of(-35), Units.Centimeters.of(90)),
 					new Rotation3d(Units.Degree.of(0), Units.Degree.of(-25), Units.Degree.of(0)));
 		
 	}

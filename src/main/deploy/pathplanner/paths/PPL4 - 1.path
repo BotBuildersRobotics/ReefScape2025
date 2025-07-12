@@ -3,32 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.590810077784122,
-        "y": 6.1
+        "x": 7.2,
+        "y": 4.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.51256644826848,
-        "y": 6.2125872386493475
+        "x": 7.376776695296637,
+        "y": 4.876776695296637
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.5,
-        "y": 5.5
+        "x": 7.7,
+        "y": 5.2
       },
       "prevControl": {
-        "x": 5.746309314914583,
-        "y": 5.457201385696395
+        "x": 7.523223304703364,
+        "y": 5.023223304703364
+      },
+      "nextControl": {
+        "x": 7.876776695296637,
+        "y": 5.376776695296637
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.3,
+        "y": 4.25
+      },
+      "prevControl": {
+        "x": 7.418241825592793,
+        "y": 4.470269994961827
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2085561497326216,
+      "rotationDegrees": -140.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +62,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 59.99999999999999
+    "velocity": 0.0,
+    "rotation": 178.45184230102208
   },
   "reversed": false,
-  "folder": "3 Coral - Cage",
+  "folder": "Partner Push L4",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -140.0
   },
   "useDefaultConstraints": true
 }

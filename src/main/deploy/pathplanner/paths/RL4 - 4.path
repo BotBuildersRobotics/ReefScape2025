@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.2,
-        "y": 5.1
+        "x": 5.6,
+        "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.708965838571538,
-        "y": 6.027224412083644
+        "x": 4.856164772727273,
+        "y": 1.367571022727274
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RL4 - 3"
     },
     {
       "anchor": {
-        "x": 1.1,
-        "y": 6.9
+        "x": 1.895,
+        "y": 2.125
       },
       "prevControl": {
-        "x": 1.5588529638499002,
-        "y": 6.6381975703737535
+        "x": 2.4530113636363637,
+        "y": 1.5869460227272727
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 126.0
+    "velocity": 0,
+    "rotation": 175.3615421283171
   },
   "reversed": false,
-  "folder": "3 Coral - Cage",
+  "folder": "Right L4",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }

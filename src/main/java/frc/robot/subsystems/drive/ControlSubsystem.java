@@ -16,17 +16,20 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller; //Test for ps5 controller
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drive.AutoAlignPID2;
 import frc.robot.generated.TunerConstants;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
 import frc.robot.subsystems.clawSubsystem.ClawSubsystem;
+import frc.robot.subsystems.led.LEDs;
 
 public class ControlSubsystem {
 
@@ -49,7 +52,8 @@ public class ControlSubsystem {
         //back button to re-seed heading       
         driver.back()
 				.onTrue(Commands.runOnce(
-								() -> DriveSubsystem.mInstance.getGeneratedDrive().seedFieldCentric(), DriveSubsystem.mInstance)
+								//seedFieldCentric
+								() -> DriveSubsystem.mInstance.getGeneratedDrive().resetRotation(new Rotation2d(Math.toRadians(180))), DriveSubsystem.mInstance)
 						.ignoringDisable(true));
 
 		driverControls();
@@ -94,7 +98,7 @@ public class ControlSubsystem {
 		);
 
 		driver.povLeft().onTrue(
-			s.L3EF()
+			s.FRONTL3EF()
 		);
 
 		driver.povRight().onTrue(
@@ -110,10 +114,15 @@ public class ControlSubsystem {
 		);
 
 		operator.circle().onTrue(
-			s.SuperPinch()
+			Commands.sequence(
+				s.SuperPinch(),
+				Commands.runOnce(() -> operator.getHID().setRumble(RumbleType.kLeftRumble, 1))
+			)	
 		).onFalse(
-			s.ClawOff()
-		);
+			Commands.sequence(
+				s.ClawOff(),
+				Commands.runOnce(() -> operator.getHID().setRumble(RumbleType.kLeftRumble, 0))
+			));
 
 		operator.triangle().onTrue(
 			s.EFL3SuperPinch()
