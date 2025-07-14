@@ -597,7 +597,6 @@ public class SuperSystem extends SubsystemBase {
 
 	}
 
-
     public Command Intake(){
        
         return Commands.sequence(

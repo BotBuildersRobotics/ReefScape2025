@@ -105,9 +105,9 @@ public class ControlSubsystem {
 			s.L2EF() //score from the front
 		);
 
-		driver.povDown().onTrue(
+		/*driver.povDown().onTrue(
 			s.L1EF()
-		);
+		);*/
 
 		driver.start().onTrue(
 			s.StowIntake()

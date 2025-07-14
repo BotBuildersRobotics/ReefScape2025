@@ -31,7 +31,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -49,19 +49,26 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetSubsystems"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "StowIntake"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "LL4 - 4"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ResetSubsystems"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LL4 - 4"
+                }
+              }
+            ]
           }
         },
         {
@@ -84,15 +91,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "ScoreL4"
+            "waitTime": 0.5
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "LL4 - 6"
+            "name": "ScoreL4"
           }
         }
       ]
